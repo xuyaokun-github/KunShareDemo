@@ -7,7 +7,8 @@ public class ThreadServiceOne {
     public ResultVo getResult(){
 
         try {
-            Thread.sleep(6000);
+//            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
