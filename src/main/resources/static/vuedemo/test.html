@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- /表示默认从static目录开始 -->
+    <script src="/vue/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    <!-- 通过{{}}可以获取data域里定义的属性 -->
+    <div @click="myhandleClick">{{content}}</div>
+</div>
+<script>
+    new Vue({
+        el: "#root",
+        data: {
+            content: "hello"
+        },
+        methods: {
+            myhandleClick: function() {
+                //this指的是这个Vue对象，也叫实例
+                this.content = "world"
+            }
+        }
+    })
+</script>
+</body>
+</html>
