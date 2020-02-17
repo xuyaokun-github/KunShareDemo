@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- /表示默认从static目录开始 -->
+    <script src="/vue/vue.js"></script>
+</head>
+<body>
+
+<div id="root">
+
+    <!-- show属性是一个布尔值，为true时展示-->
+    <div v-if="show">hello111</div>
+    <button @click="handelClick">toggle</button>
+    <ul>
+        <!-- item相当于一个变量-->
+        <li v-for="item of list" :key="item">{{item}}</li>
+
+        <!-- 每一次循环key值不同,现在数组每个元素不同，所以可以用item
+        如果不对列表频繁的排序，下面的方法也可以
+        <li v-for="(item ，index) of list" :key="index">{{item}}</li>
+        -->
+    </ul>
+
+</div>
+
+<script type="text/javascript">
+
+    new Vue({
+        el: "#root",
+        data: {
+            show: true,
+            list: ["a", "b", "c"]
+        },
+        methods: {
+            handelClick: function () {
+                this.show = !this.show;
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

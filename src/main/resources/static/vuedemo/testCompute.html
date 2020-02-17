@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- /表示默认从static目录开始 -->
+    <script src="/vue/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    姓：<input v-model="firstName" />
+    名：<input v-model="lastName" >
+    <div>{{fullName}}</div>
+    <div>{{count}}</div>
+</div>
+<script>
+    new Vue({
+        el: "#root",
+        data: {
+            //定义三个属性
+            firstName: '',
+            lastName: '',
+            count: 0
+        },
+        computed: {
+            //computed里写的是计算属性方法
+            fullName: function() {
+                return this.firstName + ' ' + this.lastName
+            }
+        },
+        watch: {
+            //watch里写的是监听器方法
+            //这一个方法负责监听firstName这个属性
+            firstName: function() {
+                this.count ++
+            }
+        }
+    });
+</script>
+</body>
+</html>

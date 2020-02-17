@@ -8,7 +8,27 @@
 </head>
 <body>
 <div id="root">
-    <!-- 通过{{}}可以获取data域里定义的属性 -->
+    <!-- v-bind:tittle可以写为：tittle,"tittle"与data里的tittle绑定 -->
+    <div v-bind:title="title">hello world</div>
+    <!-- v-model双向绑定 -->
+    <input v-model="mycontent"/>
+    <!-- 插值表达式是单向绑定，只要data中的值发生变化，html的值也会立马变化 -->
+    <div>{{mycontent}}</div>
+</div>
+<script>
+    new Vue({
+        el:"#root",
+        data:{
+            title:"this is hello world",
+            mycontent:"this is content"
+        }
+    })
+
+</script>
+</body>
+<!--<body>
+<div id="root">
+    &lt;!&ndash; 通过{{}}可以获取data域里定义的属性 &ndash;&gt;
     <div @click="myhandleClick">{{content}}</div>
 </div>
 <script>
@@ -25,5 +45,5 @@
         }
     })
 </script>
-</body>
+</body>-->
 </html>

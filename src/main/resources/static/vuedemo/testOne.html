@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- /表示默认从static目录开始 -->
+    <script src="/vue/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    <div>
+        <!-- 与inputValue属性做双向绑定 -->
+        <input v-model="inputValue"></input>
+        <button @click="submit">
+            提交
+        </button>
+    </div>
+    <ul>
+        <!--        <li v-for="(item, index) of list" :key="index">
+                    {{item}}
+                </li>-->
+        <!-- 使用自定义的局部组件-->
+        <!--
+        <todo-item1 v-for="(item, index) of list" :key="index" :content="item">
+                </todo-item1>
+        -->
+
+        <!-- 使用自定义的全局组件
+            :content 和 :index 表示定义了两个了属性，父组件就是通过属性的方式传值到子组件
+            todo-item是子组件，但是这里触发的handleDelete是父组件的方法
+             @delete表示发布了一个事件，触发的父组件的方法，最终会由子组件里的$emit触发-->
+        <todo-item v-for="(item, index) of list" :key="index" :content="item" :index="index"
+                   @delete="handleDelete">
+        </todo-item>
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+    // 组件拆分（每个组件其实都是一个模板，都是一些html内容）
+
+    // 全局定义组件 名字叫做todo-item，它能接收一个入参content
+    Vue.component('todo-item', {
+        //接收两个属性：content和index
+        props: ['content', 'index'],  //需要使用外层参数时，需要使用props进行组件传值
+        template: '<li @click="handleClick">{{content}}</li>',
+        methods: {
+            //子组件的点击事件
+            handleClick: function () {
+                //一旦点击，就立刻触发先前发布的事件：@delete指定的方法
+                //最终会触发handleDelete，并把this.index的值传给父组件的handleDelete方法
+                this.$emit('delete', this.index)
+            }
+
+        }
+    })
+    // 定义局部组件,需要在components中定义
+    var TodoItem = {
+        props: ['content'],
+        template: '<li>{{content}}</li>'
+    }
+
+    new Vue({
+        el: "#root",
+        components: {
+            //定义局部组件
+            'todo-item1': TodoItem
+        },
+        data: {
+            inputValue: 'hello',
+            list: []
+        },
+        methods: {
+            submit: function () {
+                //将提交的内容添加到数组，数据发生变化，会自动更新界面
+                this.list.push(this.inputValue);
+                this.inputValue = '';
+            },
+            //父组件的方法
+            handleDelete: function (index) {
+                //1表示从index位置开始，删除一个元素
+                this.list.splice(index, 1)
+            }
+        }
+    })
+</script>
+</body>
+</html>

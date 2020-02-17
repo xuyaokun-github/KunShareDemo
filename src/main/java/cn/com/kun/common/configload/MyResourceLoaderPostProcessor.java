@@ -1,0 +1,32 @@
+package cn.com.kun.common.configload;
+
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
+
+/**
+ * 调整优化环境变量，对于boot框架会默认覆盖一些环境变量，此时我们需要在processor中执行
+ * 我们不再需要使用单独的yml文件来解决此问题。
+ * 原则：
+ * * 1）所有设置为系统属性的，初衷为"对系统管理员可见"、"对外部接入组件可见"（比如starter或者日志组件等）
+ * * 2）对设置为lastSource，表示"当用户没有通过yml"配置选项时的默认值--担保策略。**/
+public class MyResourceLoaderPostProcessor implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        Environment environment = applicationContext.getEnvironment();
+        String configPath = environment.getProperty("CONF_PATH");
+        if (configPath == null) {
+            configPath = environment.getProperty("config.path");
+        }
+
+
+        applicationContext.addProtocolResolver(new MyXPathProtocolResolver(configPath));
+    }
+
+    @Override
+    public int getOrder() {
+        return HIGHEST_PRECEDENCE + 100;
+    }
+}
