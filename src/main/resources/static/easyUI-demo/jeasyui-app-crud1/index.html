@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="keywords" content="jquery,ui,easy,easyui,web">
+	<meta name="description" content="easyui help you build your web page easily!">
+	<title>jQuery EasyUI CRUD Demo</title>
+
+	<!--1 jquery核心库 -->
+	<script type="text/javascript" src="/base/jquery-easyui-1.7.0/jquery.min.js"></script>
+
+	<!--2 easyui核心库 -->
+	<script type="text/javascript" src="/base/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+
+	<!--3 easyui核心UI文件 css -->
+	<link href="/base/jquery-easyui-1.7.0/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
+
+	<!-- 4 easyui图标 -->
+	<link href="/base/jquery-easyui-1.7.0/themes/icon.css" rel="stylesheet" type="text/css"/>
+	<!-- jquery核心库一定要放在easyui核心库前面引入，不然jquery.easyui.min.js中会报错：jQuery is not defined。-->
+
+
+	<!--有的时候，我们需要进行国际化，比如一些提醒、日历等，就需要引入easyui的国际化文件，代码如下： -->
+	<!--6 easyui国际化文件 -->
+	<!--
+    <script type="text/javascript" src="../resource/js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
+    -->
+
+	<script type="text/javascript">
+		var url;
+		/*
+		新增用户
+		 */
+		function newUser(){
+		    //首先打开登录框，调用setTitle方法，设置标题
+			$('#dlg').dialog('open').dialog('setTitle','New User');
+			//清除表单
+			$('#fm').form('clear');
+			url = '/v1/save_user';
+		}
+
+		//编辑用户
+		function editUser(){
+		    //选中那一行目标行
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+			    //打开弹出框
+				$('#dlg').dialog('open').dialog('setTitle','Edit User');
+				//把行数据加载到form中，最终提交的是这个form
+				$('#fm').form('load', row);
+				url = '/v1/update_user';
+			}
+		}
+
+        /**
+		 * 保存用户（新增和更新都公用一个方法）
+         */
+		function saveUser(){
+		    //调用表单的submit方法
+			//这里用了easyui表单提交的方式，后台接收参数不好处理
+			//可以改用ajax
+			// $('#fm').form('submit',{
+			// 	url: url,
+			// 	onSubmit: function(){
+			// 	    //什么时候触发？
+			// 		return $(this).form('validate');
+			// 	},
+			// 	success: function(result){
+			// 		var result = eval('('+result+')');
+			// 		if (result.success){
+			// 		    //关闭弹出框
+			// 			$('#dlg').dialog('close');		// close the dialog
+			// 			$('#dg').datagrid('reload');	// reload the user data
+			// 		} else {
+			// 		    //假如失败，用自带的消息提示器，弹出提示
+			// 			$.messager.show({
+			// 				title: 'Error',
+			// 				msg: result.msg
+			// 			});
+			// 		}
+			// 	}
+			// });
+
+			//改用ajax(这种方式亲测也是可以的)
+            $.ajax({//传统ajax提交方式
+                type:'post' ,                    //请求方式
+                url: url,    //地址
+                cache: false ,                    //是否情况缓存
+                data: {bean:JSON.stringify(arrayToObj($('#fm').serializeArray()))},    //向后台发送的数据
+                dataType:'text' ,                //服务器返回时接收的数据类型
+                success:function(result){
+                    //var result = eval('('+result+')');
+                    var result = $.parseJSON(result);
+                    $.messager.show({
+                        title:result.status ,
+                        msg :result.message
+                    });
+                    //销毁弹出框
+                    $('#dlg').dialog('close');
+                    //重新刷新表格
+                    $('#dg').datagrid('reload');
+                } ,
+                error:function(result){
+                    var result = $.parseJSON(result);
+                    $.messager.show({
+                        title:result.status ,
+                        msg :result.message
+                    });
+                    $('#dlg').dialog('close');
+
+                }
+
+            });
+		}
+
+		function arrayToObj(formArr) {
+		    console.log("test2");
+            var obj = {};
+            //for in 循环方式
+            for (var item in formArr){
+                obj[formArr[item].name] = formArr[item].value;
+            };
+            return obj;
+        }
+
+		function removeUser(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('Confirm','Are you sure you want to remove this user?',function(r){
+					if (r){
+						$.post('/v1/remove_user/' + row.firstname,{},function(result){
+							if (result.success){
+								$('#dg').datagrid('reload');	// reload the user data
+							} else {
+								$.messager.show({	// show error message
+									title: 'Error',
+									msg: result.msg
+								});
+							}
+						},'json');
+					}
+				});
+			}
+		}
+	</script>
+</head>
+<body>
+	<h2>Basic CRUD Application</h2>
+	<div class="demo-info" style="margin-bottom:10px">
+		<!-- icon-tip是easyUI自带的样式 -->
+		<div class="demo-tip icon-tip">&nbsp;</div>
+		<div>Click the buttons on datagrid toolbar to do crud actions.</div>
+	</div>
+
+	<!-- class是固定的，数据表格就使用easyui-datagrid
+	 	url指定获取数据的后台接口
+	 	 toolbar指定工具栏
+	 	 singleSelect是否单选之类-->
+	<table id="dg" title="My Users" class="easyui-datagrid"
+			url="/v1/users3"
+			toolbar="#toolbar" pagination="true"
+			rownumbers="true" fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>
+				<th field="firstname" width="50">First Name</th>
+				<th field="lastname" width="50">Last Name</th>
+				<th field="phone" width="50">Phone</th>
+				<th field="email" width="50">Email</th>
+			</tr>
+		</thead>
+	</table>
+
+	<!-- 定义一个工具栏，上面的table会引入这个工具栏 -->
+	<div id="toolbar">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">New User</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Edit User</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="removeUser()">Remove User</a>
+	</div>
+
+	<!-- 定义一个弹出框 easyui-dialog表示这将是一个easyUi的组件
+	    buttons属性，引用一组按钮，下面会定义-->
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+			closed="true" buttons="#dlg-buttons">
+		<div class="ftitle">User Information</div>
+		<!-- 定义一个表单，用来做新增和更改 -->
+		<form id="fm" method="post" novalidate>
+			<div class="fitem">
+				<label>First Name:</label>
+				<input name="firstname" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>Last Name:</label>
+				<input name="lastname" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>Phone:</label>
+				<input name="phone">
+			</div>
+			<div class="fitem">
+				<label>Email:</label>
+				<input name="email" class="easyui-validatebox" validType="email">
+			</div>
+		</form>
+	</div>
+	<!--  定义一组按钮，供弹出框使用 -->
+	<div id="dlg-buttons">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()">Save</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+		   onclick="javascript:$('#dlg').dialog('close')">Cancel</a>
+	</div>
+</body>
+</html>

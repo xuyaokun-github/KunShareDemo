@@ -3,10 +3,8 @@ package cn.com.kun.common.vo;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class ResultVo
-        implements Serializable {
+public class ResultVo implements Serializable {
 
-    private static final long serialVersionUID = -4214236501903574966L;
     private String message;
     private Object value;
     private boolean success;
@@ -31,14 +29,6 @@ public class ResultVo
         return valueOfError(msg, 0, null, value);
     }
 
-    /**
-     * ����һ���������ɴ�����Ϣ��ResultVo
-     * @param msg ������Ϣ����
-     * @param msgCode ������Ϣ����
-     * @param source ������Դ�������������������������������Log4j��¼һ��warn��Ϣ
-     * @param value ����Ҫ���ص���ʵ��
-     * @return
-     */
     public static ResultVo valueOfError(String msg, int msgCode, Class source, Object value) {
 
         ResultVo vo = new ResultVo();
