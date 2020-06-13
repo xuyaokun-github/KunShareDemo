@@ -1,5 +1,6 @@
 package cn.com.kun.controller;
 
+import cn.com.kun.common.vo.People;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
@@ -13,6 +14,16 @@ import java.net.URL;
 
 @RestController
 public class HelloController {
+
+    @RequestMapping("/testExclude")
+    public People testExclude(){
+        People user = new People();
+        user.setLastname("xyk");
+        user.setFirstname("kunghsu");
+        user.setPhone("10086");
+        user.setEmail("12306@qq.com");
+        return user;
+    }
 
     @RequestMapping("/testGetResourceAsStream")
     public String testGetResourceAsStream(){

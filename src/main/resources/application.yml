@@ -20,12 +20,37 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
+  quartz:
+      #持久化到数据库方式
+      job-store-type: jdbc
+      initialize-schema: embedded
+      properties:
+        org:
+          quartz:
+            scheduler:
+              #
+              instanceName: MyScheduler
+              instanceId: AUTO
+            jobStore:
+              class: org.quartz.impl.jdbcjobstore.JobStoreTX
+              driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+              tablePrefix: QRTZ_
+              isClustered: true
+              clusterCheckinInterval: 10000
+              useProperties: false
+            threadPool:
+              class: org.quartz.simpl.SimpleThreadPool
+              #threadCount: 20
+              threadPriority: 5
+              threadsInheritContextClassLoaderOfInitializingThread: true
 
 # type-aliases-package批量设置别名作用：就是在mapper.xml文件中直接写类名，不配置就需要写类的全路径名
 mybatis:
-  type-aliases-package: cn.com.kun.common.vo
+  type-aliases-package: cn.com.kun
   mapper-locations: classpath:mapping/*.xml
-
+  #开启驼峰命名转换
+  configuration:
+    map-underscore-to-camel-case: true
 # 将mapper接口所在包的日志级别改成debug，可以在控制台打印sql
 logging:
   config: classpath:log4j2-spring.properties
