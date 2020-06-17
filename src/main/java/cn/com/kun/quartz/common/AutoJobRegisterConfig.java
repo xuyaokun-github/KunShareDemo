@@ -72,9 +72,11 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
                     //开启调度
                     /**
                      * 注意这里必须手动开启调度
-                     * 因为可能之前曾经设置为N,被禁止调度，假如不开启，这个触发器还是被禁止的状态
+                     * 因为可能曾经设置为N,被禁止（取消）调度，假如不开启，这个触发器在数据库中还是被禁止的状态
+                     * 但是，注意不能调用scheduleJob方法，假如在数据库quartz表中已经是开启状态，再次调scheduleJob方法会抛异常
+                     * 所以，最好是调用rescheduleJob方法，作用是重新调度，让它启动
                      */
-                    finalScheduler.scheduleJob(trigger);
+                    finalScheduler.rescheduleJob(new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName()), trigger);
 
                 } catch (Exception e) {
                     System.out.println("AutoJobRegisterConfig出现异常，JobClass：" + customQuartzJob.getJobClass());
