@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <!-- 标签名就是表名 -->
+    <tbl_user firstname="1" lastname="userOne" phone="18" email="user-one@heardfate.com"/>
+    <tbl_user firstname="2" lastname="userTwo" phone="20" email="userTwo@heardfate.com"/>
+</dataset>
