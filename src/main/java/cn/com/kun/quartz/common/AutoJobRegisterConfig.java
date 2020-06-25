@@ -1,8 +1,11 @@
 package cn.com.kun.quartz.common;
 
+import cn.com.kun.batch.batchServiceOne.JobCompletionNotificationListener;
 import cn.com.kun.quartz.mapper.CustomQuartzJobMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -28,6 +31,8 @@ import java.util.Set;
 @Component
 public class AutoJobRegisterConfig implements BeanFactoryAware {
 
+    private static final Logger logger = LoggerFactory.getLogger(AutoJobRegisterConfig.class);
+
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
@@ -44,19 +49,22 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
 
         Scheduler scheduler = null;
         if (schedulerFactoryBean != null){
-            System.out.println("获取到quartz调度工厂" + schedulerFactoryBean.getScheduler().getSchedulerName());
+            logger.info("获取到quartz调度工厂" + schedulerFactoryBean.getScheduler().getSchedulerName());
             scheduler = schedulerFactoryBean.getScheduler();
-            System.out.println("Scheduler-getTypeName:" + scheduler.getClass().getTypeName());
+            logger.info("Scheduler-getTypeName:" + scheduler.getClass().getTypeName());
             //  schedulerFactoryBean.stop();
 //            schedulerFactoryBean.getScheduler().unscheduleJob();
         }
         //加载任务表
         List<CustomQuartzJob> customQuartzJobList = customQuartzJobMapper.query(null);
+        if (customQuartzJobList == null){
+            return;
+        }
         //封装成Job,放入容器
         Scheduler finalScheduler = scheduler;
         customQuartzJobList.forEach(customQuartzJob -> {
             if (JOB_ENABLED_FLAG.equals(customQuartzJob.getEnabled())){
-                System.out.println("AutoJobRegisterConfig加载到CustomQuartzJob：" + customQuartzJob.getJobName());;
+                logger.info("AutoJobRegisterConfig加载到CustomQuartzJob：" + customQuartzJob.getJobName());;
                 try {
                     Class clazz = Class.forName(customQuartzJob.getJobClass());
                     RootBeanDefinition beanDefinition = new RootBeanDefinition(clazz);
@@ -69,30 +77,42 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
                     //注册触发器
                     Trigger trigger = buildTrigger(customQuartzJob, jobDetail);
                     myListableBeanFactory.registerSingleton(customQuartzJob.getTriggerName(), trigger);
-                    //开启调度
-                    /**
-                     * 注意这里必须手动开启调度
-                     * 因为可能曾经设置为N,被禁止（取消）调度，假如不开启，这个触发器在数据库中还是被禁止的状态
-                     * 但是，注意不能调用scheduleJob方法，假如在数据库quartz表中已经是开启状态，再次调scheduleJob方法会抛异常
-                     * 所以，最好是调用rescheduleJob方法，作用是重新调度，让它启动
-                     */
-                    finalScheduler.rescheduleJob(new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName()), trigger);
+
+                    TriggerKey triggerKey = new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName());
+
+                    boolean checkExistsTrigger = finalScheduler.checkExists(triggerKey);
+                    logger.info("触发器{},存在状态：{}", triggerKey.toString(), checkExistsTrigger);
+
+                    if (!checkExistsTrigger){
+                        //假如不存在,要进行手动调度
+                        finalScheduler.scheduleJob(trigger);
+                    }else {
+                        //开启调度
+                        /**
+                         * 注意这里必须手动开启调度
+                         * 因为可能曾经设置为N,被禁止（取消）调度，假如不开启，这个触发器在数据库中还是被禁止的状态
+                         * 但是，注意不能调用scheduleJob方法，假如在数据库quartz表中已经是开启状态，再次调scheduleJob方法会抛异常
+                         * 所以，最好是调用rescheduleJob方法，作用是重新调度，让它启动
+                         */
+                        finalScheduler.rescheduleJob(triggerKey, trigger);
+                    }
+
+                    //假如一个触发器被误删了，用resumeTrigger方法不会重新添加触发器到数据库
+//                    finalScheduler.resumeTrigger(triggerKey);
 
                 } catch (Exception e) {
-                    System.out.println("AutoJobRegisterConfig出现异常，JobClass：" + customQuartzJob.getJobClass());
-                    e.printStackTrace();
+                    logger.error("AutoJobRegisterConfig出现异常，JobClass：" + customQuartzJob.getJobClass(), e);
                 }
 
             }else {
-                System.out.println(String.format("任务【%s】未启用，不加载！", customQuartzJob.getJobName()));
+                logger.info(String.format("任务【%s】未启用，不加载！", customQuartzJob.getJobName()));
                 try {
                     //假如未启用，禁用调度
                     //假如不主动禁止调度，quartz会根据之前数据库表的状态来进行调度
                     //所以为了让任务不执行，必须主动设置一下不进行调度
                     finalScheduler.unscheduleJob(new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName()));
                 } catch (SchedulerException e) {
-                    System.out.println("禁用调度异常");
-                    e.printStackTrace();
+                    logger.error("禁用调度异常", e);
                 }
             }
 
@@ -130,7 +150,7 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
                     //JobDataMap可以给任务execute传递参数
             jobDetail = jobBuilder.storeDurably().build();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("buildJobDetail异常", e);
         }
 
         return jobDetail;
