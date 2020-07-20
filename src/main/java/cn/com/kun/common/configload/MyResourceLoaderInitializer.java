@@ -11,10 +11,12 @@ import org.springframework.core.env.Environment;
  * 原则：
  * * 1）所有设置为系统属性的，初衷为"对系统管理员可见"、"对外部接入组件可见"（比如starter或者日志组件等）
  * * 2）对设置为lastSource，表示"当用户没有通过yml"配置选项时的默认值--担保策略。**/
-public class MyResourceLoaderPostProcessor implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+public class MyResourceLoaderInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
+
+        System.out.println("进入cn.com.kun.common.configload.MyResourceLoaderInitializer.initialize");
         Environment environment = applicationContext.getEnvironment();
         String configPath = environment.getProperty("CONF_PATH");
         if (configPath == null) {

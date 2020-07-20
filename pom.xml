@@ -18,6 +18,7 @@
     <properties>
         <java.version>1.8</java.version>
         <skipTests>true</skipTests>
+        <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -174,6 +175,20 @@
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
+        <!-- spring cloud task start -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-task</artifactId>
+        </dependency>
+        <!-- spring cloud task end -->
+
+        <!-- spring cloud task 与 batch集成 -->
+<!--        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-task-batch</artifactId>
+        </dependency>-->
+
+
         <!-- 数据库层单测 start-->
         <dependency>
             <groupId>com.github.springtestdbunit</groupId>
@@ -190,6 +205,18 @@
 
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <resources>
             <resource>
@@ -198,6 +225,13 @@
                     <include>**/*.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -205,6 +239,21 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>cn.com.kun.DemoApplication</mainClass>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>false</skipTests>
+                    <!-- methods：并行模式是方法级别
+                        classes：类级别-->
+                    <parallel>classes</parallel>
+                    <threadCount>5</threadCount>
+                    <!--                    <forkMode>always</forkMode>
+                                        <forkCount>5</forkCount>
+                                        <reuseForks>false</reuseForks> -->
                 </configuration>
             </plugin>
         </plugins>

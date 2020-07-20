@@ -1,5 +1,6 @@
 package cn.com.kun.foo.powerMock.service.impl;
 
+import cn.com.kun.util.CustomMockUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,5 +21,15 @@ public class MyObjectServiceImplTest {
     public void makeFile() {
 
         Assert.assertFalse(mockService.makeFile("abc"));
+    }
+
+    @Test
+    public void test1() {
+        CustomMockUtils.sleepRun();
+    }
+
+    @Test
+    public void test2() {
+        CustomMockUtils.sleepRun();
     }
 }

@@ -1,33 +1,24 @@
 package cn.com.kun.base;
 
-import cn.com.kun.KunShareDemoApplicationTest;
-import org.dbunit.Assertion;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.database.QueryDataSet;
-import org.dbunit.dataset.*;
-import org.dbunit.dataset.excel.XlsDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.io.*;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * 基于XML的用法
@@ -35,9 +26,9 @@ import java.sql.SQLException;
  * Created by xuyaokun On 2020/6/21 16:58
  * @desc:
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 //@SpringBootTest必须指定classes = KunShareDemoApplicationTest.class，否则会报错java.lang.IllegalStateException: Found multiple @SpringBootConfiguration
-@SpringBootTest(classes = KunShareDemoApplicationTest.class)
+//@SpringBootTest(classes = KunShareDemoApplicationTest.class)
 //@Rollback可以不用加，默认就是会回滚，假如不希望回滚，则用@Rollback(value = false)
 //@Rollback
 //@Transactional注解也不用加，集成AbstractTransactionalJUnit4SpringContextTests就有了

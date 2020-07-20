@@ -2,6 +2,7 @@ package cn.com.kun.foo.powerMock.service.impl;
 
 import cn.com.kun.foo.powerMock.po.MockModel;
 import cn.com.kun.foo.powerMock.service.MockMapper;
+import cn.com.kun.util.CustomMockUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +49,17 @@ public class MockServiceImplTest {
         Assert.assertEquals(2, mockService.count(model));
     }
 
+
+    @Test
+    public void test11() {
+
+        CustomMockUtils.sleepRun();
+    }
+
+    @Test
+    public void test22() {
+        CustomMockUtils.sleepRun();
+    }
 }
 
 

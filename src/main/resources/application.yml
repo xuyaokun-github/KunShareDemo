@@ -56,3 +56,4 @@ logging:
   config: classpath:log4j2-spring.properties
   level:
     com.example.demo.mapper: debug
+    org.springframework.cloud.task: DEBUG

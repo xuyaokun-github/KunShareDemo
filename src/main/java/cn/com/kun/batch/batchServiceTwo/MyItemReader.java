@@ -37,8 +37,13 @@ public class MyItemReader implements ItemReader<User> {
         User user2 = new User();
         user2.setFirstname("333");
         user2.setLastname("444");
+        User user3 = new User();
+        user3.setFirstname("555");
+        user3.setLastname("666");
         userList.add(user1);
         userList.add(user2);
+        userList.add(user3);
+
     }
 
     @Override

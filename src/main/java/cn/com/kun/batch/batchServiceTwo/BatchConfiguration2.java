@@ -52,15 +52,12 @@ public class BatchConfiguration2 {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("mySecondStep")
-                .<UserMap, User>chunk(1)
+                .<UserMap, User>chunk(2)
                 .reader(myItemReader)
                 .processor(myItemProcessor)
                 .writer(myItemWriter)
                 .build();
     }
-
-
-
-
+    
 
 }
