@@ -1,0 +1,13 @@
+package cn.com.kun.base;
+
+import cn.com.kun.KunShareDemoApplication;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = KunShareDemoApplication.class)
+public abstract class BaseTest {
+
+
+}
