@@ -239,9 +239,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>cn.com.kun.DemoApplication</mainClass>
-<!--
-
--->
                     <addResources>true</addResources>
                 </configuration>
             </plugin>
@@ -249,14 +246,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                     <!-- methods：并行模式是方法级别
                         classes：类级别-->
                     <parallel>classes</parallel>
                     <threadCount>5</threadCount>
-                    <!--                    <forkMode>always</forkMode>
-                                        <forkCount>5</forkCount>
-                                        <reuseForks>false</reuseForks> -->
                 </configuration>
             </plugin>
         </plugins>
