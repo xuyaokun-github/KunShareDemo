@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
@@ -14,6 +15,22 @@ import java.net.URL;
 
 @RestController
 public class HelloController {
+
+    @RequestMapping("/testString")
+    public String testString(){
+        return "kunghsu";
+    }
+
+    @RequestMapping("/students")
+    public String testString(@RequestParam String studentIds){
+        return "kunghsu";
+    }
+
+
+    @RequestMapping("/four/testString")
+    public String testString2(){
+        return "kunghsu /four/testString";
+    }
 
     @RequestMapping("/testExclude")
     public People testExclude(){

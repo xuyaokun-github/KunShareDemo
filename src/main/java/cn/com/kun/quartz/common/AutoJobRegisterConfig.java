@@ -1,6 +1,5 @@
 package cn.com.kun.quartz.common;
 
-import cn.com.kun.batch.batchServiceOne.JobCompletionNotificationListener;
 import cn.com.kun.quartz.mapper.CustomQuartzJobMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.quartz.*;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -28,6 +28,7 @@ import java.util.Set;
  * Created by xuyaokun On 2020/6/3 23:30
  * @desc:
  */
+@ConditionalOnProperty(prefix = "kunsharedemo.quartz", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Component
 public class AutoJobRegisterConfig implements BeanFactoryAware {
 
