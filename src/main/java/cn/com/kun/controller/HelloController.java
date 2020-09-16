@@ -1,6 +1,7 @@
 package cn.com.kun.controller;
 
 import cn.com.kun.common.vo.People;
+import cn.com.kun.utils.JedisUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
@@ -18,6 +19,8 @@ public class HelloController {
 
     @RequestMapping("/testString")
     public String testString(){
+        JedisUtils.set("now", "" + System.currentTimeMillis());
+        System.out.println(JedisUtils.get("now"));
         return "kunghsu";
     }
 
