@@ -1,8 +1,11 @@
 package cn.com.kun.controller;
 
 import cn.com.kun.common.vo.People;
+import cn.com.kun.foo.mdc.MDCDemoController;
 import cn.com.kun.utils.JedisUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,8 @@ import java.net.URL;
 
 @RestController
 public class HelloController {
+
+    public final static Logger logger = LoggerFactory.getLogger(MDCDemoController.class);
 
     @RequestMapping("/testString")
     public String testString(){
@@ -32,6 +37,7 @@ public class HelloController {
 
     @RequestMapping("/four/testString")
     public String testString2(){
+        logger.info("11111111111111");
         return "kunghsu /four/testString";
     }
 

@@ -97,11 +97,17 @@
         </dependency>
 
 
-        <!-- log4j. -->
+        <!-- log4j2 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <!-- log4j2 end -->
 
         <!-- json -->
         <dependency>
@@ -229,7 +235,20 @@
             <version>2.9.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <!-- 分布式服务跟踪 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
     </dependencies>
+
+
 
     <dependencyManagement>
         <dependencies>
@@ -264,7 +283,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.com.kun.DemoApplication</mainClass>
+                    <mainClass>cn.com.kun.KunShareDemoApplication</mainClass>
                     <addResources>true</addResources>
                 </configuration>
                 <executions>

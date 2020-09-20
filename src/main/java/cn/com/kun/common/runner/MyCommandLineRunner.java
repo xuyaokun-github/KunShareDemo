@@ -1,6 +1,9 @@
 package cn.com.kun.common.runner;
 
+import cn.com.kun.utils.DateUtils;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +18,8 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
 
     ApplicationContext context;
 
+    public final static Logger logger = LoggerFactory.getLogger(MyCommandLineRunner.class);
+
     public void run(String... args) {
 
         /**
@@ -26,6 +31,17 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
             System.out.println(JSONObject.toJSONString(beanMap.keySet()));
         }
 
+        //启动一个日志线程循环输出日志
+        new Thread(()->{
+            while (true){
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                logger.info("I am log. " + DateUtils.now());
+            }
+        }).start();
     }
 
 
