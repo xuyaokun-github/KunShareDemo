@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.kunghsu</groupId>
     <artifactId>kunsharedemo</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>war</packaging>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
@@ -246,7 +246,95 @@
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+
+        <!-- Redisson start-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.11.4</version>
+        </dependency>
+        <!-- Redisson end-->
+
+        <!-- 引入私服的包 -->
+        <dependency>
+            <groupId>com.kunghsu</groupId>
+            <artifactId>kunnexusdemo</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+
+
     </dependencies>
+
+    <repositories>
+        <repository>
+            <!-- Maven 自带的中央仓库使用的Id为central
+               如果其他的仓库声明也是用该Id 就会覆盖中央仓库的配置 -->
+            <id>kunghsu_nexus_repo</id>
+            <name>kunghsu_nexus_repo</name>
+            <url>http://192.168.3.105:8081/repository/kunghsu_nexus_repo/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+    <!--发布到私服仓库配置-->
+    <distributionManagement>
+        <!-- proxy类型的仓库不支持deploy -->
+        <!--
+                <repository>
+                    <id>kunghsu_nexus_repo</id>
+                    <name>one</name>
+                    <url>http://192.168.3.105:8081/repository/kunghsu_nexus_repo/</url>
+                </repository>
+         -->
+
+        <!-- repository标签只能定义一个 -->
+        <!-- kunghsu_nexus_hosted_release_repo只处理release版本
+            version policy为release的仓库-->
+        <!--
+                <repository>
+                    <id>kunghsu_nexus_hosted_release_repo</id>
+                    <name>kunghsu_nexus_hosted_release_repo</name>
+                    <url>http://192.168.3.105:8081/repository/kunghsu_nexus_hosted_release_repo/</url>
+                </repository>
+         -->
+
+        <!-- version policy为mixed的仓库 -->
+        <repository>
+            <id>kunghsu_nexus_hosted_mixed_repo</id>
+            <name>kunghsu_nexus_hosted_mixed_repo</name>
+            <url>http://192.168.3.105:8081/repository/kunghsu_nexus_hosted_mixed_repo/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>kunghsu_nexus_hosted_snapshot_repo</id>
+            <name>kunghsu_nexus_hosted_snapshot_repo</name>
+            <url>http://192.168.3.105:8081/repository/kunghsu_nexus_hosted_snapshot_repo/</url>
+        </snapshotRepository>
+
+    </distributionManagement>
 
 
 
