@@ -12,6 +12,12 @@ public class DateUtils {
         return dateTimeFormatter.format(now);
     }
 
+    public static String nowWithNoSymbol(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return dateTimeFormatter.format(now);
+    }
+
     public static void main(String[] args) {
         System.out.println(now());
     }

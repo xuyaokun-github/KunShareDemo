@@ -30,4 +30,10 @@ public class RedissonDemoController {
         return "cn.com.kun.controller.redisson.RedissonDemoController.test2";
     }
 
+    @RequestMapping("/test3")
+    public String test3(){
+        redissonDemoService.test2();
+        return "cn.com.kun.controller.redisson.RedissonDemoController.test3";
+    }
+
 }
