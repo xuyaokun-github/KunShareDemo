@@ -5,12 +5,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -23,7 +20,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableBatchProcessing注解必须要加，否则无法注入JobBuilderFactory
+//@EnableBatchProcessing注解必须要加(加在启动类就可以，不用每个config类都加)，否则无法注入JobBuilderFactory
 //@EnableBatchProcessing
 public class BatchConfiguration {
 

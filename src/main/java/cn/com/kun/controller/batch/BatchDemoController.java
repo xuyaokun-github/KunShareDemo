@@ -1,5 +1,6 @@
 package cn.com.kun.controller.batch;
 
+import cn.com.kun.utils.SpringContextUtil;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -113,5 +114,31 @@ public class BatchDemoController {
         System.out.println(execution.toString());
         return "success";
     }
+
+
+    /**
+     * 可重复执行
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/testBatchJob4")
+    public String testBatchJob4() throws Exception {
+
+        /*
+           可以用手动的方式，触发Job运行
+         */
+        //组织自定义参数，参数可以给读写操作去使用
+        JobParameters jobParameters = new JobParametersBuilder().addString("firstname", "345")
+                .addString("date", "" + System.currentTimeMillis()) //可以添加多个参数
+                .toJobParameters();
+        //获取Job,job是单例，step的作用域是Step
+        Job job = SpringContextUtil.getBean("myBatchJob4");
+        JobExecution execution = jobLauncher.run(job, jobParameters);
+        System.out.println(execution.toString());
+        return "success";
+    }
+
+
 
 }

@@ -13,8 +13,6 @@ import java.util.List;
 
 /**
  *
- * 有问题的
- *
  * Created by xuyaokun On 2020/5/24 23:00
  * @desc:
  */
@@ -31,6 +29,7 @@ public class MyItemReader implements ItemReader<User> {
     @PostConstruct
     public void init(){
         //模拟已经有一个集合待读取
+        //实际业务中这里可能是读取一个文件，解析所有行放入List中
         User user1 = new User();
         user1.setFirstname("111");
         user1.setLastname("222");
