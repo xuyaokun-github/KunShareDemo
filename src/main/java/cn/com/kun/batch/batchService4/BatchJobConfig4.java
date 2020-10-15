@@ -2,6 +2,7 @@ package cn.com.kun.batch.batchService4;
 
 import cn.com.kun.batch.batchServiceOne.JobCompletionNotificationListener;
 import cn.com.kun.batch.batchServiceOne.UserMap;
+import cn.com.kun.common.exception.MyBatchBussinessException;
 import cn.com.kun.common.vo.User;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
@@ -61,10 +62,13 @@ public class BatchJobConfig4 {
          */
         return stepBuilderFactory.get("myBatchStep4")
                 .<UserMap, User>chunk(2)
+                //假如出现MyBatchBussinessException超过2次，则job就会终止（前面成功的chunk会被正常提交，不受skip-limit机制影响）
+                .faultTolerant().skip(MyBatchBussinessException.class).skipLimit(2)
                 .reader(reader4)
                 .processor(myBatchProcessor4())
                 .writer(myBatchWriter4())
-                .exceptionHandler(new MyBatchExceptionHandler()) //设置异常处理器
+                //假如异常被自定义异常处理器跳过了，则skip-limit机制就不会再统计到。
+//                .exceptionHandler(new MyBatchExceptionHandler()) //设置异常处理器
                 .build();
     }
 
