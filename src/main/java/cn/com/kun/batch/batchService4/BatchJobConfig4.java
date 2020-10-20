@@ -1,6 +1,5 @@
 package cn.com.kun.batch.batchService4;
 
-import cn.com.kun.batch.batchServiceOne.JobCompletionNotificationListener;
 import cn.com.kun.batch.batchServiceOne.UserMap;
 import cn.com.kun.common.exception.MyBatchBussinessException;
 import cn.com.kun.common.vo.User;
@@ -14,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +37,12 @@ public class BatchJobConfig4 {
 
     //定义一个读操作
     @Autowired
-    @Qualifier("reader4")
+    @Qualifier("reader4ForCustom")
     ItemReader reader4;
+
+    @Autowired
+    @Qualifier("writer4ForCustom")
+    ItemWriter writer4;
 
     /**
      * 定义一个Job
@@ -46,7 +50,7 @@ public class BatchJobConfig4 {
      * @return
      */
     @Bean
-    public Job myBatchJob4(JobCompletionNotificationListener listener) {
+    public Job myBatchJob4(BatchCommonCountListener listener) {
         return jobBuilderFactory.get("myBatchJob4")
                 .incrementer(new RunIdIncrementer()) //每次运行的ID生成器
                 .listener(listener) //指定使用的监听器
@@ -66,7 +70,7 @@ public class BatchJobConfig4 {
                 .faultTolerant().skip(MyBatchBussinessException.class).skipLimit(2)
                 .reader(reader4)
                 .processor(myBatchProcessor4())
-                .writer(myBatchWriter4())
+                .writer(writer4)
                 //假如异常被自定义异常处理器跳过了，则skip-limit机制就不会再统计到。
 //                .exceptionHandler(new MyBatchExceptionHandler()) //设置异常处理器
                 .build();
@@ -88,6 +92,21 @@ public class BatchJobConfig4 {
         reader.setParameterValues(map);
 
         return reader;
+    }
+
+
+    @Bean("reader4ForCustom")
+    @StepScope
+    public MyBatchReader4 reader4ForCustom(){
+        MyBatchReader4 myBatchReader4 = new MyBatchReader4();
+        return myBatchReader4;
+    }
+
+    @Bean("writer4ForCustom")
+    @StepScope
+    public MyBatchWriter4 writer4ForCustom(){
+        MyBatchWriter4 myBatchWriter4 = new MyBatchWriter4();
+        return myBatchWriter4;
     }
 
     //定义一个介于读写之间的中间处理操作

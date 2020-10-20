@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchService4;
 
-import cn.com.kun.common.exception.MyBatchBussinessException;
+import cn.com.kun.batch.common.BatchExecCounter;
 import cn.com.kun.common.vo.User;
 import cn.com.kun.utils.DateUtils;
 import org.slf4j.Logger;
@@ -40,15 +40,22 @@ public class MyBatchProcessor4 implements ItemProcessor<User, User> {
         user.setEmail(i + "@batchjob4.com");
         user.setPhone(DateUtils.now());
 
-        if (item.getPhone().length() > 7){
-            throw new MyBatchBussinessException("出现不合法异常");
-        }
+//        if (item.getPhone().length() > 7){
+//            throw new MyBatchBussinessException("出现不合法异常");
+//        }
 
         //后面的写操作，可以使用一些spring自带提供的，注意这里假如返回的是null，spring不会对它做处理
         /*
         源码org.springframework.batch.core.step.item.SimpleChunkProcessor.transform，这里会对返回的对象进行判断，假如不空才会放入outputs中
          */
 //        return null;
+
+        //记录成功次数
+        if (System.currentTimeMillis() % 2 == 0){
+            BatchExecCounter.countSuccess();
+        }else {
+            BatchExecCounter.countFail();
+        }
 
         return user;
     }
