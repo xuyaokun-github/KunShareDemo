@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.kun.mapper.StudentMapper">
+
+    <insert id="insert" parameterType="Student" >
+        INSERT INTO tbl_student(id_card,student_name,address)
+        VALUES(#{idCard},#{studentName},#{address})
+    </insert>
+
+    <update id="update" parameterType="Student">
+        UPDATE tbl_student SET id_card=#{idCard},student_name=#{studentName},address=#{address}
+        WHERE student_name=#{studentName}
+    </update>
+
+    <select id="query" parameterType="java.util.Map" resultType="Student">
+        SELECT
+        a.id id,
+        a.id_card idCard,
+        a.student_name studentName,
+        a.address address
+        FROM
+        tbl_student a
+        WHERE 1=1
+        <if test="idCard!=null and idCard!=''">
+            AND a.id_card = #{idCard}
+        </if>
+        <if test="studentName!=null and studentName!=''">
+            AND a.student_name = #{studentName}
+        </if>
+        <if test="address!=null and address!=''">
+            AND a.address = #{address}
+        </if>
+    </select>
+</mapper>
