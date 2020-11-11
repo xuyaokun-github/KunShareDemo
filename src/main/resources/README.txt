@@ -13,3 +13,9 @@ java -Xms512M -Xmx512M -Xmn256M -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m
 
 5.发布到私服
 clean deploy -Dmaven.test.skip=true
+
+6.springcloud体系规划
+KunShare-EurekaServer
+KunShare-Zuul
+
+7.
