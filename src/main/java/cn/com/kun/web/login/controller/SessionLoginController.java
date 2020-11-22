@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class SessionLoginController {
 
-    @PostMapping("login")
+    @PostMapping(value = "login")
     public String login(@RequestBody User user, HttpSession session) {
         if ("admin".equals(user.getUsername()) && "admin".equals(user.getPassword())) {
             session.setAttribute("user", user);
@@ -19,20 +19,20 @@ public class SessionLoginController {
         return "账号或密码错误";
     }
 
-    @GetMapping("api")
-    public String api() {
+    @GetMapping(value = "/api")
+    public String api4session() {
         // 各种业务操作
         return "api成功返回数据";
     }
 
-    @GetMapping("api2")
-    public String api2() {
+    @GetMapping(value = "/apiA")
+    public String api24session() {
         // 各种业务操作
         User user = RequestContext.getCurrentUser();
         return "api2成功返回数据";
     }
 
-    @GetMapping("/logout")
+    @GetMapping(value = "/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
         return "退出成功";

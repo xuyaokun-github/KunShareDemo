@@ -38,12 +38,12 @@ public class JwtLoginController {
         return "账号密码错误";
     }
 
-    @GetMapping("api")
+    @GetMapping(value = "/api")
     public String api() {
         return "api成功返回数据";
     }
 
-    @GetMapping("api2")
+    @GetMapping(value = "api2")
     public String api2() {
         return "api2成功返回数据";
     }
