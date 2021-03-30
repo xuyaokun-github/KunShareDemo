@@ -22,6 +22,7 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
 
     public void run(String... args) {
 
+        logger.info("==================系统启动完成==================");
         /**
          * spring通过自动配置方式注册的数据源名字默认叫dataSource
          *

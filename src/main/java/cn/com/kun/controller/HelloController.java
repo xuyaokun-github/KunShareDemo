@@ -6,12 +6,15 @@ import cn.com.kun.utils.JedisUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +25,17 @@ public class HelloController {
 
     public final static Logger logger = LoggerFactory.getLogger(MDCDemoController.class);
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${nexusdemo:123}")
+    private String nexusdemo;
+
+    @PostConstruct
+    public void init(){
+        System.out.println(nexusdemo);
+    }
+
     @RequestMapping("/testString")
     public String testString(){
         JedisUtils.set("now", "" + System.currentTimeMillis());
@@ -29,17 +43,13 @@ public class HelloController {
         return "kunghsu";
     }
 
-    @RequestMapping("/students")
-    public String testString(@RequestParam String studentIds){
+    @RequestMapping("/testRestTemplate")
+    public String testRestTemplate(){
+
+        restTemplate.getForObject("http://127.0.0.1:8081/one/test", String.class);
         return "kunghsu";
     }
 
-
-    @RequestMapping("/four/testString")
-    public String testString2(){
-        logger.info("11111111111111");
-        return "kunghsu /four/testString";
-    }
 
     @RequestMapping("/testExclude")
     public People testExclude(){
