@@ -1,4 +1,4 @@
-package cn.com.kun.common.vo;
+package cn.com.kun.common.entity;
 
 /**
  * 模拟学生表为大表，上亿的表(进行按证件号分表)

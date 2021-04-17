@@ -1,6 +1,6 @@
 package cn.com.kun.common.config.jedis;
 
-import cn.com.kun.utils.JedisUtils;
+import cn.com.kun.common.utils.JedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

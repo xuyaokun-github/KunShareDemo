@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springcloud.hystrix.service;
 
-import cn.com.kun.utils.HttpClientUtils;
+import cn.com.kun.common.utils.HttpClientUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package cn.com.kun.controller;
 
 import cn.com.kun.common.vo.People;
 import cn.com.kun.foo.mdc.MDCDemoController;
-import cn.com.kun.utils.JedisUtils;
+import cn.com.kun.common.utils.JedisUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

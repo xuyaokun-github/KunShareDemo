@@ -1,7 +1,7 @@
 //package cn.com.kun.mapper;
 //
 //import cn.com.kun.base.BaseXmlDBUnit;
-//import cn.com.kun.common.vo.User;
+//import cn.com.kun.common.entity.User;
 //import org.junit.Assert;
 //import org.springframework.beans.factory.annotation.Autowired;
 //

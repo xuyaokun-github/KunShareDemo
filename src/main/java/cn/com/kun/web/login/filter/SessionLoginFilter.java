@@ -1,8 +1,8 @@
 package cn.com.kun.web.login.filter;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.common.vo.User;
-import cn.com.kun.utils.JacksonUtils;
+import cn.com.kun.common.entity.User;
+import cn.com.kun.common.utils.JacksonUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package cn.com.kun.common.runner;
 
-import cn.com.kun.utils.DateUtils;
+import cn.com.kun.common.utils.DateUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

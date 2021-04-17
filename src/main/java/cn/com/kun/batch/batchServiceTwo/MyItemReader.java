@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchServiceTwo;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;

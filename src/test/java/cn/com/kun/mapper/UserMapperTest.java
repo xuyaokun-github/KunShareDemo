@@ -1,6 +1,6 @@
 //package cn.com.kun.mapper;
 //
-//import cn.com.kun.common.vo.User;
+//import cn.com.kun.common.entity.User;
 //import cn.com.kun.foo.springtestdbunit.BaseDbunitTestCase;
 //import org.dbunit.DatabaseUnitException;
 //import org.junit.After;

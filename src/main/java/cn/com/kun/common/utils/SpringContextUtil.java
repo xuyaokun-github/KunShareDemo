@@ -1,4 +1,4 @@
-package cn.com.kun.utils;
+package cn.com.kun.common.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

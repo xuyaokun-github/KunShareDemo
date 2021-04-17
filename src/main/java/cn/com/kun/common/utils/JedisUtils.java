@@ -1,4 +1,4 @@
-package cn.com.kun.utils;
+package cn.com.kun.common.utils;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

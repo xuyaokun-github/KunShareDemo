@@ -1,8 +1,8 @@
 package cn.com.kun.controller.redisson;
 
 import cn.com.kun.service.redisson.RedissonDemoService;
-import cn.com.kun.utils.DateUtils;
-import cn.com.kun.utils.RedissonUtil;
+import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.common.utils.RedissonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

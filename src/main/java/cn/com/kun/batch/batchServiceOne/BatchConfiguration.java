@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchServiceOne;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.batch.core.Job;

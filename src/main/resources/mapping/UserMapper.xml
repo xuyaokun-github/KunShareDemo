@@ -17,7 +17,8 @@
         a.firstname firstname,
         a.lastname lastname,
         a.phone phone,
-        a.email email
+        a.email email,
+        a.create_time createTime
         FROM
         tbl_user a
         WHERE 1=1

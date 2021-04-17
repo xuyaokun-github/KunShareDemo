@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchServiceOne;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;

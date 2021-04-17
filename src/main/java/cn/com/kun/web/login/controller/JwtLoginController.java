@@ -1,7 +1,7 @@
 package cn.com.kun.web.login.controller;
 
-import cn.com.kun.common.vo.User;
-import cn.com.kun.utils.AESUtils;
+import cn.com.kun.common.entity.User;
+import cn.com.kun.common.utils.AESUtils;
 import cn.com.kun.web.login.util.JwtUtil;
 import org.springframework.web.bind.annotation.*;
 

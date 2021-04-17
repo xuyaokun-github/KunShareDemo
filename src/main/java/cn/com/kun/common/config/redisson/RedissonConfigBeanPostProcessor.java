@@ -1,10 +1,9 @@
 package cn.com.kun.common.config.redisson;
 
 
-import cn.com.kun.utils.RedissonUtil;
+import cn.com.kun.common.utils.RedissonUtil;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ import java.lang.reflect.Field;
 @Component
 public class RedissonConfigBeanPostProcessor implements BeanPostProcessor {
 
-    @Autowired(required = false)
+//    @Autowired(required = false)
     private RedissonClient redissonClient;
 
     @PostConstruct

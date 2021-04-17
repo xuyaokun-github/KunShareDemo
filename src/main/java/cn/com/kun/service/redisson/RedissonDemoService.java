@@ -1,8 +1,8 @@
 package cn.com.kun.service.redisson;
 
 import cn.com.kun.common.config.redisson.RedissonAutowired;
-import cn.com.kun.utils.DateUtils;
-import cn.com.kun.utils.RedissonUtil;
+import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.common.utils.RedissonUtil;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedissonDemoService {
 
+    /**
+     * 基于注解自动注入Redisson对象
+     */
     @RedissonAutowired
     private RLock rLock;
 

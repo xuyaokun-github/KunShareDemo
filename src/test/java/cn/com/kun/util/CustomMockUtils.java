@@ -1,6 +1,6 @@
 package cn.com.kun.util;
 
-import cn.com.kun.utils.DateUtils;
+import cn.com.kun.common.utils.DateUtils;
 
 public class CustomMockUtils {
 

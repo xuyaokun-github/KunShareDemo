@@ -1,7 +1,7 @@
 package cn.com.kun.foo.process;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.utils.ProcessUtil;
+import cn.com.kun.common.utils.ProcessUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.RateLimiter;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
 //package cn.com.kun.mapper;
 //
 //import cn.com.kun.KunShareDemoApplicationTest;
-//import cn.com.kun.common.vo.User;
+//import cn.com.kun.common.entity.User;
 //import cn.com.kun.dataSet.MyXmlDataSetLoader;
 //import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 //import com.github.springtestdbunit.annotation.DatabaseSetup;

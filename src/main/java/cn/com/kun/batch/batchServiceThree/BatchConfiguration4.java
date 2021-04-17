@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchServiceThree;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.session.SqlSessionFactory;

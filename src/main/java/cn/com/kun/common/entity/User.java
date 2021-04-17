@@ -1,4 +1,8 @@
-package cn.com.kun.common.vo;
+package cn.com.kun.common.entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 
 public class User {
 
@@ -8,6 +12,9 @@ public class User {
     private String email;
     private String username;
     private String password;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     public String getFirstname() {
         return firstname;
@@ -55,5 +62,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

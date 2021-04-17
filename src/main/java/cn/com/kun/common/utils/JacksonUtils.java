@@ -1,4 +1,4 @@
-package cn.com.kun.utils;
+package cn.com.kun.common.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;

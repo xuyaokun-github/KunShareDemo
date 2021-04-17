@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchServiceTwo;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.batch.item.ItemWriter;

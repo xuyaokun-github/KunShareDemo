@@ -1,6 +1,6 @@
 package cn.com.kun.mapper;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

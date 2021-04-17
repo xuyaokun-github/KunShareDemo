@@ -1,5 +1,7 @@
 package cn.com.kun.controller.mybatis;
 
+import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 @RequestMapping("/MybatisDemoController")
 @RestController
@@ -41,8 +44,8 @@ public class MybatisDemoController {
     @RequestMapping("/test2")
     public String test2(){
 
-        userMapper.query(null);
-        return "kunghsu cn.com.kun.controller.mybatis.MybatisDemoController.test2";
+        List<User> userList = userMapper.query(null);
+        return JacksonUtils.toJSONString(userList);
     }
 
 

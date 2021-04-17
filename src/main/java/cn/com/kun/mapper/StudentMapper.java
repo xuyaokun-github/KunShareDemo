@@ -1,6 +1,6 @@
 package cn.com.kun.mapper;
 
-import cn.com.kun.common.vo.Student;
+import cn.com.kun.common.entity.Student;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package cn.com.kun.apache.shardingsphere.controller;
 
-import cn.com.kun.common.vo.Student;
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.Student;
+import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.StudentMapper;
 import cn.com.kun.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package cn.com.kun.common.config.redisson;
 
 import cn.com.kun.common.runner.MyCommandLineRunner;
-import cn.com.kun.utils.RedissonUtil;
+import cn.com.kun.common.utils.RedissonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

@@ -2,7 +2,7 @@ package cn.com.kun.batch.batchService4;
 
 import cn.com.kun.batch.batchServiceOne.UserMap;
 import cn.com.kun.common.exception.MyBatchBussinessException;
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;

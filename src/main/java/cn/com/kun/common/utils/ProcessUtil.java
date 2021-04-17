@@ -1,4 +1,4 @@
-package cn.com.kun.utils;
+package cn.com.kun.common.utils;
 
 import cn.com.kun.common.vo.ResultVo;
 import com.alibaba.fastjson.JSONObject;

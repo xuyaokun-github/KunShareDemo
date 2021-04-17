@@ -1,6 +1,6 @@
 package cn.com.kun.batch.batchService4;
 
-import cn.com.kun.common.vo.User;
+import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;

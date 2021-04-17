@@ -1,6 +1,6 @@
 package cn.com.kun.controller.batch;
 
-import cn.com.kun.utils.SpringContextUtil;
+import cn.com.kun.common.utils.SpringContextUtil;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;

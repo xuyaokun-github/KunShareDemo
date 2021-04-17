@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springredis.controller;
 
-import cn.com.kun.utils.DateUtils;
+import cn.com.kun.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;

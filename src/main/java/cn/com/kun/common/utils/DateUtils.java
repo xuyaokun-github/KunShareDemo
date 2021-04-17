@@ -1,4 +1,4 @@
-package cn.com.kun.utils;
+package cn.com.kun.common.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

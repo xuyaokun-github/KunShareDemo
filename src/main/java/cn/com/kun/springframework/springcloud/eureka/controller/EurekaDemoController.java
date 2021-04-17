@@ -30,9 +30,9 @@ public class EurekaDemoController implements ApplicationContextAware {
     public void init(){
         Map<String, RestTemplate> beanMap = context.getBeansOfType(RestTemplate.class);
         if (beanMap != null){
-        System.out.println(beanMap.size());
+        System.out.println("容器里RestTemplate的bean个数：" + beanMap.size());
             beanMap.forEach((k,v)->{
-                System.out.println("===============beanMap:" + k);
+                System.out.println("===============RestTemplate beanMap:" + k);
             });
         }
 
