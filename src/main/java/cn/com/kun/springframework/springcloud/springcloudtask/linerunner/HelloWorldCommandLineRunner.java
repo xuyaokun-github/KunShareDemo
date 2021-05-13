@@ -1,4 +1,4 @@
-package cn.com.kun.springcloudtask.linerunner;
+package cn.com.kun.springframework.springcloud.springcloudtask.linerunner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

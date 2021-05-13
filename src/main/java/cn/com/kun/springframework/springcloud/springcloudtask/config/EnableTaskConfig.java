@@ -1,4 +1,4 @@
-package cn.com.kun.springcloudtask.config;
+package cn.com.kun.springframework.springcloud.springcloudtask.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

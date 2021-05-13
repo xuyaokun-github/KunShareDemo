@@ -1,4 +1,4 @@
-package cn.com.kun.web.login.sse;
+package cn.com.kun.web.sse;
 
 import cn.com.kun.controller.App;
 import cn.com.kun.foo.mdc.MDCDemoController;
@@ -25,7 +25,7 @@ import java.net.URL;
 @RestController
 public class FileOperController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MDCDemoController.class);
+    public final static Logger LOGGER = LoggerFactory.getLogger(FileOperController.class);
 
     @RequestMapping("/testGetResourceAsStream")
     public String testGetResourceAsStream(){

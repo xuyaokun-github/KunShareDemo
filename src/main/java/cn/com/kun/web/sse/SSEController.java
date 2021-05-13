@@ -1,4 +1,4 @@
-package cn.com.kun.web.login.sse;
+package cn.com.kun.web.sse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
