@@ -1,5 +1,7 @@
 package cn.com.kun.common.vo;
 
+import cn.com.kun.common.advice.BaseErrorInfoInterface;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -8,7 +10,7 @@ public class ResultVo implements Serializable {
     private String message;
     private Object value;
     private boolean success;
-    private int msgCode;
+    private String msgCode;
     private HashMap resultMap;
 
     private ResultVo() {
@@ -18,6 +20,7 @@ public class ResultVo implements Serializable {
         ResultVo vo = new ResultVo();
         vo.value = value;
         vo.success = true;
+        vo.msgCode = "000000";
         return vo;
     }
 
@@ -26,10 +29,10 @@ public class ResultVo implements Serializable {
     }
 
     public static ResultVo valueOfError(String msg, Object value) {
-        return valueOfError(msg, 0, null, value);
+        return valueOfError(msg, "999999", null, value);
     }
 
-    public static ResultVo valueOfError(String msg, int msgCode, Class source, Object value) {
+    public static ResultVo valueOfError(String msg, String msgCode, Class source, Object value) {
 
         ResultVo vo = new ResultVo();
         vo.value = value;
@@ -40,10 +43,10 @@ public class ResultVo implements Serializable {
     }
 
     public static ResultVo valueOfError(String msg) {
-        return valueOfError(msg, 0, null, null);
+        return valueOfError(msg, "999999", null, null);
     }
 
-    public static ResultVo valueOfError(String msg, int msgCode) {
+    public static ResultVo valueOfError(String msg, String msgCode) {
         return valueOfError(msg, msgCode, null, null);
     }
 
@@ -74,11 +77,11 @@ public class ResultVo implements Serializable {
         return this;
     }
 
-    public int getMsgCode() {
+    public String getMsgCode() {
         return msgCode;
     }
 
-    public ResultVo setMsgCode(int msgCode) {
+    public ResultVo setMsgCode(String msgCode) {
         this.msgCode = msgCode;
         return this;
     }
@@ -90,5 +93,29 @@ public class ResultVo implements Serializable {
     public void setResultMap(HashMap resultMap) {
         this.resultMap = resultMap;
     }
+
+    /**
+     * 失败
+     */
+    public static ResultVo error(BaseErrorInfoInterface errorInfo) {
+        ResultVo rb = new ResultVo();
+        rb.setMsgCode(errorInfo.getResultCode());
+        rb.setMessage(errorInfo.getResultMsg());
+        rb.setValue(null);
+        return rb;
+    }
+
+    /**
+     * 失败
+     */
+    public static ResultVo error(String smgCode, String message) {
+        ResultVo rb = new ResultVo();
+        rb.setMsgCode(smgCode);
+        rb.setMessage(message);
+        rb.setValue(null);
+        return rb;
+    }
+
+
 }
 
