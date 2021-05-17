@@ -9,7 +9,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
+/**
+ * 加解密工具类
+ * author:xuyaokun_kzx
+ * date:2021/5/17
+ * desc:
+*/
 public class AESUtils {
+
+    public static final String DEFAULT_KEY = "kunghsu-share-demo";
 
     /**
      * AES加密
@@ -180,4 +188,10 @@ public class AESUtils {
     private static byte charToByte(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
+
+    public static void main(String[] args) throws Exception {
+        //12345678: e5906dd7a635176c108e4ba850f6bedc
+        System.out.println(AESUtils.encrypt("12345678", DEFAULT_KEY));
+    }
+
 }
