@@ -1,4 +1,4 @@
-package cn.com.kun.common.config.redisson;
+package cn.com.kun.config.redisson;
 
 
 import cn.com.kun.common.utils.RedissonUtil;

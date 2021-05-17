@@ -1,4 +1,4 @@
-package cn.com.kun.common.configload;
+package cn.com.kun.component.configload;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;

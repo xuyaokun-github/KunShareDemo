@@ -1,4 +1,4 @@
-package cn.com.kun.common.config.jedis;
+package cn.com.kun.config.jedis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

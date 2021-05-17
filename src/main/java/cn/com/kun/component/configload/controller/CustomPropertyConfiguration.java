@@ -1,4 +1,4 @@
-package cn.com.kun.common.configload.controller;
+package cn.com.kun.component.configload.controller;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

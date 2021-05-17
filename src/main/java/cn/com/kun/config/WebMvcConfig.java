@@ -1,4 +1,4 @@
-package cn.com.kun.common.config;
+package cn.com.kun.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;

@@ -1,4 +1,4 @@
-package cn.com.kun.common.config.redisson;
+package cn.com.kun.config.redisson;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

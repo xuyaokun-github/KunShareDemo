@@ -1,4 +1,4 @@
-package cn.com.kun.common.config;
+package cn.com.kun.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;

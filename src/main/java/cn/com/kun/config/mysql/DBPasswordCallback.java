@@ -1,4 +1,4 @@
-package cn.com.kun.common.config.mysql;
+package cn.com.kun.config.mysql;
 
 import cn.com.kun.common.utils.AESUtils;
 import com.alibaba.druid.util.DruidPasswordCallback;

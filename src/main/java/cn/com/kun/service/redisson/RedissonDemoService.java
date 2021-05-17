@@ -1,6 +1,6 @@
 package cn.com.kun.service.redisson;
 
-import cn.com.kun.common.config.redisson.RedissonAutowired;
+import cn.com.kun.config.redisson.RedissonAutowired;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.RedissonUtil;
 import org.redisson.api.RAtomicLong;

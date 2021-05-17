@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationContextInitializer=\
-cn.com.kun.common.configload.MyResourceLoaderInitializer
+cn.com.kun.component.configload.MyResourceLoaderInitializer

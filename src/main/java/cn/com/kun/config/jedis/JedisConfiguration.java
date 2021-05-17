@@ -1,4 +1,4 @@
-package cn.com.kun.common.config.jedis;
+package cn.com.kun.config.jedis;
 
 import cn.com.kun.common.utils.JedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;

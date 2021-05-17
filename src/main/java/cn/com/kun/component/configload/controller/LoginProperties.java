@@ -1,6 +1,6 @@
-package cn.com.kun.common.configload.controller;
+package cn.com.kun.component.configload.controller;
 
-public class LogoutProperties {
+public class LoginProperties {
 
     private String name;
     private String password;

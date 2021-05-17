@@ -1,4 +1,4 @@
-package cn.com.kun.common.configload.controller;
+package cn.com.kun.component.configload.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

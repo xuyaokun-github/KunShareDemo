@@ -1,4 +1,4 @@
-package cn.com.kun.common.configload;
+package cn.com.kun.component.configload;
 
 import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
