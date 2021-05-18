@@ -7,7 +7,7 @@ import java.util.Collection;
  * 分页对象
  *
  */
-public class PageInfo<E> implements Serializable {
+public class CustomPageInfo<E> implements Serializable {
 
     public static final String ORDER_ASC = "ASC";
     public static final String ORDER_DESC = "DESC";
@@ -22,27 +22,27 @@ public class PageInfo<E> implements Serializable {
     private String sortOrder = ORDER_DESC;
     private Collection<E> result = null;
 
-    public PageInfo() {
+    public CustomPageInfo() {
     }
 
-    public PageInfo(int rows) {
+    public CustomPageInfo(int rows) {
         this.rows = rows;
     }
 
-    public PageInfo(int page, int rows) {
+    public CustomPageInfo(int page, int rows) {
         this.page = page;
         this.rows = rows;
         this.start = page > 0 ? (page - 1) * rows : 0;
         this.end = page * rows;
     }
 
-    public PageInfo(int page, int rows, String sortName, String sortOrder) {
+    public CustomPageInfo(int page, int rows, String sortName, String sortOrder) {
         this(page, rows);
         this.sortName = sortName;
         this.sortOrder = sortOrder;
     }
 
-    public PageInfo next() {
+    public CustomPageInfo next() {
         this.page++;
         return this;
     }
@@ -119,7 +119,7 @@ public class PageInfo<E> implements Serializable {
         this.sortOrder = sortOrder;
     }
 
-    public void copyTo(PageInfo copy) {
+    public void copyTo(CustomPageInfo copy) {
         if (copy == null) return;
         copy.page = this.page;
         copy.rows = this.rows;

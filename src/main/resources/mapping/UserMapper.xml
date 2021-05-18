@@ -36,6 +36,30 @@
         </if>
     </select>
 
+    <select id="list" parameterType="UserQueryParam" resultType="User">
+        SELECT
+        a.firstname firstname,
+        a.lastname lastname,
+        a.phone phone,
+        a.email email,
+        a.create_time createTime
+        FROM
+        tbl_user a
+        WHERE 1=1
+        <if test="firstname!=null and firstname!=''">
+            AND a.firstname = #{firstname}
+        </if>
+        <if test="lastname!=null and lastname!=''">
+            AND a.lastname = #{lastname}
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND a.phone = #{phone}
+        </if>
+        <if test="email!=null and email!=''">
+            AND a.email = #{email}
+        </if>
+    </select>
+
     <delete id="deleteByFirstname" parameterType="String">
         DELETE FROM tbl_user WHERE firstname=#{firstname}
     </delete>

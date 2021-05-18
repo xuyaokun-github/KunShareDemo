@@ -1,8 +1,9 @@
 package cn.com.kun.controller.mybatis;
 
-import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.entity.User;
+import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.mapper.UserMapper;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class MybatisDemoController {
     private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @RequestMapping("/test")
     public String test(){
@@ -47,6 +48,24 @@ public class MybatisDemoController {
         List<User> userList = userMapper.query(null);
         return JacksonUtils.toJSONString(userList);
     }
+
+    /**
+     * 测试分页查询
+     * @return
+     */
+    @RequestMapping("/testPage")
+    public String testPage(){
+
+        int pageNum = 0;
+        int pageSize = 5;
+//        PageHelper.startPage(pageNum, pageSize);
+        //倒序排序
+        PageHelper.startPage(pageNum, pageSize, "create_time desc");
+        List<User> userList = userMapper.query(null);
+        return JacksonUtils.toJSONString(userList);
+    }
+
+
 
 
 }
