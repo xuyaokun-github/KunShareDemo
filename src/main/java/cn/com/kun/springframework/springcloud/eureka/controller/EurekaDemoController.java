@@ -1,6 +1,9 @@
 package cn.com.kun.springframework.springcloud.eureka.controller;
 
 
+import cn.com.kun.service.redisson.RedissonDemoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -17,8 +20,9 @@ import java.util.concurrent.CountDownLatch;
 @RestController
 public class EurekaDemoController implements ApplicationContextAware {
 
-    private ApplicationContext context;
+    public final static Logger logger = LoggerFactory.getLogger(EurekaDemoController.class);
 
+    private ApplicationContext context;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,9 +34,9 @@ public class EurekaDemoController implements ApplicationContextAware {
     public void init(){
         Map<String, RestTemplate> beanMap = context.getBeansOfType(RestTemplate.class);
         if (beanMap != null){
-        System.out.println("容器里RestTemplate的bean个数：" + beanMap.size());
+            logger.info("容器里RestTemplate的bean个数：" + beanMap.size());
             beanMap.forEach((k,v)->{
-                System.out.println("===============RestTemplate beanMap:" + k);
+                logger.info("===============RestTemplate beanMap:" + k);
             });
         }
 

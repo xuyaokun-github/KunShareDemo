@@ -2,6 +2,15 @@ package cn.com.kun.common.vo;
 
 import com.github.pagehelper.IPage;
 
+/**
+ * 前端可以默认不传分页参数，不过一般都需要传
+ * 假如不传，则使用limit 1 20
+ * 本类是IPage对象的实现类，其实这不是必须的，用自定义的对象也是可以的
+ * 只不过PageHelper提供一个方法重载入参就是IPage
+ *
+ * Created by xuyaokun On 2021/5/18 22:12
+ * @desc:
+ */
 public class PageParam<T>  implements IPage {
 
     //  description = "页码", defaultValue =  1

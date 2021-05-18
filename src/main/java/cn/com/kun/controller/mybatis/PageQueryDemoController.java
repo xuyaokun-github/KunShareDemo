@@ -30,6 +30,11 @@ public class PageQueryDemoController {
         return userService.page(pageParam);
     }
 
+    @PostMapping(path = "pageNoCount")
+    public PageInfo<User> pageNoCount(@RequestBody PageParam<UserQueryParam> pageParam) {
+        return userService.pageNoCount(pageParam);
+    }
+
     /**
      * 集合查询
      *
