@@ -36,10 +36,8 @@ public class HelloController {
         System.out.println(nexusdemo);
     }
 
-    @RequestMapping("/testString")
+    @RequestMapping("/hello")
     public String testString(){
-        JedisUtils.set("now", "" + System.currentTimeMillis());
-        System.out.println(JedisUtils.get("now"));
         return "kunghsu";
     }
 
@@ -58,6 +56,7 @@ public class HelloController {
         user.setFirstname("kunghsu");
         user.setPhone("10086");
         user.setEmail("12306@qq.com");
+        int a = 1/0;
         return user;
     }
 

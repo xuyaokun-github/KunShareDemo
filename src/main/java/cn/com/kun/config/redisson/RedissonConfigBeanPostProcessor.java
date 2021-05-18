@@ -4,7 +4,9 @@ package cn.com.kun.config.redisson;
 import cn.com.kun.common.utils.RedissonUtil;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +21,13 @@ import java.lang.reflect.Field;
 @Component
 public class RedissonConfigBeanPostProcessor implements BeanPostProcessor {
 
-//    @Autowired(required = false)
+    @Autowired(required = false)
     private RedissonClient redissonClient;
 
     @PostConstruct
     private void init(){
         //可以放在@Configuration类中初始化，BeanPostProcessor这里可以直接注入使用
-//        RedissonUtil.init(redissonClient);
+        RedissonUtil.init(redissonClient);
     }
 
     @Override

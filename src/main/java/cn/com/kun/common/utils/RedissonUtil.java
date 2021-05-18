@@ -75,7 +75,7 @@ public class RedissonUtil {
      */
     public static void setString(String keyName, String value, long... timeToLive) {
 
-        RBucket<String> rBucket = getRBucket(redissonClient, keyName);
+        RBucket<String> rBucket = getRBucket(keyName);
         //同步放置
         if(timeToLive != null && timeToLive.length > 0){
             rBucket.set(value, timeToLive[0], TimeUnit.SECONDS);
@@ -88,7 +88,7 @@ public class RedissonUtil {
 
     public static String getString(String keyName) {
 
-        RBucket<String> bucket = getRBucket(redissonClient, keyName);
+        RBucket<String> bucket = getRBucket(keyName);
         return bucket.get();
     }
 
@@ -98,7 +98,7 @@ public class RedissonUtil {
      * @param objectName
      * @return
      */
-    private static <T> RBucket<T> getRBucket(RedissonClient redissonClient, String objectName) {
+    private static <T> RBucket<T> getRBucket( String objectName) {
         RBucket<T> bucket = redissonClient.getBucket(objectName);
         return bucket;
     }
@@ -128,7 +128,7 @@ public class RedissonUtil {
      */
     public static <T> T getObject(String keyName) {
 
-        RBucket<T> bucket = getRBucket(redissonClient, keyName);
+        RBucket<T> bucket = getRBucket(keyName);
         return bucket.get();
     }
 
@@ -340,8 +340,9 @@ public class RedissonUtil {
             return getRCountDownLatch(keyName);
         } else if(clazzName.equals(RLock.class.getTypeName())){
             return getRLock(keyName);
+        }else if(clazzName.equals(RBucket.class.getTypeName())){
+            return getRBucket(keyName);
         }
-
         return null;
     }
 

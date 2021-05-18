@@ -36,4 +36,10 @@ public class RedissonDemoController {
         return "cn.com.kun.controller.redisson.RedissonDemoController.test3";
     }
 
+    @RequestMapping("/testString")
+    public String testString(){
+        redissonDemoService.testString();
+        return "cn.com.kun.controller.redisson.RedissonDemoController.testString";
+    }
+
 }

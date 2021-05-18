@@ -45,8 +45,11 @@ public class RedissonConfig {
     private String clusterUrls;
     //自定义的配置项--end
 
-    //RedissonProperties是通过RedissonAutoConfiguration类加载进来的
-    @Autowired
+    /**
+     * RedissonProperties是通过RedissonAutoConfiguration类加载进来的
+     * 假如没有以spring.redis.redisson开头的配置项，容器将不会存在RedissonProperties
+     */
+    @Autowired(required = false)
     private RedissonProperties redissonProperties;
 
     @Autowired
@@ -77,7 +80,8 @@ public class RedissonConfig {
      * @return
      * @throws IOException
      */
-//    @Bean(name = "redissonClient")
+    @Bean(name = "redissonClientCluster")
+    @ConditionalOnProperty(prefix = "kunsharedemo.redisson.cluster", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
     public RedissonClient redissonClientCluster() throws IOException {
 
         String[] nodes = clusterUrls.split(",");

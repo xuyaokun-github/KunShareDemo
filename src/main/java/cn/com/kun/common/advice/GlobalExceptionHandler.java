@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResultVo exceptionHandler(HttpServletRequest req, NullPointerException e){
         logger.error("发生空指针异常！原因是:",e);
-        return ResultVo.error(CommonEnum.BODY_NOT_MATCH);
+        return ResultVo.error(CommonEnum.INTERNAL_SERVER_ERROR);
     }
 
 

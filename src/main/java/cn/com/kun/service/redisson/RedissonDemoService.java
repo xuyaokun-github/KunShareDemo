@@ -3,8 +3,12 @@ package cn.com.kun.service.redisson;
 import cn.com.kun.config.redisson.RedissonAutowired;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.RedissonUtil;
+import cn.com.kun.springframework.caffeinecache.CaffeineCacheDemoService;
 import org.redisson.api.RAtomicLong;
+import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -12,11 +16,16 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedissonDemoService {
 
+    public final static Logger logger = LoggerFactory.getLogger(RedissonDemoService.class);
+
     /**
      * 基于注解自动注入Redisson对象
      */
     @RedissonAutowired
     private RLock rLock;
+
+    @RedissonAutowired
+    private RBucket<String> bucket;
 
     public void test(){
         for (int i = 0; i < 10; i++) {
@@ -86,6 +95,12 @@ public class RedissonDemoService {
             source = "0" + source;
         }
         return source;
+    }
+
+
+    public void testString(){
+        bucket.set("testString-kunghsu");
+        logger.info(bucket.get());
     }
 
 }
