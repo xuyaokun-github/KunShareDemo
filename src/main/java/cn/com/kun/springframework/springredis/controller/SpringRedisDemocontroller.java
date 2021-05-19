@@ -1,6 +1,9 @@
 package cn.com.kun.springframework.springredis.controller;
 
+import cn.com.kun.common.entity.User;
 import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -24,9 +27,11 @@ public class SpringRedisDemocontroller {
 
     private final String HASH_KEY_PREFIX = "kunghsu.hash.prefix_";
 
-
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedisTemplateHelper redisTemplateHelper;
 
     /**
      * 测试生成唯一的递增流水号
@@ -150,4 +155,20 @@ public class SpringRedisDemocontroller {
 
         return "OK";
     }
+
+
+    @RequestMapping(value = "/testString", method = RequestMethod.GET)
+    public ResultVo testString(HttpServletRequest request){
+
+        User user = new User();
+        user.setUsername("kunghsu");
+        redisTemplateHelper.set("spring-redis-demo-testString", user, 6000);
+
+        Object res = redisTemplateHelper.get("spring-redis-demo-testString");
+
+        return ResultVo.valueOfSuccess(res);
+    }
+
+
+
 }
