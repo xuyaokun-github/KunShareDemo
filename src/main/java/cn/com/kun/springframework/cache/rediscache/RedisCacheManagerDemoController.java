@@ -50,6 +50,13 @@ public class RedisCacheManagerDemoController {
         return res;
     }
 
+    @RequestMapping("/testQueryNoSync")
+    public ResultVo testQueryNoSync(){
+
+        ResultVo res = redisCacheManagerDemoService.testQueryNoSync(ResultVo.valueOfError("testPut", "testPut"));
+        return res;
+    }
+
     @RequestMapping("/showCacheManager")
     public ResultVo showCacheManager(){
 

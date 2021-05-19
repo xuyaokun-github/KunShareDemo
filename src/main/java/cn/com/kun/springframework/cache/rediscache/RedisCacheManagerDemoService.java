@@ -46,4 +46,11 @@ public class RedisCacheManagerDemoService {
     }
 
 
+    @Cacheable(value = "systemParamCaffeineCache", key = "#req.message", sync = false)
+    public ResultVo testQueryNoSync(ResultVo req){
+
+        //这里会做具体的业务更新，例如更新数据库，更新redis之类的
+        logger.info("进入cn.com.kun.springframework.caffeinecache.CaffeineCacheDemoService.testQuery");
+        return ResultVo.valueOfSuccess("testQuery");
+    }
 }
