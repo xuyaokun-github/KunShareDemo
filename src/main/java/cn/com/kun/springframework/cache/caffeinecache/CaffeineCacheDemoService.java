@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.caffeinecache;
+package cn.com.kun.springframework.cache.caffeinecache;
 
 import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;

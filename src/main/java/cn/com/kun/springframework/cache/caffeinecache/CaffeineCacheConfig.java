@@ -1,15 +1,13 @@
-package cn.com.kun.springframework.caffeinecache;
+package cn.com.kun.springframework.cache.caffeinecache;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Lists;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @desc:
  */
-@EnableCaching
 @Configuration
 public class CaffeineCacheConfig {
 
@@ -31,7 +28,8 @@ public class CaffeineCacheConfig {
      * @return
      */
     @Bean
-    @Primary
+//    @Primary
+    // Primary不是必须的，可用可不用，不用的时候就要用@Qualifier
     public CacheManager caffeineCacheManager() {
 
         SimpleCacheManager cacheManager = new SimpleCacheManager();

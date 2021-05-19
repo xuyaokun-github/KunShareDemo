@@ -1,9 +1,10 @@
-package cn.com.kun.springframework.caffeinecache;
+package cn.com.kun.springframework.cache.caffeinecache;
 
 import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public class CaffeineCacheDemoController {
      * 拿到缓存管理器，它可以操作所有缓存对象
      */
     @Autowired
+    @Qualifier("caffeineCacheManager")
     private CacheManager cacheManager;
 
     @RequestMapping("/testPut")
