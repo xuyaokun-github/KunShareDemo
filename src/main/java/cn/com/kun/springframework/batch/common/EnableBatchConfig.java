@@ -1,4 +1,4 @@
-package cn.com.kun.batch.common;
+package cn.com.kun.springframework.batch.common;
 
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

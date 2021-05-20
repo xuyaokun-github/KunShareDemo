@@ -1,6 +1,6 @@
-package cn.com.kun.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchServiceTwo;
 
-import cn.com.kun.batch.batchServiceOne.UserMap;
+import cn.com.kun.springframework.batch.batchServiceOne.UserMap;
 import cn.com.kun.common.entity.User;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

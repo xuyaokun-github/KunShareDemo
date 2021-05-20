@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchServiceTwo;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

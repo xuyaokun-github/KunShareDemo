@@ -1,4 +1,4 @@
-package cn.com.kun.batch.common;
+package cn.com.kun.springframework.batch.common;
 
 import java.util.Map;
 import java.util.UUID;

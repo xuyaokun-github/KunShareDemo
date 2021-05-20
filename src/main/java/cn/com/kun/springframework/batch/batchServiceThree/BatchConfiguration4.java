@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceThree;
+package cn.com.kun.springframework.batch.batchServiceThree;
 
 import cn.com.kun.common.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;

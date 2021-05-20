@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchServiceTwo;
 
 import cn.com.kun.common.entity.User;
 import org.springframework.batch.item.ItemReader;

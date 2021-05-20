@@ -1,8 +1,8 @@
-package cn.com.kun.batch.batchService4;
+package cn.com.kun.springframework.batch.batchService4;
 
-import cn.com.kun.batch.batchServiceOne.UserMap;
-import cn.com.kun.common.exception.MyBatchBussinessException;
+import cn.com.kun.springframework.batch.batchServiceOne.UserMap;
 import cn.com.kun.common.entity.User;
+import cn.com.kun.common.exception.MyBatchBussinessException;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;
@@ -10,7 +10,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -18,12 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
+//@Configuration
 public class BatchJobConfig4 {
 
     @Autowired
@@ -78,7 +76,7 @@ public class BatchJobConfig4 {
 
     //配置itemReader
     @Bean("reader4")
-    @StepScope
+//    @StepScope
     MyBatisCursorItemReader<User> reader4(@Value("#{jobParameters[firstname]}") String firstname) {
 
         System.out.println("开始查询数据库");
@@ -96,14 +94,14 @@ public class BatchJobConfig4 {
 
 
     @Bean("reader4ForCustom")
-    @StepScope
+//    @StepScope
     public MyBatchReader4 reader4ForCustom(){
         MyBatchReader4 myBatchReader4 = new MyBatchReader4();
         return myBatchReader4;
     }
 
     @Bean("writer4ForCustom")
-    @StepScope
+//    @StepScope
     public MyBatchWriter4 writer4ForCustom(){
         MyBatchWriter4 myBatchWriter4 = new MyBatchWriter4();
         return myBatchWriter4;

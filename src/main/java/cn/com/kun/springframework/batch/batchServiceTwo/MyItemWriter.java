@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchServiceTwo;
 
 import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;
@@ -27,7 +27,7 @@ public class MyItemWriter implements ItemWriter<User> {
      */
     @Override
     public void write(List<? extends User> list) throws Exception {
-        System.out.println("cn.com.kun.batch.batchServiceTwo.MyItemWriter.write");
+        System.out.println("cn.com.kun.springframework.batch.batchServiceTwo.MyItemWriter.write");
         if (list == null){
             //其实这个空判断基本多余，spring内部会判断，假如为空，不会进入写操作
             System.out.println("list为空，不做处理");

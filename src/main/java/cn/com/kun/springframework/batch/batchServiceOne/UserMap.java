@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchServiceOne;
 
 public class UserMap {
 

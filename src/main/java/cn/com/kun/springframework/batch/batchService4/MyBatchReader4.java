@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchService4;
+package cn.com.kun.springframework.batch.batchService4;
 
 import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;

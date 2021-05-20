@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchServiceOne;
 
 import cn.com.kun.common.entity.User;
 import org.apache.ibatis.session.SqlSessionFactory;

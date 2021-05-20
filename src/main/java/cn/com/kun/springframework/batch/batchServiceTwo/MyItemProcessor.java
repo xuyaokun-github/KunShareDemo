@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchServiceTwo;
 
 import cn.com.kun.common.entity.User;
 import org.springframework.batch.item.ItemProcessor;
@@ -15,7 +15,7 @@ public class MyItemProcessor implements ItemProcessor<User, User> {
     @Override
     public User process(User user) throws Exception {
 
-        System.out.println("cn.com.kun.batch.batchServiceTwo.MyItemProcessor.process");
+        System.out.println("cn.com.kun.springframework.batch.batchServiceTwo.MyItemProcessor.process");
         //可以做一些处理，不一定要返回原对象相同类型，可以返回其他任意类型
         return user;
     }

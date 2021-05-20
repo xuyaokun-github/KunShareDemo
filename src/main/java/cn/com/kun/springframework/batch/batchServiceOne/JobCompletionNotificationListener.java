@@ -1,4 +1,4 @@
-package cn.com.kun.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchServiceOne;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        logger.debug("enter cn.com.kun.batch.batchServiceOne.JobCompletionNotificationListener.afterJob");
+        logger.debug("enter cn.com.kun.springframework.batch.batchServiceOne.JobCompletionNotificationListener.afterJob");
         System.out.println("进入监听器end .....");
 
         //一般会在这里做一些记录，用一个自定义表保存该次批处理执行的结果信息

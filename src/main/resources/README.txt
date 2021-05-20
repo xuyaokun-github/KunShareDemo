@@ -21,3 +21,5 @@ clean deploy -Dmaven.test.skip=true
 7.本地启动windows redis
  .\redis-server.exe .\redis.windows.conf
 
+8.集成xxl-job
+admin调度中心用8061端口

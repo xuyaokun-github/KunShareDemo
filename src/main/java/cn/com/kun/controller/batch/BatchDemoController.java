@@ -11,6 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 批处理测试控制器
+ * author:xuyaokun_kzx
+ * date:2021/5/20
+ * desc:
+*/
 @RestController
 public class BatchDemoController {
 
@@ -20,6 +26,15 @@ public class BatchDemoController {
 
     @Autowired
     JobLauncher jobLauncher;
+
+    //    @Autowired
+    @Qualifier("demoJob3")
+    Job demoJob3;
+
+    //    @Autowired
+    @Qualifier("myJob3")
+    Job myJob3;
+
 
     @RequestMapping("/testBatch")
     public String testBatch() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
@@ -53,10 +68,6 @@ public class BatchDemoController {
         System.out.println(execution.toString());
         return "success";
     }
-
-    @Autowired
-    @Qualifier("demoJob3")
-    Job demoJob3;
 
 
     @RequestMapping("/testBatch3")
@@ -96,9 +107,7 @@ public class BatchDemoController {
         return "success";
     }
 
-    @Autowired
-    @Qualifier("myJob3")
-    Job myJob3;
+
 
     @RequestMapping("/testBatch33")
     public String testBatch33() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
