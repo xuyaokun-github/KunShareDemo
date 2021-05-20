@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value =Exception.class)
     @ResponseBody
     public ResultVo exceptionHandler(HttpServletRequest req, Exception e){
-        logger.error("未知异常！原因是:", e);
+        logger.error("未知异常！异常堆栈:", e);
         return ResultVo.error(CommonEnum.INTERNAL_SERVER_ERROR);
     }
 }

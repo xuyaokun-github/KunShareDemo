@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class User {
+public class User /*implements Serializable*/ {
 
     private String firstname;
     private String lastname;

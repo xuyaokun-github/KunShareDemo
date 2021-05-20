@@ -3,7 +3,6 @@ package cn.com.kun.service.redisson;
 import cn.com.kun.config.redisson.RedissonAutowired;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.RedissonUtil;
-import cn.com.kun.springframework.caffeinecache.CaffeineCacheDemoService;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
