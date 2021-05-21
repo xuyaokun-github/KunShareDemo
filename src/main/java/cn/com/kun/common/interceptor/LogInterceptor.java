@@ -41,12 +41,10 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, //
                                 Object handler, Exception ex) throws Exception {
         logger.info("\n-------- LogInterception.afterCompletion --- ");
-
         long startTime = (Long) request.getAttribute("startTime");
         long endTime = System.currentTimeMillis();
-        logger.info("Request URL: " + request.getRequestURL());
-        logger.info("End Time: " + endTime);
-        logger.info("Time cost: " + (endTime - startTime));
+        logger.info("Request URL: {}", request.getRequestURL());
+        logger.info("End Time: {} Time cost: {}ms", endTime, (endTime - startTime));
     }
 
 }

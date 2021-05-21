@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchService2;
 
 import cn.com.kun.common.entity.User;
 import cn.com.kun.mapper.UserMapper;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MyItemWriter implements ItemWriter<User> {
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     /**
      * 每次都是传入一个待处理的集合

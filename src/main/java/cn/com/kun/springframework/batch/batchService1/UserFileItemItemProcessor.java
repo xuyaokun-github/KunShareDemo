@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.common.entity.User;
 import org.slf4j.Logger;
@@ -11,17 +11,17 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by xuyaokun On 2020/5/19 22:41
  * @desc: 
  */
-public class UserMapItemProcessor implements ItemProcessor<UserMap, User> {
+public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, User> {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(UserMapItemProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserFileItemItemProcessor.class);
 
     @Override
-    public User process(UserMap userMap) throws Exception {
+    public User process(UserFileItem UserFileItem) throws Exception {
 
         //中间处理器
         /*
-        接收的是来自读操作提供的UserMap，然后返回一个User给写操作去做具体的后续处理
+        接收的是来自读操作提供的UserFileItem，然后返回一个User给写操作去做具体的后续处理
         读操作主要负责读，数据来自哪里
         中间处理器重在一些信息的封装
         写操作主要负责保存数据，数据该落地保存在哪里

@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch.common;
+package cn.com.kun.springframework.batch;
 
 import java.util.Map;
 import java.util.UUID;
@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *
  * 批处理执行情况统计器
  *
  * Created by xuyaokun On 2020/10/20 22:28

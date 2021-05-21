@@ -1,6 +1,5 @@
-package cn.com.kun.springframework.batch.batchService4;
+package cn.com.kun.springframework.batch;
 
-import cn.com.kun.springframework.batch.common.BatchExecCounter;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.JobParameters;

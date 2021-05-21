@@ -1,4 +1,4 @@
-package cn.com.kun.controller.batch;
+package cn.com.kun.springframework.batch;
 
 import cn.com.kun.common.utils.SpringContextUtil;
 import org.springframework.batch.core.*;
@@ -25,6 +25,10 @@ public class BatchDemoController {
     Job myFirstJob;
 
     @Autowired
+    @Qualifier("mySecondJob")
+    Job mySecondJob;
+
+    @Autowired
     JobLauncher jobLauncher;
 
     //    @Autowired
@@ -35,12 +39,15 @@ public class BatchDemoController {
     @Qualifier("myJob3")
     Job myJob3;
 
-
-    @RequestMapping("/testBatch")
-    public String testBatch() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    /**
+     * 测试job1
+     * @return
+     */
+    @RequestMapping("/testBatchJob1")
+    public String testBatch() throws Exception {
 
         /*
-        可以用手动的方式，触发Job运行
+            可以用手动的方式，触发Job运行
          */
         //组织自定义参数，参数可以给读写操作去使用
         JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
@@ -50,13 +57,8 @@ public class BatchDemoController {
         return "success";
     }
 
-
-    @Autowired
-    @Qualifier("mySecondJob")
-    Job mySecondJob;
-
-    @RequestMapping("/testBatch2")
-    public String testBatch2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    @RequestMapping("/testBatchJob2")
+    public String testBatchJob2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         /*
         可以用手动的方式，触发Job运行

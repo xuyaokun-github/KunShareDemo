@@ -1,8 +1,9 @@
 package cn.com.kun.springframework.batch.batchService4;
 
-import cn.com.kun.springframework.batch.batchServiceOne.UserMap;
 import cn.com.kun.common.entity.User;
 import cn.com.kun.common.exception.MyBatchBussinessException;
+import cn.com.kun.springframework.batch.BatchCommonCountListener;
+import cn.com.kun.springframework.batch.batchService1.UserFileItem;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;
@@ -63,7 +64,7 @@ public class BatchJobConfig4 {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("myBatchStep4")
-                .<UserMap, User>chunk(2)
+                .<UserFileItem, User>chunk(2)
                 //假如出现MyBatchBussinessException超过2次，则job就会终止（前面成功的chunk会被正常提交，不受skip-limit机制影响）
                 .faultTolerant().skip(MyBatchBussinessException.class).skipLimit(2)
                 .reader(reader4)

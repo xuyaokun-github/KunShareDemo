@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.common.entity.User;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,12 +17,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.sql.DataSource;
-
+/**
+ * batch demo1
+ * 例子：读取普通文件，处理完后写入数据库
+ *
+ * author:xuyaokun_kzx
+ * date:2021/5/21
+ * desc:
+*/
 @Configuration
 //@EnableBatchProcessing注解必须要加(加在启动类就可以，不用每个config类都加)，否则无法注入JobBuilderFactory
 //@EnableBatchProcessing
-public class BatchConfiguration {
+public class BatchDemo1JobConfig {
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -30,19 +36,19 @@ public class BatchConfiguration {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    private DataSource dataSource;
+//    @Autowired
+//    private DataSource dataSource;
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
     /**
-     * 定义一个Job
+     * 定义一个Job（job在容器里是一个单例）
      * @param listener
      * @return
      */
     @Bean
-    public Job myFirstJob(JobCompletionNotificationListener listener) {
+    public Job myFirstJob(MyFirstBatchJobListener listener) {
         return jobBuilderFactory.get("importUserJob")
                 .incrementer(new RunIdIncrementer()) //每次运行的ID生成器
                 .listener(listener) //指定使用的监听器
@@ -57,7 +63,7 @@ public class BatchConfiguration {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("importStep")
-                .<UserMap, User>chunk(100)
+                .<UserFileItem, User>chunk(100)
                 .reader(reader())
                 .processor(processor())
                 .writer(myBatisBatchItemWriter())
@@ -66,26 +72,31 @@ public class BatchConfiguration {
 
     //定义一个读操作
     @Bean
-    public FlatFileItemReader<UserMap> reader() {
+    public FlatFileItemReader<UserFileItem> reader() {
 
         //创建FlatFileItemReader
-        FlatFileItemReader<UserMap> reader = new FlatFileItemReader<>();
+        FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
         reader.setResource(new ClassPathResource("batch/batchDemoOne.txt"));
-        reader.setLineMapper(new DefaultLineMapper<UserMap>() {{
+        reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
             setLineTokenizer(new DelimitedLineTokenizer("|") {{
                 setNames(new String[]{"uid", "tag", "type"});
             }});
-            setFieldSetMapper(new BeanWrapperFieldSetMapper<UserMap>() {{
-                setTargetType(UserMap.class);
+            setFieldSetMapper(new BeanWrapperFieldSetMapper<UserFileItem>() {{
+                setTargetType(UserFileItem.class);
             }});
         }});
         return reader;
     }
 
-    //定义一个介于读写之间的中间处理操作
+    /**
+     * 定义一个介于读写之间的中间处理操作
+     * 读和写操作一般都是些通用操作，例如读文件，写库，spring提供很多现成的实现，方便开发
+     * 但中间操作这种是个性化的，所以框架不提供
+     * @return
+     */
     @Bean
-    public UserMapItemProcessor processor() {
-        return new UserMapItemProcessor();
+    public UserFileItemItemProcessor processor() {
+        return new UserFileItemItemProcessor();
     }
 
 
@@ -95,9 +106,9 @@ public class BatchConfiguration {
 
         //使用Mybatis提供的写操作类
         MyBatisBatchItemWriter<User> writer = new MyBatisBatchItemWriter<>();
-        writer.setStatementId("insert");//这个在xml文件里定义的插入语句的id,必须全局唯一
+        //这个在xml文件里定义的插入语句的id,必须全局唯一
+        writer.setStatementId("cn.com.kun.mapper.UserFileItemper.insert");
         writer.setSqlSessionFactory(sqlSessionFactory);
-
         return writer;
     }
 

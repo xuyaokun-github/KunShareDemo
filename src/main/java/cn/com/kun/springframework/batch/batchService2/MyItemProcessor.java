@@ -1,6 +1,9 @@
-package cn.com.kun.springframework.batch.batchServiceTwo;
+package cn.com.kun.springframework.batch.batchService2;
 
 import cn.com.kun.common.entity.User;
+import cn.com.kun.common.utils.ThreadUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +14,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyItemProcessor implements ItemProcessor<User, User> {
 
+    private static final Logger logger = LoggerFactory.getLogger(MyItemProcessor.class);
 
     @Override
     public User process(User user) throws Exception {
 
-        System.out.println("cn.com.kun.springframework.batch.batchServiceTwo.MyItemProcessor.process");
+        logger.info("enter {}", ThreadUtils.getCurrentInvokeClassAndMethod());
         //可以做一些处理，不一定要返回原对象相同类型，可以返回其他任意类型
         return user;
     }

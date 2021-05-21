@@ -1,6 +1,14 @@
-package cn.com.kun.springframework.batch.batchServiceOne;
+package cn.com.kun.springframework.batch.batchService1;
 
-public class UserMap {
+/**
+ * 文件行的映射实体类
+ * 一个对象就表示文件中的一行
+ *
+ * author:xuyaokun_kzx
+ * date:2021/5/21
+ * desc:
+*/
+public class UserFileItem {
 
     private Long uid;
     private String tag;
