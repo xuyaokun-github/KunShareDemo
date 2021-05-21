@@ -31,13 +31,13 @@ public class BatchDemoController {
     @Autowired
     JobLauncher jobLauncher;
 
-    //    @Autowired
-    @Qualifier("demoJob3")
+    @Autowired
+    @Qualifier("myJob3")
     Job demoJob3;
 
-    //    @Autowired
-    @Qualifier("myJob3")
-    Job myJob3;
+    @Autowired
+    @Qualifier("myJob5")
+    Job myJob5;
 
     /**
      * 测试job1
@@ -111,20 +111,6 @@ public class BatchDemoController {
 
 
 
-    @RequestMapping("/testBatch33")
-    public String testBatch33() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-
-        /*
-            可以用手动的方式，触发Job运行
-         */
-        //组织自定义参数，参数可以给读写操作去使用
-        JobParameters jobParameters = new JobParametersBuilder().addString("firstname", "fisrt42")
-                .addString("date", "" + System.currentTimeMillis()) //可以添加多个参数
-                .toJobParameters();
-        JobExecution execution = jobLauncher.run(myJob3, jobParameters);
-        System.out.println(execution.toString());
-        return "success";
-    }
 
 
     /**
@@ -140,16 +126,30 @@ public class BatchDemoController {
            可以用手动的方式，触发Job运行
          */
         //组织自定义参数，参数可以给读写操作去使用
-        JobParameters jobParameters = new JobParametersBuilder().addString("firstname", "345")
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("firstname", "345")
                 .addString("date", "" + System.currentTimeMillis()) //可以添加多个参数
                 .toJobParameters();
         //获取Job,job是单例，step的作用域是Step
-        Job job = SpringContextUtil.getBean("myBatchJob4");
+        Job job = SpringContextUtil.getBean("myJob4");
         JobExecution execution = jobLauncher.run(job, jobParameters);
         System.out.println(execution.toString());
         return "success";
     }
 
+    @RequestMapping("/testBatchJob5")
+    public String testBatchJob5() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
+        /*
+            可以用手动的方式，触发Job运行
+         */
+        //组织自定义参数，参数可以给读写操作去使用
+        JobParameters jobParameters = new JobParametersBuilder().addString("firstname", "fisrt42")
+                .addString("date", "" + System.currentTimeMillis()) //可以添加多个参数
+                .toJobParameters();
+        JobExecution execution = jobLauncher.run(myJob5, jobParameters);
+        System.out.println(execution.toString());
+        return "success";
+    }
 
 }

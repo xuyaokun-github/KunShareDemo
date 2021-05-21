@@ -1,5 +1,7 @@
 package cn.com.kun.springframework.batch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.JobParameters;
@@ -15,6 +17,8 @@ import java.util.Collection;
  */
 @Component
 public class BatchCommonCountListener implements JobExecutionListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(BatchCommonCountListener.class);
 
     /**
      * 在任务开始时会执行
@@ -39,7 +43,7 @@ public class BatchCommonCountListener implements JobExecutionListener {
         for (StepExecution stepExecution : stepExecutions){
             readCount = readCount + stepExecution.getReadCount();
         }
-        System.out.println("read的总个数：" + readCount);
+        logger.info("read的总个数：" + readCount);
 
         BatchExecCounter.CountData countData = BatchExecCounter.getCountData();
         BatchExecCounter.removeCountId();
@@ -47,7 +51,7 @@ public class BatchCommonCountListener implements JobExecutionListener {
         long failNum = countData.getFailNum().get();
         //插入数据库（通过数据库保存批处理每个任务的执行成功失败次数）
         //TODO
-        System.out.println(String.format("存库,成功%s条，失败%s条", sucesssNum, failNum));
+        logger.info(String.format("存库,成功%s条，失败%s条", sucesssNum, failNum));
 
     }
 }

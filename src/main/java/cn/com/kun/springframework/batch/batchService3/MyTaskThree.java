@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch.batchServiceThree;
+package cn.com.kun.springframework.batch.batchService3;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
