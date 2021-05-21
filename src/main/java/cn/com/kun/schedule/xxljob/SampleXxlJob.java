@@ -1,5 +1,6 @@
 package cn.com.kun.schedule.xxljob;
 
+import cn.com.kun.schedule.xxljob.annotation.XxlJobClass;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xuxueli 2019-12-11 21:52:51
  */
+@XxlJobClass
 @Component
 public class SampleXxlJob {
     private static Logger logger = LoggerFactory.getLogger(SampleXxlJob.class);
@@ -37,12 +39,12 @@ public class SampleXxlJob {
     @XxlJob("demoJobHandler")
     public ReturnT<String> demoJobHandler(String param) throws Exception {
         XxlJobLogger.log("XXL-JOB, Hello World.");
+        logger.info("进入demoJobHandler，by @XxlJob!!");
 
         for (int i = 0; i < 5; i++) {
             /**
              * 注意，这个不会输出日志到控制台，它与log4j日志输出有区别
              */
-            logger.info("进入demoJobHandler");
             XxlJobLogger.log("beat at:" + i);
             TimeUnit.SECONDS.sleep(2);
         }
