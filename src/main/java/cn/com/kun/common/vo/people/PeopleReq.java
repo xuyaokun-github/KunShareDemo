@@ -1,16 +1,18 @@
-package cn.com.kun.common.vo;
+package cn.com.kun.common.vo.people;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import cn.com.kun.common.annotation.SecretField;
 
-public class People {
+public class PeopleReq {
 
-    @JSONField(serialize=false)
+    @SecretField(decode = true) //表示需要解密
     private String firstname;
-    @JsonIgnore
+
     private String lastname;
+
     private String phone;
+
     private String email;
+
     private String company;
 
 

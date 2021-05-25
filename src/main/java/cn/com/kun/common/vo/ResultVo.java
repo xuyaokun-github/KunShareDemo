@@ -5,10 +5,10 @@ import cn.com.kun.common.advice.BaseErrorInfoInterface;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class ResultVo implements Serializable {
+public class ResultVo<T> implements Serializable {
 
     private String message;
-    private Object value;
+    private T value;
     private boolean success;
     private String msgCode;
     private HashMap resultMap;
@@ -21,6 +21,7 @@ public class ResultVo implements Serializable {
         vo.value = value;
         vo.success = true;
         vo.msgCode = "000000";
+        vo.message = "处理成功";
         return vo;
     }
 
@@ -68,11 +69,11 @@ public class ResultVo implements Serializable {
         return this;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public ResultVo setValue(Object value) {
+    public ResultVo setValue(T value) {
         this.value = value;
         return this;
     }

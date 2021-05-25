@@ -3,6 +3,7 @@ package cn.com.kun.component.secret;
 import cn.com.kun.common.annotation.SecretField;
 import cn.com.kun.common.utils.AESUtils;
 import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -71,14 +72,21 @@ public class SecretHelper {
 
     /**
      * 加密
-     * @param body
+     * @param sourceBody
      * @param appId
      * @return
      * @throws Exception
      */
-    public Object encode(Object body, String appId) throws Exception {
+    public Object encode(Object sourceBody, String appId) throws Exception {
 
-        Class cls = body.getClass();
+        Object targetBody = null;
+        if (sourceBody instanceof ResultVo){
+            targetBody = ((ResultVo)sourceBody).getValue();
+        }else {
+            targetBody = sourceBody;
+        }
+
+        Class cls = targetBody.getClass();
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields){
             //遍历所有属性
@@ -89,19 +97,19 @@ public class SecretHelper {
                 PropertyDescriptor pd = new PropertyDescriptor(field.getName(), cls);
                 Method getMethod = pd.getReadMethod();
                 //拿到旧值
-                Object oldValue = getMethod.invoke(body);
+                Object oldValue = getMethod.invoke(targetBody);
                 if (oldValue != null && oldValue instanceof String){
                     //只做字符串的处理
                     Method setMethod = pd.getWriteMethod();
                     String newValue = AESUtils.encrypt((String)oldValue, appId);
-                    setMethod.invoke(body, newValue);
+                    setMethod.invoke(targetBody, newValue);
                 }else {
                     //假如是自定义对象，可以继续处理！支持嵌套对象
 
                 }
             }
         }
-        return body;
+        return sourceBody;
     }
 
 }

@@ -1,6 +1,6 @@
 package cn.com.kun.controller;
 
-import cn.com.kun.common.vo.People;
+import cn.com.kun.common.vo.people.People;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,9 @@
-package cn.com.kun.common.vo;
+package cn.com.kun.common.vo.people;
 
 import cn.com.kun.common.annotation.DesensitizationField;
 import cn.com.kun.common.annotation.SecretField;
+
+import java.util.List;
 
 import static cn.com.kun.common.constants.DesensitizationConstants.ID_EXPRESSION;
 import static cn.com.kun.common.constants.DesensitizationConstants.ID_REPLACE;
@@ -40,6 +42,15 @@ public class PeopleRes {
      */
     @DesensitizationField(expression = ID_EXPRESSION, replace = ID_REPLACE)
     private String idCardRisk;
+
+    /**
+     * 一个人只能有一个家乡地址
+     */
+    @DesensitizationField
+    private HomeTownAddress homeTownAddress;
+
+    @DesensitizationField
+    private List<WorkAddress> workAddressList;
 
     public String getFirstname() {
         return firstname;
@@ -95,5 +106,21 @@ public class PeopleRes {
 
     public void setIdCardRisk(String idCardRisk) {
         this.idCardRisk = idCardRisk;
+    }
+
+    public HomeTownAddress getHomeTownAddress() {
+        return homeTownAddress;
+    }
+
+    public void setHomeTownAddress(HomeTownAddress homeTownAddress) {
+        this.homeTownAddress = homeTownAddress;
+    }
+
+    public List<WorkAddress> getWorkAddressList() {
+        return workAddressList;
+    }
+
+    public void setWorkAddressList(List<WorkAddress> workAddressList) {
+        this.workAddressList = workAddressList;
     }
 }
