@@ -1,8 +1,6 @@
 package cn.com.kun.controller;
 
 import cn.com.kun.common.vo.People;
-import cn.com.kun.foo.mdc.MDCDemoController;
-import cn.com.kun.common.utils.JedisUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,7 @@ import java.net.URL;
 @RestController
 public class HelloController {
 
-    public final static Logger logger = LoggerFactory.getLogger(MDCDemoController.class);
+    public final static Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @Autowired
     private RestTemplate restTemplate;

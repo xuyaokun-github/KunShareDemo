@@ -191,7 +191,8 @@ public class AESUtils {
 
     public static void main(String[] args) throws Exception {
         //12345678: e5906dd7a635176c108e4ba850f6bedc
-        System.out.println(AESUtils.encrypt("12345678", DEFAULT_KEY));
+        //tmac: 593a0a39ff53a54320f142c501570733
+        System.out.println(AESUtils.encrypt("tmac", DEFAULT_KEY));
     }
 
 }

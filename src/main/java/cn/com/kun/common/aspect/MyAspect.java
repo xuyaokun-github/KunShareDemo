@@ -1,7 +1,10 @@
 package cn.com.kun.common.aspect;
 
+import cn.com.kun.common.advice.SecretResponseBodyAdvice;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +13,8 @@ import javax.sql.DataSource;
 @Component
 @Aspect//假如了这个注解，就相当于定义一个切面类，但是前提是该类也被定义为bean
 public class MyAspect {
+
+    public final static Logger logger = LoggerFactory.getLogger(SecretResponseBodyAdvice.class);
 
     @Autowired
     private DataSource druidDataSource;
@@ -31,7 +36,7 @@ public class MyAspect {
     @Before("execution(* cn.com.kun.controller.*.*(..))")
 //	@Before("pointcut()") //也可以使用这种方式，上面已经定义过切入点，可以直接拿来用
     public void beforeMethod(){
-        System.out.println("i am before........");
+        logger.info("i am before........");
     }
 
     /*
@@ -40,7 +45,7 @@ public class MyAspect {
      */
     @Before("pointcut() && args(arg)")
     public void beforeWithParam(String arg) {
-        System.out.println("BeforeWithParam." + arg);
+        logger.info("BeforeWithParam." + arg);
     }
 
     //注意点：假如使用这些通知注解，括号中假如不指定切入点，那么加载配置时就会报错
@@ -49,31 +54,31 @@ public class MyAspect {
      */
     @AfterReturning("pointcut()")
     public void afterReturningMethod(){
-        System.out.println("AfterReturning............");
+        logger.info("AfterReturning............");
     }
     /*
      * 定义一个异常通知
      */
     @AfterThrowing(pointcut="pointcut()", throwing="e")
     public void afterThrowing(RuntimeException e) {
-        System.out.println("AfterThrowing : " + e.getMessage());
+        logger.info("AfterThrowing : " + e.getMessage());
     }
     /*
      * 定义一个后置通知
      */
     @After("pointcut()") //传入的是切入点的方法名
     public void after() {
-        System.out.println("After.");
+        logger.info("After.");
     }
     /*
      * 定义一个环绕通知
      */
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        System.out.println("Around 1.");
+        logger.info("Around 1.");
         Object obj = pjp.proceed();
-        System.out.println("Around 2.");
-        System.out.println("Around : " + obj);
+        logger.info("Around 2.");
+        logger.info("Around : " + obj);
         return obj;
     }
 
