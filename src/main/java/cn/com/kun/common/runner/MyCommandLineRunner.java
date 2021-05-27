@@ -42,7 +42,7 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
                 }
                 logger.info("I am log. " + DateUtils.now());
             }
-        }).start();
+        }, "MyCommandLineRunner-Thread").start();
     }
 
 

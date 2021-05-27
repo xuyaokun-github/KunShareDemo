@@ -1,7 +1,7 @@
 package cn.com.kun.mapper;
 
 import cn.com.kun.common.entity.User;
-import cn.com.kun.controller.mybatis.UserQueryParam;
+import cn.com.kun.common.vo.user.UserQueryParam;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -58,6 +58,9 @@
         <if test="email!=null and email!=''">
             AND a.email = #{email}
         </if>
+        <if test="createTime != null">
+            AND a.create_time = #{createTime}
+        </if>
     </select>
 
     <delete id="deleteByFirstname" parameterType="String">

@@ -1,15 +1,20 @@
 package cn.com.kun.config;
 
+import cn.com.kun.component.format.MyDateFormat;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.text.DateFormat;
 import java.util.List;
 
 @Configuration
@@ -17,6 +22,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder;
 
     /**
      * @Description 静态资源路径
@@ -45,6 +53,23 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 //        converters.add(fastConverter);//使用jackson作为默认
         }
 
+    }
+
+    /**
+     * 自定义一个DateFormat
+     * @return
+     */
+//    @Bean
+    public MappingJackson2HttpMessageConverter MappingJsonpHttpMessageConverter() {
+
+        ObjectMapper mapper = jackson2ObjectMapperBuilder.build();
+        // ObjectMapper为了保障线程安全性，里面的配置类都是一个不可变的对象
+        // 所以这里的setDateFormat的内部原理其实是创建了一个新的配置类
+        DateFormat dateFormat = mapper.getDateFormat();
+        mapper.setDateFormat(new MyDateFormat(dateFormat));
+        MappingJackson2HttpMessageConverter mappingJsonpHttpMessageConverter = new MappingJackson2HttpMessageConverter(
+                mapper);
+        return mappingJsonpHttpMessageConverter;
     }
 
 }

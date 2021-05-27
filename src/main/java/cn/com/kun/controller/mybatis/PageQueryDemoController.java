@@ -2,6 +2,7 @@ package cn.com.kun.controller.mybatis;
 
 import cn.com.kun.common.entity.User;
 import cn.com.kun.common.vo.PageParam;
+import cn.com.kun.common.vo.user.UserQueryParam;
 import cn.com.kun.service.mybatis.UserService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
