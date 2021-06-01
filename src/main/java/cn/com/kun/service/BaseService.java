@@ -31,6 +31,7 @@ public interface BaseService<Param, Result> {
          * 我建议是不，因为前端不需要用到这么多信息，信息应该尽量精简化
          * 应该在服务层做一下转换，再返回给控制层
          */
+        //注意，这里返回的具体对象的类型 和 list方法的返回类型无关，只和dao层执行拿到的对象类型有关！
         return PageHelper.startPage(param).doSelectPageInfo(() -> list(param.getParam()));
     }
 

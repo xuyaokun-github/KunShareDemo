@@ -17,13 +17,14 @@ public class MyResourceLoaderInitializer implements ApplicationContextInitialize
     public void initialize(ConfigurableApplicationContext applicationContext) {
 
         System.out.println("进入cn.com.kun.common.configload.MyResourceLoaderInitializer.initialize");
+        //获取运行时环境
         Environment environment = applicationContext.getEnvironment();
         String configPath = environment.getProperty("CONF_PATH");
         if (configPath == null) {
             configPath = environment.getProperty("config.path");
         }
 
-
+        //添加一个加载配置文件的实现
         applicationContext.addProtocolResolver(new MyXPathProtocolResolver(configPath));
     }
 
