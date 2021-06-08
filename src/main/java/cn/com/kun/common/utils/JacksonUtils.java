@@ -1,6 +1,6 @@
 package cn.com.kun.common.utils;
 
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,26 +21,27 @@ import java.util.function.Supplier;
  */
 public class JacksonUtils {
 
-    private static ObjectMapper mapper;
+    private static final ObjectMapper mapper;
     private final static Logger log = LoggerFactory.getLogger(JacksonUtils.class);
 
     /**
      * 设置通用的属性
      */
     static {
+        //com.fasterxml.jackson.databind.ObjectMapper
         mapper = new ObjectMapper();
         //如果json中有新增的字段并且是实体类类中不存在的，不报错
-        //mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         //如果存在未知属性，则忽略不报错
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //允许key没有双引号
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+//        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         //允许key有单引号
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         //允许整数以0开头
-        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
+//        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
         //允许字符串中存在回车换行控制符
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+//        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
     }
 
     /**
@@ -129,6 +130,39 @@ public class JacksonUtils {
             return mapper.readValue(value, tClass);
         } catch (Throwable e) {
             log.error(String.format("toJavaObject exception: \n %s\n %s", value, tClass), e);
+        }
+        return defaultSupplier.get();
+    }
+
+    /**
+     * 根据字符串得到具体的Java对象，支持泛型
+     * @param obj
+     * @param valueTypeRef
+     * @param <T>
+     * @return
+     */
+    public static <T> T toJavaObject(String obj, TypeReference valueTypeRef) {
+        //先将obj转成字符串
+        return obj != null ? toJavaObject(obj, valueTypeRef, () -> null) : null;
+    }
+
+    /**
+     * 支持泛型
+     * @param value
+     * @param valueTypeRef
+     * @param defaultSupplier
+     * @param <T>
+     * @return
+     */
+    public static <T> T toJavaObject(String value, TypeReference valueTypeRef, Supplier<T> defaultSupplier) {
+        try {
+            if (StringUtils.isBlank(value)) {
+                return defaultSupplier.get();
+            }
+            //字符串转为Java对象
+            return mapper.readValue(value, valueTypeRef);
+        } catch (Throwable e) {
+            log.error(String.format("toJavaObject exception: \n %s\n %s", value, valueTypeRef), e);
         }
         return defaultSupplier.get();
     }
