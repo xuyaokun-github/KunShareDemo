@@ -36,7 +36,13 @@ public class RestTemplateConfig {
 
     @Bean
     public RestTemplate restTemplate() {
+
         RestTemplate restTemplate = new RestTemplate(newClientHttpRequestFactory());
+//        List<HttpMessageConverter<?>> messageConverterList = restTemplate.getMessageConverters();
+        //添加FormHttpMessageConverter，支持application/x-www-form-urlencoded的Content-Type
+//        messageConverterList.add(new FormHttpMessageConverter());
+        //默认情况下不需要添加FormHttpMessageConverter，因为已经自带AllEncompassingFormHttpMessageConverter
+        //AllEncompassingFormHttpMessageConverter是FormHttpMessageConverter的子类
         return restTemplate;
     }
 

@@ -23,3 +23,4 @@ clean deploy -Dmaven.test.skip=true
 
 8.集成xxl-job
 admin调度中心用8061端口
+http://localhost:8061/xxl-job-admin
