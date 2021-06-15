@@ -1,4 +1,4 @@
-package cn.com.kun.common.aspect;
+package cn.com.kun.component.aspect;
 
 import cn.com.kun.common.advice.SecretResponseBodyAdvice;
 import org.aspectj.lang.ProceedingJoinPoint;
