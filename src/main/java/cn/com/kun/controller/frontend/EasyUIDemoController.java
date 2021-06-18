@@ -1,4 +1,4 @@
-package cn.com.kun.controller;
+package cn.com.kun.controller.frontend;
 
 import cn.com.kun.common.vo.EasyUIPageInfo;
 import cn.com.kun.common.vo.ResultVo;
