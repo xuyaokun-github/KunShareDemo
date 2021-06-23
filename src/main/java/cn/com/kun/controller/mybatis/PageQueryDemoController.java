@@ -1,6 +1,6 @@
 package cn.com.kun.controller.mybatis;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.vo.PageParam;
 import cn.com.kun.common.vo.user.UserQueryParam;
 import cn.com.kun.common.vo.user.UserQueryResVO;

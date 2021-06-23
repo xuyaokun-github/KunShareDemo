@@ -1,6 +1,6 @@
 package cn.com.kun.controller;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import org.apache.commons.io.IOUtils;

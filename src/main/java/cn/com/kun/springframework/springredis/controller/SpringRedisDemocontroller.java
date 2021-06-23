@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springredis.controller;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;

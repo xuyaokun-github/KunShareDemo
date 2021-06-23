@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.batch.batchService4;
 
 import cn.com.kun.springframework.batch.BatchExecCounter;
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

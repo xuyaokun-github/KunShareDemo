@@ -1,6 +1,5 @@
 package cn.com.kun.controller.mybatis;
 
-import cn.com.kun.common.entity.User;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.user.UserQueryParam;
 import cn.com.kun.controller.SpringDemoController;
@@ -14,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import cn.com.kun.bean.entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

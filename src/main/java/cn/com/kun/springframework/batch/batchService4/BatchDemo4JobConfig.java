@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.batch.batchService4;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.exception.MyBatchBussinessException;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.springframework.batch.BatchCommonCountListener;

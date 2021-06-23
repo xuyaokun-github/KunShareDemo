@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.batch.batchService2;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.springframework.batch.batchService1.UserFileItem;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

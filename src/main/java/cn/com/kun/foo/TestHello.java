@@ -1,32 +1,27 @@
 package cn.com.kun.foo;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.math.BigDecimal;
 
 public class TestHello {
 
     private static final String aaa = "aaa";
 
    public static void main(String[] args) {
-
-       try{
-//           if (true)
-//           throw new RuntimeException("");
-           File file = new File("");
-           if (file.exists()){
-                new FileInputStream(file);
-           }
-           int aa = 1/0;
-           System.out.println("end");
-       } catch(IOException e){
-            e.printStackTrace();
-            int a = 1/0;
-//           throw new RuntimeException("");
-       } finally {
-           System.out.println("finally");
+       for (int i = 0; i < 10; i++) {
+           long l = Long.parseLong("ABCDEF", 16);
+           System.out.println(l);
        }
+   }
 
+    private static long getPercent(long count, long total) {
+        if(total==0){
+            return 0;
+        }
+        BigDecimal currentCount = new BigDecimal(count);
+        BigDecimal totalCount = new BigDecimal(total);
+        BigDecimal divide = currentCount.divide(totalCount,2, BigDecimal.ROUND_HALF_UP);
+        return divide.multiply(new BigDecimal(100)).longValue();
     }
+
 
 }

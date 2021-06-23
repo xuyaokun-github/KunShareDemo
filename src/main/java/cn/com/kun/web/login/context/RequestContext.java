@@ -1,6 +1,6 @@
 package cn.com.kun.web.login.context;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

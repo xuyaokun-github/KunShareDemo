@@ -1,5 +1,8 @@
 package cn.com.kun.springframework.springredis;
 
+import cn.com.kun.springframework.springredis.bloomFilter.BloomFilterHelper;
+import com.google.common.hash.Funnel;
+import org.apache.commons.io.Charsets;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +47,14 @@ public class CustomRedisTemplateConfig {
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    //初始化布隆过滤器，放入到spring容器里面
+    @Bean
+    public BloomFilterHelper<String> initBloomFilterHelper() {
+        return new BloomFilterHelper<>((Funnel<String>) (from, into) ->
+                into.putString(from, Charsets.UTF_8)
+                        .putString(from, Charsets.UTF_8), 1000000, 0.01);
     }
 
 }

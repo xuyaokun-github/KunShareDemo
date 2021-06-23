@@ -2,7 +2,7 @@ package cn.com.kun.controller.frontend;
 
 import cn.com.kun.common.vo.EasyUIPageInfo;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.mapper.UserMapper;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;

@@ -1,6 +1,6 @@
 package cn.com.kun.common.utils;
 
-import cn.com.kun.common.entity.User;
+import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.vo.ResultVo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import junit.framework.TestCase;
@@ -30,7 +30,7 @@ public class JacksonUtilsTest extends TestCase {
         ResultVo<List<User>> resultVo1 = JacksonUtils.toJavaObject(sourceStr, ResultVo.class);
         List<User> newList = resultVo1.getValue();
         /*
-        下面代码直接报异常了：java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to cn.com.kun.common.entity.User
+        下面代码直接报异常了：java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to cn.com.kun.bean.entity.User
         因为丢失泛型了，resultVo1里面的对象早已不是User类型对象
          */
         System.out.println(newList.get(0).getUsername());

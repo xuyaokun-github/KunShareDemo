@@ -1,4 +1,4 @@
-package cn.com.kun.common.entity;
+package cn.com.kun.bean.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
