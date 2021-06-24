@@ -1,14 +1,20 @@
 package cn.com.kun.springframework.springredis.service;
 
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.bloomFilter.BloomFilterHelper;
 import cn.com.kun.springframework.springredis.bloomFilter.RedisBloomFilter;
+import cn.com.kun.springframework.springredis.controller.RedisBlackListDemocontroller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
- * 实现黑名单的功能最终还是决定使用布隆过滤器
+ * 实现黑名单的功能-用什么数据结构，视需求决定
  *
  * author:xuyaokun_kzx
  * date:2021/6/23
@@ -17,10 +23,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisBlackListDemoService {
 
+    public final static Logger LOGGER = LoggerFactory.getLogger(RedisBlackListDemocontroller.class);
+
     private String BLACKLIST_KEY = "user-blacklist";
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedisTemplateHelper redisTemplateHelper;
 
     @Autowired
     private RedisBloomFilter redisBloomFilter;
@@ -69,4 +80,41 @@ public class RedisBlackListDemoService {
     public boolean includeByBloomFilter(String value) {
         return redisBloomFilter.includeByBloomFilter(bloomFilterHelper,"my-boomfilter", value);
     }
+
+
+    public void addCacheForString(){
+
+        /**
+         * key该如何设计？
+         * 固定前缀：黑名单类型：黑名单关键字
+         */
+        int type = 0;
+        String keyPrefix = "blacklist:" + type + ":";
+        for (int i = 0; i < 100; i++) {
+            redisTemplateHelper.set(keyPrefix + UUID.randomUUID().toString(), "");
+        }
+    }
+
+    public void addCacheForHash(){
+
+        /**
+         * 设置100万个，看占用空间
+         */
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100 * 10000; i++) {
+            redisTemplateHelper.hset("", UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        }
+        LOGGER.info("耗时：{}ms", System.currentTimeMillis() - start);
+    }
+
+    public void getCacheForHash(){
+
+        /**
+         * 设置100万个，看占用空间
+         */
+        long start = System.currentTimeMillis();
+        redisTemplateHelper.hget("", UUID.randomUUID().toString());
+        LOGGER.info("耗时：{}ms", System.currentTimeMillis() - start);
+    }
+
 }

@@ -154,4 +154,22 @@ public class RedisBlackListDemocontroller {
         return "OK";
     }
 
+    @RequestMapping(value = "/addCacheForString")
+    public String addCacheForString(){
+        redisBlackListDemoService.addCacheForString();
+        return "OK";
+    }
+
+    @RequestMapping(value = "/addCacheForHash")
+    public String addCacheForHash(){
+        redisBlackListDemoService.addCacheForHash();
+        return "OK";
+    }
+
+    @RequestMapping(value = "/getCacheForHash")
+    public String getCacheForHash(){
+        redisBlackListDemoService.getCacheForHash();
+        return "OK";
+    }
+
 }
