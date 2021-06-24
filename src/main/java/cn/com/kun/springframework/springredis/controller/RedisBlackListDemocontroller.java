@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  * 写一个基于redis-bitmap实现黑名单的功能例子
@@ -47,6 +48,20 @@ public class RedisBlackListDemocontroller {
         return "添加成功";
     }
 
+    @RequestMapping(value = "/addBatch")
+    public String addBatch(String id){
+        try {
+            //添加一百个值到布隆过滤器，会占多少空间
+            for (int i = 0; i < (10000 * 100); i++) {
+                redisBlackListDemoService.addByBloomFilter(UUID.randomUUID().toString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "添加失败";
+        }
+        return "添加成功";
+    }
+
     /***
      * 从布隆过滤器中移除
      * @param id
@@ -76,6 +91,23 @@ public class RedisBlackListDemocontroller {
          * 假如判断为存在，也有可能不存在！所以要进一步结合数据库的黑名单表判断
          */
         boolean b = redisBlackListDemoService.includeByBloomFilter(id);
+        return b;
+    }
+
+    /***
+     * 查询是否存在
+     *
+     * @return
+     */
+    @RequestMapping(value = "/checkIfExist")
+    public boolean checkBloomFilter(){
+        /**
+         * 假如判断为不存在，那它肯定是不存在
+         * 假如判断为存在，也有可能不存在！所以要进一步结合数据库的黑名单表判断
+         */
+        long start = System.currentTimeMillis();
+        boolean b = redisBlackListDemoService.includeByBloomFilter(UUID.randomUUID().toString());
+        LOGGER.info("耗时：{}ms", System.currentTimeMillis() - start);
         return b;
     }
 

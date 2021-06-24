@@ -4,6 +4,8 @@ import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/spring-redis")
 @RestController
 public class SpringRedisDemocontroller {
+
+    public final static Logger LOGGER = LoggerFactory.getLogger(SpringRedisDemocontroller.class);
 
     private final String HASH_KEY = "kunghsu.hash";
 
@@ -169,6 +174,28 @@ public class SpringRedisDemocontroller {
         return ResultVo.valueOfSuccess(res);
     }
 
+    @RequestMapping(value = "/testSetAdd", method = RequestMethod.GET)
+    public ResultVo testSetAdd(HttpServletRequest request){
 
+        for (int i = 0; i < (10000*50); i++) {
+            redisTemplateHelper.sSet("spring-redis-demo-testSetAdd", UUID.randomUUID().toString());
+        }
+//        Object res = redisTemplateHelper.get("spring-redis-demo-testString");
+
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @RequestMapping(value = "/testSetGet", method = RequestMethod.GET)
+    public ResultVo testSetGet(HttpServletRequest request){
+
+        long start = System.currentTimeMillis();
+        /**
+         * 从一个100万大小的set中判断某个元素是否存在，耗时多少？
+         */
+        boolean res = redisTemplateHelper.sHasKey("spring-redis-demo-testSetAdd", UUID.randomUUID().toString());
+        LOGGER.info("耗时：{}ms", System.currentTimeMillis() - start);
+
+        return ResultVo.valueOfSuccess("");
+    }
 
 }

@@ -1,5 +1,8 @@
 package cn.com.kun.component.configload;
 
+import cn.com.kun.common.utils.ThreadUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
@@ -13,10 +16,12 @@ import org.springframework.core.env.Environment;
  * * 2）对设置为lastSource，表示"当用户没有通过yml"配置选项时的默认值--担保策略。**/
 public class MyResourceLoaderInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
+    public final static Logger LOGGER = LoggerFactory.getLogger(MyResourceLoaderInitializer.class);
+
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
 
-        System.out.println("进入cn.com.kun.common.configload.MyResourceLoaderInitializer.initialize");
+        LOGGER.info(ThreadUtils.getCurrentInvokeClassAndMethod());
         //获取运行时环境
         Environment environment = applicationContext.getEnvironment();
         String configPath = environment.getProperty("CONF_PATH");

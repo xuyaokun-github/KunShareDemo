@@ -22,7 +22,7 @@ public class RedisBloomFilter {
         Preconditions.checkArgument(bloomFilterHelper != null ,"bloomFilterHelper 不能为空");
         int[] offset = bloomFilterHelper.murmurHashOffset(value);
         for (int i : offset){
-            System.out.println("key: "+ key + " "+"value :"+i);
+//            System.out.println("key: "+ key + " "+"value :"+i);
             redisTemplate.opsForValue().setBit(key, i ,true);
         }
     }

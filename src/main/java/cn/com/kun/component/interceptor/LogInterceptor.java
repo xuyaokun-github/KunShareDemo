@@ -17,7 +17,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
 
         long startTime = System.currentTimeMillis();
-        logger.info("\n-------- LogInterceptor.preHandle --- Request URL: {} Start Time: ",
+        logger.info("\n-------- LogInterceptor.preHandle --- Request URL: {} Start Time: {}",
                 request.getRequestURL(), System.currentTimeMillis());
         request.setAttribute("startTime", startTime);
 
