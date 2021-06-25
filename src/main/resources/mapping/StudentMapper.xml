@@ -8,8 +8,9 @@
     </insert>
 
     <update id="update" parameterType="Student">
-        UPDATE tbl_student SET id_card=#{idCard},student_name=#{studentName},address=#{address}
-        WHERE student_name=#{studentName}
+        UPDATE tbl_student
+        SET id_card=#{idCard},student_name=#{studentName},address=#{address}
+        WHERE id=#{id}
     </update>
 
     <select id="query" parameterType="java.util.Map" resultType="Student">
@@ -31,4 +32,30 @@
             AND a.address = #{address}
         </if>
     </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+            id,
+            id_card,
+            student_name,
+            address,
+            create_time
+        </trim>
+    </sql>
+
+    <select id="getStudentById" parameterType="long" resultType="Student">
+        SELECT
+        <include refid="allResult"></include>
+        FROM
+        tbl_student a
+        WHERE 1=1
+        <if test="id!=null">
+            AND a.id = #{id}
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM tbl_student WHERE id=#{id}
+    </delete>
+
 </mapper>

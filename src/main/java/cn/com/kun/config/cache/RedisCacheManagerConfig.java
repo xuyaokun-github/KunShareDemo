@@ -1,5 +1,6 @@
-package cn.com.kun.springframework.cache.rediscache;
+package cn.com.kun.config.cache;
 
+import cn.com.kun.common.enums.RedisCacheConfigurantionsEnum;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,13 @@ import java.util.Map;
 @Configuration
 public class RedisCacheManagerConfig {
 
+    /**
+     * 为了区分开各个微服务写的内容
+     * 因为有些项目组是多个微服务共用一个redis
+     */
+    private final String COMMON_PREFIX = "KungShare-RedisCacheManager:";
+
+
     @Primary
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -44,15 +52,8 @@ public class RedisCacheManagerConfig {
                 .prefixKeysWith("RedisCacheManager-Default-")//设置key前缀
                 .entryTtl(Duration.ofDays(1));//设置Redis缓存有效期为1天
 
-        /**
-         * 可以定义专门给某个服务层用的配置，例如下面这个配置，只给userservice使用
-         */
-        RedisCacheConfiguration userServiceRedisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer()))
-                .prefixKeysWith("RedisCacheManager-user-")//设置key前缀
-                .entryTtl(Duration.ofDays(1));//设置Redis缓存有效期为1天
         Map<String, RedisCacheConfiguration> initialCacheConfigurations = new HashMap<>();
-        initialCacheConfigurations.put("user-service", userServiceRedisCacheConfiguration);
+        addCacheConfigurations(initialCacheConfigurations);
         /**
          * 注意，创建RedisCacheManager有多个重载的方法
          * org.springframework.data.redis.cache.RedisCacheManager#RedisCacheManager(
@@ -62,6 +63,17 @@ public class RedisCacheManagerConfig {
          * 然后在注解使用时，指定这个缓存管理器的名字
          */
         return new RedisCacheManager(redisCacheWriter, redisCacheConfiguration, initialCacheConfigurations);
+    }
+
+    private void addCacheConfigurations(Map<String, RedisCacheConfiguration> initialCacheConfigurations) {
+
+        //遍历枚举类，放入initialCacheConfigurations
+        for(RedisCacheConfigurantionsEnum configurantionsEnum : RedisCacheConfigurantionsEnum.values()) {
+            RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                    .prefixKeysWith(COMMON_PREFIX + configurantionsEnum.getPrefixKey())//设置key前缀
+                    .entryTtl(configurantionsEnum.getEntryTtl());//设置Redis缓存有效期
+            initialCacheConfigurations.put(configurantionsEnum.getConfigName(), redisCacheConfiguration);
+        }
     }
 
     /**

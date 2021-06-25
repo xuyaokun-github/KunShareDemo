@@ -1,6 +1,5 @@
 package cn.com.kun.springframework.springredis.controller;
 
-import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
@@ -165,12 +164,20 @@ public class SpringRedisDemocontroller {
     @RequestMapping(value = "/testString", method = RequestMethod.GET)
     public ResultVo testString(HttpServletRequest request){
 
-        User user = new User();
-        user.setUsername("kunghsu");
-        redisTemplateHelper.set("spring-redis-demo-testString", user, 6000);
-
+//        User user = new User();
+//        user.setUsername("kunghsu");
+//        redisTemplateHelper.set("spring-redis-demo-testString", user, 6000);
+//
         Object res = redisTemplateHelper.get("spring-redis-demo-testString");
 
+        //下面的代码在低版本jedis包中会有问题，不能存太大的值
+        // (这个问题已经在高版本修复)
+        long time = 2147483647999999L;
+        LOGGER.info("long值：{}", time);
+        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", time, TimeUnit.MILLISECONDS);
+//        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", time/1000, TimeUnit.SECONDS);
+//        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", (time/1000)/60, TimeUnit.MINUTES);
+//
         return ResultVo.valueOfSuccess(res);
     }
 

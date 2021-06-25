@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.cache.caffeinecache;
+package cn.com.kun.config.cache;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;

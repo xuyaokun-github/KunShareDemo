@@ -1,16 +1,10 @@
-package cn.com.kun.bean.entity;
+package cn.com.kun.bean.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-/**
- * 模拟学生表为大表，上亿的表(进行按证件号分表)
- *
- * Created by xuyaokun On 2020/11/5 22:29
- * @desc:
- */
-public class Student {
+public class StudentReqVO {
 
     private Long id;//主键，将用雪花算法生成
 
