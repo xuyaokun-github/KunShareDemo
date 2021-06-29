@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.cache;
+package cn.com.kun.config.cache;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;

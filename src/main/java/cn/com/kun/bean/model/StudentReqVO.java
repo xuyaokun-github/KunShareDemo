@@ -8,7 +8,7 @@ public class StudentReqVO {
 
     private Long id;//主键，将用雪花算法生成
 
-    private String idCard;//身份证号（本例为了简单，用求余数的方法分表）
+    private String idCard;//身份证号
 
     private String studentName;
 

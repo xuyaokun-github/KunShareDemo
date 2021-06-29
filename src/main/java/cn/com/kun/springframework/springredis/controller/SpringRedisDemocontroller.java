@@ -2,6 +2,7 @@ package cn.com.kun.springframework.springredis.controller;
 
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,7 +169,7 @@ public class SpringRedisDemocontroller {
 //        user.setUsername("kunghsu");
 //        redisTemplateHelper.set("spring-redis-demo-testString", user, 6000);
 //
-        Object res = redisTemplateHelper.get("spring-redis-demo-testString");
+//        Object res = redisTemplateHelper.get("spring-redis-demo-testString");
 
         //下面的代码在低版本jedis包中会有问题，不能存太大的值
         // (这个问题已经在高版本修复)
@@ -177,7 +178,11 @@ public class SpringRedisDemocontroller {
         redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", time, TimeUnit.MILLISECONDS);
 //        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", time/1000, TimeUnit.SECONDS);
 //        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", (time/1000)/60, TimeUnit.MINUTES);
-//
+
+        MemoryCacheNoticeMsg noticeMsg = new MemoryCacheNoticeMsg();
+        redisTemplateHelper.set("noticeMsg", "kunghsu");
+        String res = (String) redisTemplateHelper.get("noticeMsg");
+        LOGGER.info("===========res：{}", res);
         return ResultVo.valueOfSuccess(res);
     }
 

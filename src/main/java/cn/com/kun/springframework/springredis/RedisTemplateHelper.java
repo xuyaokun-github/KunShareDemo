@@ -541,4 +541,13 @@ public class RedisTemplateHelper {
         }
     }
 
+    /**
+     * 发送主题消息
+     * @param channelTopicName
+     * @param msg
+     */
+    public void sendChannelTopicMsg(String channelTopicName, Object msg){
+        redisTemplate.convertAndSend(channelTopicName, msg);
+    }
+
 }

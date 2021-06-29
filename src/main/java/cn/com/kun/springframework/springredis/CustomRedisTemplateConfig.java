@@ -25,7 +25,8 @@ public class CustomRedisTemplateConfig {
     @Bean
     public RedisSerializer<Object> redisValueSerializer() {
         //RedisSerializer.json()也可以
-        return new GenericJackson2JsonRedisSerializer();
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+        return serializer;
     }
 
 
