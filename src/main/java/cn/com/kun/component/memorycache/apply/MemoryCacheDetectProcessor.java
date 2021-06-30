@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
@@ -37,8 +36,7 @@ public class MemoryCacheDetectProcessor {
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;
 
-    @Value("${kunsharedemo.sleepTime:60000}")
-    private long sleepTime;
+    private long sleepTime = 1000L;
 
     private int heartBeatCount = 0;
 
@@ -49,6 +47,7 @@ public class MemoryCacheDetectProcessor {
 
     @PostConstruct
     public void init(){
+        sleepTime = memoryCacheProperties.getDetectThreadSleepTime();
         new Thread(()->{
             doCheck();
         }, "").start();
@@ -68,8 +67,10 @@ public class MemoryCacheDetectProcessor {
 
     }
 
+    /**
+     * 记录心跳日志
+     */
     private void logHeartBeat() {
-
         heartBeatCount++;
         if (heartBeatCount == 5){
             LOGGER.info("MemoryCacheDetectProcessor working...");
@@ -96,10 +97,10 @@ public class MemoryCacheDetectProcessor {
                     //清缓存
                     cacheManager.getCache(configName).clear();
                     timeMillisMap.put(configName, lastUpdateTime);
-                    LOGGER.debug("本次清空缓存管理器{}", configName);
+                    LOGGER.info("本次清空缓存管理器{},更新时间戳为：{}", configName, lastUpdateTime);
                 } else {
                     //未发生变更
-                    LOGGER.debug("缓存管理器{}未发生变更", configName);
+//                    LOGGER.debug("缓存管理器{}未发生变更", configName);
                 }
             }
         }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "memorycache")
 public class MemoryCacheProperties {
 
+    private long detectThreadSleepTime;
+
     /**
      * 全局开关
      * 设置为false,禁用MemoryCache功能
@@ -19,5 +21,13 @@ public class MemoryCacheProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public long getDetectThreadSleepTime() {
+        return detectThreadSleepTime;
+    }
+
+    public void setDetectThreadSleepTime(long detectThreadSleepTime) {
+        this.detectThreadSleepTime = detectThreadSleepTime;
     }
 }
