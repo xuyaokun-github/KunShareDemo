@@ -1,4 +1,4 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.common.annotation;
 
 import java.lang.annotation.*;
 

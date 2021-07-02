@@ -1,11 +1,17 @@
 package cn.com.kun.springframework.springcloud.zuul.controller;
 
+import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.component.ratelimiter.RateLimit;
+import cn.com.kun.springframework.springcloud.zuul.service.ZuulDemoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +26,13 @@ import java.util.Map;
 @RestController
 public class ZuulDemoController {
 
+    public final static Logger LOGGER = LoggerFactory.getLogger(ZuulDemoController.class);
+
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ZuulDemoService zuulDemoService;
 
 
     @RequestMapping("/testZuul")
@@ -77,6 +88,34 @@ public class ZuulDemoController {
             map.add(key, value);
         }
         return map;
+    }
+
+
+    @RequestMapping("/invokeBatch")
+    public ResultVo invokeBatch(){
+
+        String[] channelArr = new String[]{"","",""};
+
+        for (int i = 0; i < 500; i++) {
+            try {
+                zuulDemoService.invoke(null, "DX");
+            }catch (Exception e){
+                LOGGER.error("出现异常{}", e.getClass().getTypeName());
+            }
+        }
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 验证向前限流效果
+     * @return
+     */
+    @RateLimit(mode = "forward", controllerName = "ZuulDemoController")
+    @GetMapping("/testRateLimit")
+    public ResultVo testRateLimit(){
+
+
+        return ResultVo.valueOfSuccess();
     }
 
 }

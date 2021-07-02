@@ -1,5 +1,8 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.component.ratelimiter;
 
+import cn.com.kun.common.exception.RateLimitException;
+import com.google.common.util.concurrent.RateLimiter;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -14,11 +17,13 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
 
 /**
- * EvictCacheNotice注解对应的处理切面
+ * RateLimit注解对应的处理切面
  *
  * author:xuyaokun_kzx
  * date:2021/6/29
@@ -26,9 +31,9 @@ import java.lang.reflect.Method;
 */
 @Component
 @Aspect
-public class EvictCacheNoticeAspect {
+public class RateLimitAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(EvictCacheNoticeAspect.class);
+    public final static Logger LOGGER = LoggerFactory.getLogger(RateLimitAspect.class);
 
     /**
      * 用于SpEL表达式解析.
@@ -40,9 +45,9 @@ public class EvictCacheNoticeAspect {
     private DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
 
     @Autowired
-    private MemoryCacheNoticeProcessor memoryCacheNoticeProcessor;
+    private RateLimiterHolder rateLimiterHolder;
 
-    @Pointcut("@annotation(cn.com.kun.component.memorycache.maintain.EvictCacheNotice)")
+    @Pointcut("@annotation(cn.com.kun.component.ratelimiter.RateLimit)")
     public void pointCut(){
 
     }
@@ -53,19 +58,41 @@ public class EvictCacheNoticeAspect {
         // 通过joinPoint获取被注解方法
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
-//        Class<?> targetCls = joinPoint.getTarget().getClass();
-//        Method method = targetCls.getDeclaredMethod(methodSignature.getName(), methodSignature.getParameterTypes());
-        // 获取方法上的EvictCacheNotice注解对象
-        EvictCacheNotice evictCacheNotice = method.getAnnotation(EvictCacheNotice.class);
-        Object keyObj = generateKeyBySpEL(evictCacheNotice.key(), joinPoint);
-        LOGGER.info("解析SpEL表达式得到的源对象：{}", keyObj);
-//        Object[] args = joinPoint.getArgs();
-        //需要刷新的业务缓存管理器名字，一般每个业务层专用一个缓存管理器
-        String configName = evictCacheNotice.configName();
-        String key = keyObj.toString();//要刷新的key名
-        //发送清缓存通知
-        memoryCacheNoticeProcessor.notice(configName, key);
-        LOGGER.info("发送清除内存缓存通知结束");
+        RateLimit rateLimit = method.getAnnotation(RateLimit.class);
+
+        if (rateLimit.mode().equals("forward")){
+            //向前限流
+            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            String uri = servletRequestAttributes.getRequest().getRequestURI();
+            String controllerName = rateLimit.controllerName();
+//            RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+//            GetMapping getMapping = method.getAnnotation(GetMapping.class);
+            RateLimiter rateLimiter = rateLimiterHolder.chooseForwardRateLimiter(controllerName, uri);
+            if (rateLimiter != null && !rateLimiter.tryAcquire()){
+                LOGGER.info("触发限流，uri：{}", uri);
+                throw new RateLimitException("777777", "触发限流，请稍后重试");
+            }
+        }else {
+            //向后限流
+            String bizSceneName = null;
+            String itemName = null;
+            if (StringUtils.isNotEmpty(rateLimit.key())){
+                Object keyObj = generateKeyBySpEL(rateLimit.key(), joinPoint);
+                LOGGER.info("解析SpEL表达式得到的源对象：{}", keyObj);
+                bizSceneName = rateLimit.bizSceneName();
+                itemName = keyObj.toString();
+            }
+
+            RateLimiter rateLimiter = rateLimiterHolder.chooseBackwardRateLimiter(bizSceneName, itemName);
+            if (rateLimiter != null && !rateLimiter.tryAcquire()){
+                //触发限流
+                LOGGER.info("触发限流，方法名：{}", methodSignature.getName());
+                throw new RateLimitException("777777", "触发限流，请稍后重试");
+            }else {
+
+            }
+        }
+
     }
 
     /**

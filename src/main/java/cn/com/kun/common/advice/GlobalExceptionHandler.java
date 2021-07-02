@@ -1,6 +1,7 @@
 package cn.com.kun.common.advice;
 
 import cn.com.kun.common.exception.BizException;
+import cn.com.kun.common.exception.RateLimitException;
 import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,19 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResultVo bizExceptionHandler(HttpServletRequest req, BizException e){
         logger.error("发生业务异常！原因是：{}",e.getErrorMsg());
+        return ResultVo.error(e.getErrorCode(), e.getErrorMsg());
+    }
+
+    /**
+     * 处理自定义的业务异常
+     * @param req
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = RateLimitException.class)
+    @ResponseBody
+    public ResultVo rateLimitExceptionHandler(HttpServletRequest req, RateLimitException e){
+        logger.error("发生限流异常！原因是：{}", e.getErrorMsg());
         return ResultVo.error(e.getErrorCode(), e.getErrorMsg());
     }
 
