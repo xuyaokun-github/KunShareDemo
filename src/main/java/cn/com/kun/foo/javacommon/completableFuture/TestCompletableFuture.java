@@ -1,4 +1,4 @@
-package cn.com.kun.foo.completableFuture;
+package cn.com.kun.foo.javacommon.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

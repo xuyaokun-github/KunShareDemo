@@ -1,4 +1,4 @@
-package cn.com.kun.foo.io.aio;
+package cn.com.kun.foo.javacommon.io.aio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

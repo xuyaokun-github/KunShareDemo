@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.hystrix.config;
+package cn.com.kun.config;
 
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Configuration;

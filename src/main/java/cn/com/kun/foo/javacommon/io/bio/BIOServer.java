@@ -1,4 +1,4 @@
-package cn.com.kun.foo.io.bio;
+package cn.com.kun.foo.javacommon.io.bio;
 
 import java.io.IOException;
 import java.io.InputStream;

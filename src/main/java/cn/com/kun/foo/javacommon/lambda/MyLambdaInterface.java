@@ -1,4 +1,4 @@
-package cn.com.kun.foo.lambda;
+package cn.com.kun.foo.javacommon.lambda;
 
 @FunctionalInterface
 public interface MyLambdaInterface {

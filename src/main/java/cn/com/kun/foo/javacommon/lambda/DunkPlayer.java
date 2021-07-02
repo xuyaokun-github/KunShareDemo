@@ -1,4 +1,4 @@
-package cn.com.kun.foo.lambda;
+package cn.com.kun.foo.javacommon.lambda;
 
 public class DunkPlayer {
 

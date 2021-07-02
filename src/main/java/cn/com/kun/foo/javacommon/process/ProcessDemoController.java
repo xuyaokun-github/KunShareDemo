@@ -1,4 +1,4 @@
-package cn.com.kun.foo.process;
+package cn.com.kun.foo.javacommon.process;
 
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.common.utils.ProcessUtil;

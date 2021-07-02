@@ -1,5 +1,7 @@
 package cn.com.kun.foo;
 
+import cn.com.kun.common.utils.JacksonUtils;
+
 import java.math.BigDecimal;
 
 public class TestHello {
@@ -7,10 +9,10 @@ public class TestHello {
     private static final String aaa = "aaa";
 
    public static void main(String[] args) {
-       for (int i = 0; i < 10; i++) {
-           long l = Long.parseLong("ABCDEF", 16);
-           System.out.println(l);
-       }
+
+       String sourceStr = "kunghsu";
+       String str = JacksonUtils.toJSONString(sourceStr);
+       System.out.println(str);
    }
 
     private static long getPercent(long count, long total) {

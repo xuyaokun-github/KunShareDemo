@@ -1,4 +1,4 @@
-package cn.com.kun.foo.jpa;
+package cn.com.kun.springframework.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
