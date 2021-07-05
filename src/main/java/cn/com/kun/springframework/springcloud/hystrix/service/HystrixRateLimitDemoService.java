@@ -75,20 +75,27 @@ public class HystrixRateLimitDemoService {
     @HystrixRateLimitExtend(bizSceneName="sendmsg", key = "#sendChannel")
     @HystrixCommand(
             commandProperties = {
-                    @HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE"), // 信号量隔离，因为业务方法用了ThreadLocal
+                    @HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE"), // 信号量隔离（用了ThreadLocal最好用信号量）
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000"), //超时时间
                     //限流配置
                     @HystrixProperty(name = "execution.isolation.semaphore.maxConcurrentRequests", value="30"),// 单机最高并发
                     @HystrixProperty(name = "fallback.isolation.semaphore.maxConcurrentRequests", value="200")// fallback单机最高并发
             },
             fallbackMethod = "fallbackMethod"//指定降级方法，在熔断和异常时会走降级方法
+//            ,
+//            threadPoolProperties = {
+                    //并发，缺省为10
+//                    @HystrixProperty(name = "coreSize", value = "10"),
+//                    @HystrixProperty(name = "maxQueueSize", value = "1")
+//            }
     )
     public ResultVo method2(Map<String, String> paramMap, String sendChannel){
 
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         /**
          * 怎么根据发送渠道，结合@HystrixCommand配置不同的限流值？
