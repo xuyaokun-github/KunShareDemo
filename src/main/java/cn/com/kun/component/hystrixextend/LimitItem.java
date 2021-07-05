@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.hystrix.hystrixExtend;
+package cn.com.kun.component.hystrixextend;
 
 public class LimitItem {
 

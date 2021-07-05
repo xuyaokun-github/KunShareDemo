@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.hystrix.hystrixExtend;
+package cn.com.kun.component.hystrixextend;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

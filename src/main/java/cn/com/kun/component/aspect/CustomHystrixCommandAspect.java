@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.hystrix.hystrixExtend;
+package cn.com.kun.component.aspect;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;

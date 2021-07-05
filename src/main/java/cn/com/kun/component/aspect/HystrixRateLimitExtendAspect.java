@@ -1,5 +1,6 @@
-package cn.com.kun.springframework.springcloud.hystrix.hystrixExtend;
+package cn.com.kun.component.aspect;
 
+import cn.com.kun.common.annotation.HystrixRateLimitExtend;
 import cn.com.kun.component.spel.SpELHelper;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
+import cn.com.kun.component.hystrixextend.HystrixRateLimitValueHolder;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,7 +46,7 @@ public class HystrixRateLimitExtendAspect {
     @Autowired
     private HystrixRateLimitValueHolder hystrixRateLimitValueHolder;
 
-    @Pointcut("@annotation(cn.com.kun.springframework.springcloud.hystrix.hystrixExtend.HystrixRateLimitExtend)")
+    @Pointcut("@annotation(cn.com.kun.common.annotation.HystrixRateLimitExtend)")
     public void pointCut() {
 
     }
