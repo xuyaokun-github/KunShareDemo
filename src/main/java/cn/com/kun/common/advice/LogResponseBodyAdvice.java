@@ -30,7 +30,7 @@ public class LogResponseBodyAdvice implements ResponseBodyAdvice {
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         Method method=methodParameter.getMethod();
         String url=serverHttpRequest.getURI().toASCIIString();
-        logger.info("{}.{},url={},result={}", method.getDeclaringClass().getSimpleName(),
+        logger.info("{}.{},url:{},result:{}", method.getDeclaringClass().getSimpleName(),
                 method.getName(), url, JSON.toJSONString(o));
         return o;
     }

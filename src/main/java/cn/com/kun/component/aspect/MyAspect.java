@@ -6,12 +6,11 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-@Component
-@Aspect//假如了这个注解，就相当于定义一个切面类，但是前提是该类也被定义为bean
+//@Component
+//@Aspect//假如了这个注解，就相当于定义一个切面类，但是前提是该类也被定义为bean
 public class MyAspect {
 
     public final static Logger logger = LoggerFactory.getLogger(SecretResponseBodyAdvice.class);

@@ -3,10 +3,12 @@ package cn.com.kun.controller;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.springframework.core.aop.SpringAopDemoService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,12 @@ public class SpringDemoController {
 
     @Autowired
     private SpringContextUtil springContextUtil;
+
+    @Autowired
+    private SpringAopDemoService springAopDemoService;
+
+    @Value("${nbaplay.level}")
+    private String nbaplayLevel;
 
     @PostConstruct
     public void init() throws IOException {
@@ -69,4 +77,12 @@ public class SpringDemoController {
         userList.add(user);
         return ResultVo.valueOfSuccess(userList);
     }
+
+    @GetMapping("/testAop")
+    public ResultVo testAop(){
+
+        springAopDemoService.method();
+        return ResultVo.valueOfSuccess(null);
+    }
+
 }

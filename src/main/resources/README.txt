@@ -24,3 +24,6 @@ clean deploy -Dmaven.test.skip=true
 8.集成xxl-job
 admin调度中心用8061端口
 http://localhost:8061/xxl-job-admin
+
+9.整合配置中心
+http://localhost:8097/kunshare-config-server/kunsharedemo/dev/master
