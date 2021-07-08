@@ -16,16 +16,6 @@ public class CustomSpringCloudTaskConfig {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner2() {
-        return new HelloWorldCommandLineRunner();
-    }
-
-    @Bean
-    public CommandLineRunner commandLineRunner3() {
-        return new HelloWorldCommandLineRunner();
-    }
-
-    @Bean
     public CommandLineRunner secondCommandLineRunner() {
         return new SecondCommandLineRunner();
     }

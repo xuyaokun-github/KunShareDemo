@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.kun.mapper.PessimisticLockMapper">
+
+
+    <select id="acquireLock" parameterType="java.util.Map" resultType="PessimisticLockDO">
+        SELECT
+        a.id id,
+        a.resource resource,
+        a.description description
+        FROM
+        tbl_pessimistic_lock a force index(uiq_idx_resource)
+        WHERE 1=1
+        <if test="resource!=null and resource!=''">
+            AND a.resource = #{resource}
+        </if>
+        for update
+    </select>
+
+</mapper>

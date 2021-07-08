@@ -1,9 +1,12 @@
 package cn.com.kun.springframework.cache.demo;
 
+import cn.com.kun.bean.entity.Student;
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.bean.model.StudentResVO;
+import cn.com.kun.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
@@ -15,19 +18,27 @@ import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACH
 
 
 @Service
-public class MemoryCacheDemoStudentService {
+public class MemoryCacheApplyAppStudentService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheDemoStudentService.class);
+    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheApplyAppStudentService.class);
 
     @Autowired
     @Qualifier("caffeineCacheManager")
     private CacheManager cacheManager;
 
+    @Autowired
+    StudentMapper studentMapper;
+
+    /**
+     * 模拟缓存的应用方
+     * @param reqVO
+     * @return
+     */
     @Cacheable(value = MEMORY_CACHE_CONFIG_NAME_STUDENT, key = "#reqVO.id.toString()", cacheManager = "caffeineCacheManager")
     public StudentResVO queryStudent(StudentReqVO reqVO) {
 
         /**
-         * 具体的获取逻辑可以是查库，可以是调接口，可以是查redis
+         * 具体的获取逻辑可以是查数据库，可以是调接口，可以是查redis
          * 无论是哪种方式，最终的作用就是取数
          *
          * 具体情况分析
@@ -37,8 +48,12 @@ public class MemoryCacheDemoStudentService {
          * 这个入口可以是基于redis广播刷新，也可以是异步判断时间戳进行更新！
          */
         LOGGER.info("开始调接口获取Student信息");
+//        StudentResVO studentResVO = new StudentResVO();
+//        studentResVO.setStudentName("tmac");
+
+        Student student = studentMapper.getStudentById(reqVO.getId());
         StudentResVO studentResVO = new StudentResVO();
-        studentResVO.setStudentName("tmac");
+        BeanUtils.copyProperties(student, studentResVO);
         return studentResVO;
     }
 
@@ -65,7 +80,7 @@ public class MemoryCacheDemoStudentService {
     }
 
     /**
-     * 本服务主动清除内存h缓存
+     * 本服务主动清除内存缓存
      * @param reqVO
      * @return
      */
@@ -75,9 +90,12 @@ public class MemoryCacheDemoStudentService {
         /**
          */
         LOGGER.info("开始调接口更新Student信息");
-        StudentResVO studentResVO = new StudentResVO();
-        studentResVO.setStudentName("tmac");
-        return 1;
+//        StudentResVO studentResVO = new StudentResVO();
+//        studentResVO.setStudentName("tmac");
+
+        Student student = new Student();
+        BeanUtils.copyProperties(reqVO, student);
+        return studentMapper.update(student);
     }
 
 

@@ -67,4 +67,8 @@
         DELETE FROM tbl_user WHERE firstname=#{firstname}
     </delete>
 
+    <select id="findAllStream" resultType="User" fetchSize="2">
+        select * from tbl_user
+    </select>
+
 </mapper>

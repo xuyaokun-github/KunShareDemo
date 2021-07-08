@@ -3,6 +3,8 @@ package cn.com.kun.springframework.cache.demo;
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.common.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 */
 @RequestMapping("/memory-other")
 @RestController
-public class MemCacheOtherAppController {
+public class MemCacheMaintainAppController {
 
     /**
      * cglib代理
      */
     @Autowired
-    MemCacheOtherAppService memCacheOtherAppService;
+    MemCacheMaintainAppService memCacheMaintainAppService;
 
     /**
      * JDK代理
@@ -33,14 +35,18 @@ public class MemCacheOtherAppController {
     /**
      * http://localhost:8080/kunsharedemo/memory-other/update?id=10
      * 修改ID为10的学生信息
+     * {
+     *         "id": 10,
+     *         "idCard": null,
+     *         "studentName": "1234561625711319304",
+     *         "address": "sz"
+     *     }
      * @return
      */
-    @RequestMapping("/update")
-    public ResultVo<Integer> update(Long id){
+    @PostMapping("/update")
+    public ResultVo<Integer> update(@RequestBody StudentReqVO reqVO){
 
-        StudentReqVO reqVO = new StudentReqVO();
-        reqVO.setId(id);
-        Integer res = memCacheDemoService.updateStudent(reqVO);
+        Integer res = memCacheMaintainAppService.updateStudent(reqVO);
         return ResultVo.valueOfSuccess(res);
     }
 

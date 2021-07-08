@@ -29,7 +29,7 @@ public class MemoryCacheNoticeListener implements MessageListener {
     private CacheManager cacheManager;
 
     @Autowired
-    private MemoryCacheDetectProcessor memoryCacheDetectProcessor;
+    private MemoryCacheRedisDetector memoryCacheRedisDetector;
 
     //监听方法，一收到消息，就会触发这个方法
     @Override
@@ -43,9 +43,9 @@ public class MemoryCacheNoticeListener implements MessageListener {
                 MemoryCacheNoticeMsg noticeMsg = JacksonUtils.toJavaObject(msg, MemoryCacheNoticeMsg.class);
                 LOGGER.info("收到的消息：{}", JacksonUtils.toJSONString(noticeMsg));
                 //开始清内存缓存
-                cacheManager.getCache(noticeMsg.getConfigName()).evict(noticeMsg.getKey());
+                cacheManager.getCache(noticeMsg.getConfigName()).evict(noticeMsg.getBizKey());
                 //更新时间戳
-                memoryCacheDetectProcessor.updateTimemillis(noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
+                memoryCacheRedisDetector.updateTimemillis(noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

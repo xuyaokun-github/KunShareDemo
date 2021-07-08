@@ -2,9 +2,12 @@ package cn.com.kun.component.memorycache.maintain;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
+import cn.com.kun.component.memorycache.MemoryCacheProperties;
+import cn.com.kun.mapper.MemoryCacheNoticeMapper;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,18 +30,48 @@ public class MemoryCacheNoticeProcessor {
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;
 
+    @Autowired
+    private MemoryCacheProperties memoryCacheProperties;
+
+    @Autowired
+    private MemoryCacheNoticeMapper memoryCacheNoticeMapper;
+
     /**
-     * 发送通知
+     * 发送通知至广播队列
      * @param configName
      * @param key
      */
     public void notice(String configName, String key){
 
+        String updateTimemillis = String.valueOf(System.currentTimeMillis());
         //封装对象，发送至redis广播
         MemoryCacheNoticeMsg noticeMsg = new MemoryCacheNoticeMsg();
         noticeMsg.setConfigName(configName);
-        noticeMsg.setKey(key);
-        noticeMsg.setUpdateTimemillis(String.valueOf(System.currentTimeMillis()));
+        noticeMsg.setBizKey(key);
+        noticeMsg.setUpdateTimemillis(updateTimemillis);
+
+        if (memoryCacheProperties.isMultiRedis()){
+            /*
+                是否存在多套redis
+                假如是无法通过广播通知所有集群，只能把记录先写入到数据库，由集群自行异步获取通知
+             */
+            //获取集群列表（后续可以考虑实现自动发现集群列表）
+            memoryCacheProperties.getClusterList().forEach(clusterName -> {
+                MemoryCacheNoticeDO noticeMsgDO = new MemoryCacheNoticeDO();
+                BeanUtils.copyProperties(noticeMsg, noticeMsgDO);
+                noticeMsgDO.setClusterName(clusterName);
+                //存DB
+                memoryCacheNoticeMapper.save(noticeMsgDO);
+            });
+
+        }else {
+            //假如只有单redis集群，直接发送到redis即可
+            sendNoticeToRedis(noticeMsg);
+        }
+
+    }
+
+    public void sendNoticeToRedis(MemoryCacheNoticeMsg noticeMsg){
         //这里发送消息，由使用内存缓存的服务负责接收，收到就立刻清缓存
         String msg = JacksonUtils.toJSONString(noticeMsg);
         LOGGER.info("通知报文：{}", msg);
@@ -50,8 +83,7 @@ public class MemoryCacheNoticeProcessor {
          * 没关系，只要检测线程判断到值不存在，就会重新放入
          */
         //更新redis中的时间戳
-        long curTime = System.currentTimeMillis();
-        redisTemplateHelper.hset(NOTICE_TIMEMILLIS_HASH_KEYNAME, configName, String.valueOf(curTime));
+        redisTemplateHelper.hset(NOTICE_TIMEMILLIS_HASH_KEYNAME, noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
         /**
          * 假如这里精确到key级别的时间戳，是否合适？
          * 那在使用了内存缓存的服务端就需要针对key级别来判断时间，简单点就是遍历整个map，然后判断哪个时间戳过期了，然后就驱逐这个key
@@ -61,7 +93,6 @@ public class MemoryCacheNoticeProcessor {
          * 但假如更新操作不是特别频繁的场景，其实只精确到configName级别已经是够用了
          *
          */
-
     }
 
 }

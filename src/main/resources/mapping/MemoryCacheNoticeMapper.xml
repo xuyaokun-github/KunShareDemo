@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.kun.mapper.MemoryCacheNoticeMapper">
+
+    <insert id="save" parameterType="MemoryCacheNoticeDO" >
+        INSERT INTO tbl_memory_cache_notice(config_name,biz_key,update_timemillis,cluster_name)
+        VALUES(#{configName},#{bizKey},#{updateTimemillis},#{clusterName})
+    </insert>
+
+    <select id="query" parameterType="String" resultType="MemoryCacheNoticeDO">
+        SELECT
+        a.id id,
+        a.config_name configName,
+        a.biz_key bizKey,
+        a.update_timemillis updateTimemillis,
+        a.cluster_name clusterName
+        FROM
+        tbl_memory_cache_notice a
+        WHERE 1=1
+        <if test="clusterName!=null and clusterName!=''">
+            AND a.cluster_name = #{clusterName}
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM tbl_memory_cache_notice WHERE id=#{id}
+    </delete>
+</mapper>

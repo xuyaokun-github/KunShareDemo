@@ -1,21 +1,24 @@
-package cn.com.kun.component.memorycache;
+package cn.com.kun.component.memorycache.maintain;
 
-import java.io.Serializable;
+public class MemoryCacheNoticeDO {
 
-/**
- * 内存缓存清除通知消息
- *
- * author:xuyaokun_kzx
- * date:2021/6/29
- * desc:
-*/
-public class MemoryCacheNoticeMsg implements Serializable {
+    private Long id;
 
     private String configName;
 
     private String bizKey;
 
     private String updateTimemillis;
+
+    private String clusterName;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getConfigName() {
         return configName;
@@ -39,5 +42,13 @@ public class MemoryCacheNoticeMsg implements Serializable {
 
     public void setUpdateTimemillis(String updateTimemillis) {
         this.updateTimemillis = updateTimemillis;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 }
