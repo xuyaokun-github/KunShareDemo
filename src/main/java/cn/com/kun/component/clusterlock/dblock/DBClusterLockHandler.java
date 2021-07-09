@@ -87,6 +87,8 @@ public class DBClusterLockHandler implements ClusterLockHandler {
                     //抢锁失败
                     LOGGER.info("抢锁失败，PessimisticLockDO为空，请检查数据库配置，是否存在该记录行。resource：{}, 当前线程{}",
                             resourceName, currentThreadName);
+                    throw new RuntimeException(String.format("抢锁失败，PessimisticLockDO为空，请检查数据库配置，是否存在该记录行。resource：%s, 当前线程%s",
+                            resourceName, currentThreadName));
                 }else {
                     //抢锁成功，跳出循环
 //                    addToThreadLocal(sqlSession);
@@ -103,6 +105,7 @@ public class DBClusterLockHandler implements ClusterLockHandler {
                     LOGGER.info("出现抢锁超时，继续下一次尝试抢锁。当前抢锁线程{}, 当前占有锁线程为：{}",
                             Thread.currentThread().getName(), acquireLockThreadName.get(resourceName));
                 }else {
+                    LOGGER.error("出现非抢锁异常", e);
                     //将异常返回到上层业务层，暴露错误
                     throw new RuntimeException("出现非抢锁异常！");
                 }
