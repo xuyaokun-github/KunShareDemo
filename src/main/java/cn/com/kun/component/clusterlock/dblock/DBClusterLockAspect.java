@@ -1,5 +1,6 @@
 package cn.com.kun.component.clusterlock.dblock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,6 +9,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -26,6 +28,9 @@ public class DBClusterLockAspect {
     @Autowired
     DBClusterLockHandler dbClusterLockHandler;
 
+    @Value("${dbclusterlock.clusterCode:}")
+    private String clusterCode;
+
     @Pointcut("@annotation(cn.com.kun.component.clusterlock.dblock.DBClusterLock)")
     public void pointCut(){
 
@@ -40,6 +45,11 @@ public class DBClusterLockAspect {
         DBClusterLock dbClusterLock = method.getAnnotation(DBClusterLock.class);
         //锁资源
         String resourceName = dbClusterLock.resourceName();
+        //是否拼接集群名称
+        boolean withClusterCode = dbClusterLock.withClusterCode();
+        if (withClusterCode && StringUtils.isEmpty(clusterCode)){
+            resourceName = clusterCode + ":" + resourceName;
+        }
         boolean isLock = dbClusterLockHandler.lockPessimistic(resourceName);
         if (!isLock){
             throw new RuntimeException("切面获取锁失败");
