@@ -5,17 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-
+import org.springframework.stereotype.Component;
 
 
 /**
- *
  * 消息生产者
  *
  * @author xuyaokun
  * @date 2020/3/16 11:44
  */
-//@Component
+@Component
 public class MyKafkaProducer {
 
     private static Logger logger = LoggerFactory.getLogger(MyKafkaProducer.class);
@@ -27,7 +26,7 @@ public class MyKafkaProducer {
     public void send() {
 
         for(int i=0;i<5;i++){
-            String message = "kunghsu msg................";
+            String message = "kunghsu msg................" + System.currentTimeMillis();
             logger.info("发送消息 ----->>>>>  message = {}", JSONObject.toJSONString(message));
             //主题是hello。这个主题，不需要存在，假如不存在，会进行创建。但是默认创建的分区只有一个
             kafkaTemplate.send("hello-topic", JSONObject.toJSONString(message));
