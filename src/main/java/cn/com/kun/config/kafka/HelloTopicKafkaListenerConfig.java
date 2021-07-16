@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 
@@ -18,7 +17,7 @@ import java.util.Optional;
  * @author xuyaokun
  * @date 2020/3/16 11:22
  */
-@Configuration
+//@Configuration
 public class HelloTopicKafkaListenerConfig {
 
     private static Logger LOGGER = LoggerFactory.getLogger(HelloTopicKafkaListenerConfig.class);

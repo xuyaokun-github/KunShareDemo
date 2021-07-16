@@ -14,10 +14,17 @@ public class KafkaDemoController {
     @Autowired
     MyKafkaProducer producer;
 
-    @RequestMapping("/send")
-    public String send(HttpServletRequest request){
+    @RequestMapping("/sendOne")
+    public String sendOne(HttpServletRequest request){
 
-        producer.send();
+        producer.sendOne();
+        return "kunghsu";
+    }
+
+    @RequestMapping("/sendBatch")
+    public String sendBatch(HttpServletRequest request){
+
+        producer.sendBatch();
         return "kunghsu";
     }
 
