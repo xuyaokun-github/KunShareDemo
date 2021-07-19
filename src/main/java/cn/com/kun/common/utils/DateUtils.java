@@ -1,5 +1,6 @@
 package cn.com.kun.common.utils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,11 @@ public class DateUtils {
         return date;
     }
 
+    public static String toStr(Date date, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(date);
+    }
+
     public static String now(){
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -39,4 +45,5 @@ public class DateUtils {
     public static void main(String[] args) {
         System.out.println(toDate("2021-06-01 14:07:02.100", "yyyy-MM-dd HH:mm:ss.SSS"));
     }
+
 }

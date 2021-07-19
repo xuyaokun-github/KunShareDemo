@@ -26,5 +26,4 @@ public interface UserMapper {
      * @return
      */
     Cursor<User> findAllStream();
-
 }

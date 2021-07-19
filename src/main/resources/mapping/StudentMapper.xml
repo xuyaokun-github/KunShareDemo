@@ -58,4 +58,16 @@
         DELETE FROM tbl_student WHERE id=#{id}
     </delete>
 
+    <select id="findStudentStreamByCondition" parameterType="java.util.Map" resultType="Student" fetchSize="50">
+        select * from tbl_student a
+        WHERE 1=1
+        <if test="createTime != null">
+            AND a.create_time >= #{createTime}
+        </if>
+        <if test="maxId!=null">
+            AND a.id > #{maxId}
+        </if>
+        order by create_time asc
+    </select>
+
 </mapper>

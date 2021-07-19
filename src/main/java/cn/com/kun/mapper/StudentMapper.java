@@ -3,6 +3,7 @@ package cn.com.kun.mapper;
 import cn.com.kun.bean.entity.Student;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,13 @@ public interface StudentMapper {
      * @return
      */
     int delete(@Param("id") Long id);
+
+
+    /**
+     * 流式查询--含条件
+     * @param map
+     * @return
+     */
+    Cursor<Student> findStudentStreamByCondition(Map map);
 }
 
