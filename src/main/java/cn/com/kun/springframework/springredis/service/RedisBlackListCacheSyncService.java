@@ -28,7 +28,10 @@ import static cn.com.kun.common.utils.DateUtils.PATTERN_ONE;
  * 判断逻辑：比较数据的最新更新时间，假如时间比它大则做同步
  * 假如查出来的黑名单记录主键比之前缓存的要大，说明要做同步，否则不需要
  * 查询的时候，用更新时间做流式查询
- * <p>
+ *
+ * 假如黑名单数据支持新增，下面的逻辑要稍微调整一下。
+ * mysql的日期类型只支持到秒级。
+ *
  * author:xuyaokun_kzx
  * date:2021/7/19
  * desc:

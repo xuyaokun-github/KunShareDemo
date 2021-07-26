@@ -3,6 +3,7 @@ package cn.com.kun.mapper;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.vo.user.UserQueryParam;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.cursor.Cursor;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public interface UserMapper {
     List<User> list(UserQueryParam userQueryParam);
 
     int deleteByFirstname(String firstname);
+
+
+    User getUserByFirstname(@Param("firstname") String firstname);
 
     /**
      * 流式查询

@@ -19,6 +19,13 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  * Redis分布式锁
+ * 集群模式也是支持的。但是不支持低版本1.5.X的springboot，因为jar包不完全一样
+ * 假如要在低版本springboot使用，需要做点兼容
+ * 问题1--低版本中的org.springframework.data.redis.connection.RedisStringCommands#set(byte[], byte[], org.springframework.data.redis.core.types.Expiration, org.springframework.data.redis.connection.RedisStringCommands.SetOption)
+ * 方法返回的是void,所以不能强转成boolean值
+ * 问题2--EvalSha is not supported in cluster environment.
+ *
+ * 具体的解决代码，参考我的kunwebdemo工程
  *
  * Created by xuyaokun On 2019/5/5 21:06
  * @desc:

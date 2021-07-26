@@ -1,4 +1,4 @@
-package cn.com.kun.foo.springtestdbunit;
+package cn.com.kun.springframework.springtestdbunit;
 
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;

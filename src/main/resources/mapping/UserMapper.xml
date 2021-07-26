@@ -63,6 +63,21 @@
         </if>
     </select>
 
+    <select id="getUserByFirstname" parameterType="long" resultType="User">
+        SELECT
+        a.firstname firstname,
+        a.lastname lastname,
+        a.phone phone,
+        a.email email,
+        a.create_time createTime
+        FROM
+        tbl_user a
+        WHERE 1=1
+        <if test="firstname!=null">
+            AND a.firstname = #{firstname}
+        </if>
+    </select>
+
     <delete id="deleteByFirstname" parameterType="String">
         DELETE FROM tbl_user WHERE firstname=#{firstname}
     </delete>

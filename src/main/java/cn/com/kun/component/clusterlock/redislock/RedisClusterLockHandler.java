@@ -35,6 +35,7 @@ public class RedisClusterLockHandler implements ClusterLockHandler {
             //目前不支持超时时间，后续扩展（若不支持超时，后续可能这把锁无法自动过期）
             boolean isGetLock = redisLockUtil.getLock(resourceName, requestId, 0);
             if (isGetLock) {
+                //获取到锁之后，把requestId放入threadlocal，后续解锁需要使用
                 requestIdThreadLocal.set(requestId);
                 break;
             }else {
@@ -51,7 +52,9 @@ public class RedisClusterLockHandler implements ClusterLockHandler {
 
     @Override
     public boolean unlockPessimistic(String resourceName) {
-        //从ThreadLocal中拿requestId
+        /*
+            从ThreadLocal中拿requestId
+         */
         return redisLockUtil.releaseLock(resourceName, requestIdThreadLocal.get());
     }
 

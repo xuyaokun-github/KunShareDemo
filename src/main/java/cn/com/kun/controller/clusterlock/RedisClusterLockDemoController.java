@@ -63,22 +63,25 @@ public class RedisClusterLockDemoController {
     }
 
 
+    /**
+     * http://localhost:8080/kunsharedemo/redisClusterLock-demo/test2
+     * @return
+     */
     @GetMapping("/test2")
     public ResultVo<String> test2(){
         String lockKey = "redisClusterLock-lockkey";
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
-                String requestId = UUID.randomUUID().toString();
                 //上锁
                 redisClusterLockHandler.lockPessimistic(lockKey);
                 LOGGER.info("我是线程{}-start", Thread.currentThread().getName());
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 LOGGER.info("我是线程{}-end", Thread.currentThread().getName());
-                //释放
+                //解锁
                 redisClusterLockHandler.unlockPessimistic(lockKey);
             }).start();
         }

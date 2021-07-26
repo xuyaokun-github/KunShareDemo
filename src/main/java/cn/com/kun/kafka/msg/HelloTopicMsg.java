@@ -1,5 +1,7 @@
 package cn.com.kun.kafka.msg;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class HelloTopicMsg {
@@ -8,6 +10,7 @@ public class HelloTopicMsg {
 
     private String statusCode;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTIme;
 
     public String getMsgId() {

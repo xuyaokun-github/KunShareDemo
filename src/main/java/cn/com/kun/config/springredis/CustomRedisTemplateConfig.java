@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springredis;
+package cn.com.kun.config.springredis;
 
 import cn.com.kun.springframework.springredis.bloomFilter.BloomFilterHelper;
 import com.google.common.hash.Funnel;

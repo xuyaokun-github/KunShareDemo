@@ -9,7 +9,7 @@ import java.util.Date;
 public class DateUtils {
 
     public static String PATTERN_ONE = "yyyy-MM-dd HH:mm:ss";
-    public static String PATTERN_TWO = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static String PATTERN_yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * 获取date对象

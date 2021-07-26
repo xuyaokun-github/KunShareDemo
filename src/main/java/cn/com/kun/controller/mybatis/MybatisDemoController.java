@@ -2,6 +2,7 @@ package cn.com.kun.controller.mybatis;
 
 import cn.com.kun.bean.entity.Student;
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.common.vo.user.UserQueryParam;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Connection;
@@ -25,6 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static cn.com.kun.common.utils.DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS;
 
 @RequestMapping("/mybatis-demo")
 @RestController
@@ -173,5 +177,16 @@ public class MybatisDemoController {
         res = userMapper.insert(user);
 
         return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 验证 时间戳精确到什么级别？
+     * @return
+     */
+    @RequestMapping("/testTime")
+    public String testTime(@RequestParam String firstname){
+        User userList = userMapper.getUserByFirstname(firstname);
+        String str = DateUtils.toStr(userList.getCreateTime(), PATTERN_yyyy_MM_dd_HH_mm_ss_SSS);
+        return JacksonUtils.toJSONString(str);
     }
 }
