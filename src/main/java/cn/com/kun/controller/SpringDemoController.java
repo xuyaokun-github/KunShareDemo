@@ -4,6 +4,7 @@ import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.core.aop.SpringAopDemoService;
+import cn.com.kun.springframework.core.beanDefinition.BeanDefinitionDemoService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,9 @@ public class SpringDemoController {
 
     @Value("${nbaplay.level}")
     private String nbaplayLevel;
+
+    @Autowired
+    BeanDefinitionDemoService beanDefinitionDemoService;
 
     @PostConstruct
     public void init() throws IOException {
@@ -82,6 +86,13 @@ public class SpringDemoController {
     public ResultVo testAop(){
 
         springAopDemoService.method();
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    @GetMapping("/testBeanDefinition")
+    public ResultVo testBeanDefinition(){
+
+        beanDefinitionDemoService.method();
         return ResultVo.valueOfSuccess(null);
     }
 

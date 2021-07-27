@@ -82,8 +82,8 @@ public class RedisTemplateHelper {
      */
     @SuppressWarnings("unchecked")
     public void del(String ... key){
-        if(key!=null&&key.length>0){
-            if(key.length==1){
+        if(key != null && key.length > 0){
+            if(key.length == 1){
                 redisTemplate.delete(key[0]);
             }else{
                 redisTemplate.delete(CollectionUtils.arrayToList(key));
@@ -392,6 +392,59 @@ public class RedisTemplateHelper {
             return 0;
         }
     }
+
+    //============================zset=============================
+
+    /**
+     * 添加一个元素, zset与set最大的区别就是每个元素都有一个score，因此有个排序的辅助功能;
+     * zadd
+     *
+     * @param key
+     * @param value
+     * @param score
+     */
+    public void zsetAdd(String key, String value, double score) {
+        redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    /**
+     * 返回集合的长度
+     *
+     * @param key
+     * @return
+     */
+    public Long zsetSize(String key) {
+        return redisTemplate.opsForZSet().zCard(key);
+    }
+
+    /**
+     * 查询集合中指定顺序的值  zrevrange
+     *
+     * 返回有序的集合中，score大的在前面
+     *
+     * @param key
+     * @param start 范围的起始位置，从0开始
+     * @param end 范围的终止位置，-1表示获取所有，范围是闭区间，例如0，1 表示获取的是第一个和第二个
+     * @return
+     */
+    public Set<String> zsetReverseRange(String key, int start, int end) {
+        /*
+            返回的是LinkedHashSet，是有序的。
+            假如没数据，返回的是一个size为0的Set对象，非空
+         */
+        return redisTemplate.opsForZSet().reverseRange(key, start, end);
+    }
+
+    /**
+     * 删除zset中的元素
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long zsetRemove(String key, String value) {
+        return redisTemplate.opsForZSet().remove(key, value);
+    }
+
     //===============================list=================================
 
     /**
