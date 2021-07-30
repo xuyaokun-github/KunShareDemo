@@ -132,4 +132,11 @@ public class ClusterlockDemoController {
         return ResultVo.valueOfSuccess("");
     }
 
+    @GetMapping("/testReentrantLock33")
+    public ResultVo<String> testReentrantLock33(){
+
+        dbClusterLockDemoService3.testReentrantLock3();
+        return ResultVo.valueOfSuccess("");
+    }
+
 }

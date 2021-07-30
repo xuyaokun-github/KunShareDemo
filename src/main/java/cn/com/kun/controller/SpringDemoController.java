@@ -1,6 +1,7 @@
 package cn.com.kun.controller;
 
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.core.aop.SpringAopDemoService;
@@ -11,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,10 +23,14 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
+
+import static org.springframework.core.io.support.SpringFactoriesLoader.FACTORIES_RESOURCE_LOCATION;
 
 @RequestMapping("/springdemo")
 @RestController
@@ -95,5 +102,33 @@ public class SpringDemoController {
         beanDefinitionDemoService.method();
         return ResultVo.valueOfSuccess(null);
     }
+
+    @GetMapping("/testShowAllFactories")
+    public ResultVo testShowAllFactories(){
+
+        //    spring.factories文件
+
+        List<String> stringList = SpringFactoriesLoader.loadFactoryNames(ApplicationContextInitializer.class, Thread.currentThread().getContextClassLoader());
+        logger.info("SpringFactoriesLoader.loadFactoryNames:{}", JacksonUtils.toJSONString(stringList));
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    @GetMapping("/testShowAllFactoriesFileUrl")
+    public ResultVo testShowAllFactoriesFileUrl() throws IOException {
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Enumeration<URL> urls = (classLoader != null ?
+                classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
+                ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            logger.info("URL:{}", url.toString());
+        }
+        return ResultVo.valueOfSuccess(null);
+    }
+
+
+
+
 
 }

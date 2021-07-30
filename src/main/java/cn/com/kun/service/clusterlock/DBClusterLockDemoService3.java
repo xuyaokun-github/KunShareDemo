@@ -47,6 +47,44 @@ public class DBClusterLockDemoService3 {
 
     }
 
+//    @DBClusterLock()
+//    @DBClusterLock(resourceName = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno2")
 
+    /**
+        验证是否到底是锁行还是锁表？
+        先用一个线程抢A锁，然后执行一个10秒的操作，然后释放锁
+        同时用一个线程抢B锁，看是否能抢到锁，假如不能说明是锁表。
+        我们要的目标是锁行。
+
+        实践证明是行锁。
+     */
+    public void testReentrantLock3(){
+
+        String resourceName1 = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno";
+        String resourceName2 = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno2";
+        new Thread(()->{
+            dbClusterLockHandler.lockPessimistic(resourceName1);
+            LOGGER.info("我是线程1，已抢到锁");
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("我是线程1，释放锁");
+            dbClusterLockHandler.unlockPessimistic(resourceName1);
+        }).start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(()->{
+            dbClusterLockHandler.lockPessimistic(resourceName2);
+            LOGGER.info("我是线程2，已抢到锁");
+            LOGGER.info("我是线程2，释放锁");
+            dbClusterLockHandler.unlockPessimistic(resourceName2);
+        }).start();
+
+    }
 
 }
