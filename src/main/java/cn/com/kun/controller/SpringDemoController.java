@@ -5,7 +5,11 @@ import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.core.aop.SpringAopDemoService;
+import cn.com.kun.springframework.core.aop.demo1.AopProxyUtilsDemo;
+import cn.com.kun.springframework.core.applicationContextInitializer.ApplicationContextInitializerDemoBean;
 import cn.com.kun.springframework.core.beanDefinition.BeanDefinitionDemoService;
+import cn.com.kun.springframework.core.binder.NbaplayBinderDemo;
+import cn.com.kun.springframework.core.orderComparator.OrderComparatorDemoServcie;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.support.LiveBeansView;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +54,18 @@ public class SpringDemoController {
 
     @Autowired
     BeanDefinitionDemoService beanDefinitionDemoService;
+
+    @Autowired
+    NbaplayBinderDemo nbaplayBinderDemo;
+
+    @Autowired
+    OrderComparatorDemoServcie orderComparatorDemoServcie;
+
+    @Autowired
+    ApplicationContextInitializerDemoBean applicationContextInitializerDemoBean;
+
+    @Autowired
+    AopProxyUtilsDemo aopProxyUtilsDemo;
 
     @PostConstruct
     public void init() throws IOException {
@@ -127,7 +144,48 @@ public class SpringDemoController {
         return ResultVo.valueOfSuccess(null);
     }
 
+    @GetMapping("/testBinder")
+    public ResultVo testBinder(){
 
+        nbaplayBinderDemo.method();
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    @GetMapping("/testOrderComparator")
+    public ResultVo testOrderComparator(){
+
+        orderComparatorDemoServcie.method();
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    /**
+     * 验证通过ApplicationContextInitializer注册单例bean
+     * @return
+     */
+    @GetMapping("/testApplicationContextInitializerDemoBean")
+    public ResultVo testApplicationContextInitializerDemoBean(){
+
+        applicationContextInitializerDemoBean.show();
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    /**
+     * 验证通过ApplicationContextInitializer注册单例bean
+     * @return
+     */
+    @GetMapping("/testAopProxyUtilsDemo")
+    public ResultVo testAopProxyUtilsDemo(){
+
+        aopProxyUtilsDemo.method();
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    @GetMapping("/testLiveBeansView")
+    public String testLiveBeansView(){
+
+        String res = new LiveBeansView().getSnapshotAsJson();
+        return res;
+    }
 
 
 

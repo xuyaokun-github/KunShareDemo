@@ -1,8 +1,10 @@
 package cn.com.kun.foo;
 
-import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.KunShareDemoApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.annotation.AnnotationUtils;
 
-import java.math.BigDecimal;
+import java.lang.annotation.Annotation;
 
 public class TestHello {
 
@@ -10,20 +12,8 @@ public class TestHello {
 
    public static void main(String[] args) {
 
-       String sourceStr = "kunghsu";
-       String str = JacksonUtils.toJSONString(sourceStr);
-       System.out.println(str);
+       Annotation annotation = AnnotationUtils.findAnnotation(KunShareDemoApplication.class, SpringBootApplication.class);
+       System.out.println(annotation);
    }
-
-    private static long getPercent(long count, long total) {
-        if(total==0){
-            return 0;
-        }
-        BigDecimal currentCount = new BigDecimal(count);
-        BigDecimal totalCount = new BigDecimal(total);
-        BigDecimal divide = currentCount.divide(totalCount,2, BigDecimal.ROUND_HALF_UP);
-        return divide.multiply(new BigDecimal(100)).longValue();
-    }
-
 
 }

@@ -6,7 +6,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,7 +30,7 @@ public class TblExpiredDataRemoveService {
     /**
      * 调度：一天跑一次即可
      */
-    @Scheduled(cron = "0/10 * * * * ?")
+//    @Scheduled(cron = "0/10 * * * * ?")
 //    @Scheduled(cron = "0 0 3 1/1 * ? *") //每天凌晨三点跑(错误的cron,最多支持6位)
 //    @Scheduled(cron = "0 0 3 1/1 * ?") //每天凌晨三点跑
     public void scheduled(){

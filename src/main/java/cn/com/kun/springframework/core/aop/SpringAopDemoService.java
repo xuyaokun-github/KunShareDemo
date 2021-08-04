@@ -9,8 +9,8 @@ public class SpringAopDemoService {
 
     @MyAnno1
     @MyAnno2
-    public void method(){
-
+    public String method(){
+        return "target method";
     }
 
 }

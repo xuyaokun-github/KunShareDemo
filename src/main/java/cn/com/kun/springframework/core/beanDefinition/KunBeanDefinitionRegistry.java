@@ -39,7 +39,7 @@ public class KunBeanDefinitionRegistry implements BeanDefinitionRegistryPostProc
         helloBean.getPropertyValues().add("name", "xyk").add("address", "罗湖区");
         //新增Bean定义，将bean注册进spring容器
         registry.registerBeanDefinition("beanDefinitionHelloService", helloBean);
-
+        //在这里只能注册定义，并不能添加bean！
     }
 
 }

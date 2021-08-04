@@ -1,6 +1,7 @@
 package cn.com.kun.component.configload;
 
 import cn.com.kun.common.utils.ThreadUtils;
+import cn.com.kun.springframework.core.applicationContextInitializer.ApplicationContextInitializerDemoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -31,6 +32,12 @@ public class MyResourceLoaderInitializer implements ApplicationContextInitialize
 
         //添加一个加载配置文件的实现
         applicationContext.addProtocolResolver(new MyXPathProtocolResolver(configPath));
+
+        /*
+            可以在ApplicationContextInitializer执行时，向bean工厂注册单例bean
+            但是这样做比较少见。
+         */
+        applicationContext.getBeanFactory().registerSingleton("applicationContextInitializerDemoBean", new ApplicationContextInitializerDemoBean());
     }
 
     @Override
