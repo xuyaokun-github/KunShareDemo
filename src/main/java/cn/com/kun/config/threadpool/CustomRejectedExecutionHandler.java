@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 自定义线程池抛弃策略
- * 逻辑：
+ * 逻辑：先重试三次重新进入队列，假如都失败了，再用当前线程运行
  *
  * author:xuyaokun_kzx
  * date:2021/8/5
