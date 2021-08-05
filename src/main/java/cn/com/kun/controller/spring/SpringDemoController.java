@@ -1,4 +1,4 @@
-package cn.com.kun.controller;
+package cn.com.kun.controller.spring;
 
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.JacksonUtils;

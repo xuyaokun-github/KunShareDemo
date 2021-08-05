@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.core.aop.demo1;
 
-import cn.com.kun.controller.SpringDemoController;
+import cn.com.kun.controller.spring.SpringDemoController;
 import cn.com.kun.springframework.core.aop.SpringAopDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

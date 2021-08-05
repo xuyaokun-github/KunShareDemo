@@ -6,7 +6,7 @@ import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.common.vo.user.UserQueryParam;
-import cn.com.kun.controller.SpringDemoController;
+import cn.com.kun.controller.spring.SpringDemoController;
 import cn.com.kun.mapper.StudentMapper;
 import cn.com.kun.mapper.UserMapper;
 import cn.com.kun.service.mybatis.MybatisCursorDemoService;

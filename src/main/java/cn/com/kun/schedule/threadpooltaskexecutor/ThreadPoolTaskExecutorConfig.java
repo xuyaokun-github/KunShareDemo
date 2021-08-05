@@ -26,7 +26,6 @@ public class ThreadPoolTaskExecutorConfig {
         // 对线程池进行包装，使之支持traceId透传
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(1);
-        executor.initialize();
         return executor;
     }
 
@@ -50,7 +49,6 @@ public class ThreadPoolTaskExecutorConfig {
             }
         };
         executor.setCorePoolSize(1);
-        executor.initialize();
         return executor;
     }
 
