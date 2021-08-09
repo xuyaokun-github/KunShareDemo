@@ -54,7 +54,7 @@ public class RateLimiterHolder {
     /**
      * 解析限流配置内容，创建限流器
      */
-    private void resolveLimitConfig() {
+    public void resolveLimitConfig() {
 
         Map<String, BizSceneLimit> bizSceneLimitMap = rateLimiterProperties.getBackwardRateLimit();
         LOGGER.info("bizSceneLimitMap:{}", JacksonUtils.toJSONString(bizSceneLimitMap));

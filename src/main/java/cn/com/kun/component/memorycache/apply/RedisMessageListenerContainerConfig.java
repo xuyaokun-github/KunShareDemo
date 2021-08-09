@@ -26,7 +26,7 @@ public class RedisMessageListenerContainerConfig {
 
     //创建一个监听器容器
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer customRedisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);

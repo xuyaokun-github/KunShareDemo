@@ -2,10 +2,9 @@ package cn.com.kun.springframework.core.orderComparator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-@Order(300)
+//@Order(300)
 @Component
 public class OrderComparatorDemoImpl1 implements OrderComparatorDemo{
 

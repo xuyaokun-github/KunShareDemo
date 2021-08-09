@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.support.LiveBeansView;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +45,6 @@ public class SpringDemoController {
     public final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
 
     @Autowired
-    private SpringContextUtil springContextUtil;
-
-    @Autowired
     private SpringAopDemoService springAopDemoService;
 
     @Value("${nbaplay.level}")
@@ -66,6 +64,9 @@ public class SpringDemoController {
 
     @Autowired
     AopProxyUtilsDemo aopProxyUtilsDemo;
+
+    @Autowired
+    Environment environment;
 
     @PostConstruct
     public void init() throws IOException {

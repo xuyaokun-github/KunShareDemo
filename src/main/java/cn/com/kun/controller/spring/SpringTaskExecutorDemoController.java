@@ -4,7 +4,6 @@ import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +15,7 @@ import java.util.concurrent.Executor;
 @RestController
 public class SpringTaskExecutorDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringDemoController.class);
+    public final static Logger LOGGER = LoggerFactory.getLogger(SpringTaskExecutorDemoController.class);
 
     @Autowired
     Executor myBizCommonExecutor;
@@ -51,10 +50,10 @@ public class SpringTaskExecutorDemoController {
 
     @GetMapping("/testShowExecutor")
     public ResultVo testShowExecutor(){
-
-        String str = ((ThreadPoolTaskExecutor)myBizCommonExecutor).getThreadPoolExecutor().toString();
-        LOGGER.info("testShowExecutor: {}", str);
-        return ResultVo.valueOfSuccess(0);
+        Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
+//        String str = ((ThreadPoolTaskExecutor)myBizCommonExecutor).getThreadPoolExecutor().toString();
+//        LOGGER.info("testShowExecutor: {}", str);
+        return ResultVo.valueOfSuccess(LOGGER);
     }
 
 }
