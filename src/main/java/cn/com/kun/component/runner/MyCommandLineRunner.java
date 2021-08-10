@@ -1,4 +1,4 @@
-package cn.com.kun.common.runner;
+package cn.com.kun.component.runner;
 
 import cn.com.kun.common.utils.DateUtils;
 import com.alibaba.fastjson.JSONObject;

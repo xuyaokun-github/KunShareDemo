@@ -1,6 +1,6 @@
-package cn.com.kun.component.configrefresh;
+package cn.com.kun.component.scc.configrefresh;
 
-import cn.com.kun.component.configrefresh.refreshedhandler.SccConfigRefreshedHandler;
+import cn.com.kun.component.scc.configrefresh.refreshedhandler.SccConfigRefreshedHandler;
 import cn.com.kun.component.memorycache.apply.MemoryCacheRedisDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

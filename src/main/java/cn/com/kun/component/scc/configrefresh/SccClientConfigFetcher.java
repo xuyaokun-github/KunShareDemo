@@ -1,4 +1,4 @@
-package cn.com.kun.component.configrefresh;
+package cn.com.kun.component.scc.configrefresh;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class SccClientConfigFetcher {
     /**
      * 这个是spring cloud config的类
      */
-    @Autowired
+    @Autowired(required = false)
     private ConfigServicePropertySourceLocator configServicePropertySourceLocator;
 
 

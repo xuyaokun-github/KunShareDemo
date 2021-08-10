@@ -1,4 +1,4 @@
-package cn.com.kun.component.configrefresh.refreshedhandler;
+package cn.com.kun.component.scc.configrefresh.refreshedhandler;
 
 import java.util.Collection;
 

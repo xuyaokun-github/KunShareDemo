@@ -1,4 +1,4 @@
-package cn.com.kun.component.configrefresh.refreshedhandler;
+package cn.com.kun.component.scc.configrefresh.refreshedhandler;
 
 import cn.com.kun.component.ratelimiter.RateLimiterHolder;
 import org.slf4j.Logger;
