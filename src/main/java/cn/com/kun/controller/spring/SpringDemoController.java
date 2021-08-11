@@ -29,14 +29,10 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
-
-import static org.springframework.core.io.support.SpringFactoriesLoader.FACTORIES_RESOURCE_LOCATION;
 
 @RequestMapping("/springdemo")
 @RestController
@@ -128,20 +124,6 @@ public class SpringDemoController {
 
         List<String> stringList = SpringFactoriesLoader.loadFactoryNames(ApplicationContextInitializer.class, Thread.currentThread().getContextClassLoader());
         logger.info("SpringFactoriesLoader.loadFactoryNames:{}", JacksonUtils.toJSONString(stringList));
-        return ResultVo.valueOfSuccess(null);
-    }
-
-    @GetMapping("/testShowAllFactoriesFileUrl")
-    public ResultVo testShowAllFactoriesFileUrl() throws IOException {
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Enumeration<URL> urls = (classLoader != null ?
-                classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
-                ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            logger.info("URL:{}", url.toString());
-        }
         return ResultVo.valueOfSuccess(null);
     }
 

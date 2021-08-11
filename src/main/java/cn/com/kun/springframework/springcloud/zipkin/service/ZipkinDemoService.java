@@ -1,4 +1,4 @@
-package cn.com.kun.zipkin.service;
+package cn.com.kun.springframework.springcloud.zipkin.service;
 
 import org.springframework.stereotype.Service;
 

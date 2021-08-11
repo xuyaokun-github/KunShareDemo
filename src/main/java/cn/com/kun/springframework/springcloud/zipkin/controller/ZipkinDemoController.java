@@ -1,4 +1,4 @@
-package cn.com.kun.zipkin.controller;
+package cn.com.kun.springframework.springcloud.zipkin.controller;
 
 
 import cn.com.kun.common.utils.HttpClientUtils;
