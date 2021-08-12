@@ -11,9 +11,22 @@ package cn.com.kun.bean.model;
 */
 public class SysParamReqVO {
 
+    /**
+     * 自增主键
+     */
+    private Long id;
+
     private String paramId;
 
     private String paramValue;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getParamId() {
         return paramId;

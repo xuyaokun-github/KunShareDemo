@@ -1,6 +1,10 @@
 package cn.com.kun.common.vo;
 
+import cn.com.kun.common.utils.JacksonUtils;
 import com.github.pagehelper.IPage;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * 前端可以默认不传分页参数，不过一般都需要传
@@ -24,6 +28,32 @@ public class PageParam<T>  implements IPage {
 
     //  description = "参数"
     private T param;
+
+    public static <T> PageParam<T> build(Map<String, String> reqVO, Class<T> clazz) {
+
+        PageParam<T> pageParam = new PageParam<>();
+        //先处理和分页有关的参数,假如存在则处理进行赋值，否则用默认的值
+        String pageNum = reqVO.get("pageNum");
+        String pageSize = reqVO.get("pageSize");
+        String orderBy = reqVO.get("orderBy");
+
+        if (StringUtils.isNotEmpty(pageNum)){
+            pageParam.setPageNum(Integer.valueOf(pageNum));
+            reqVO.remove("pageNum");
+        }
+        if (StringUtils.isNotEmpty(pageSize)){
+            pageParam.setPageSize(Integer.valueOf(pageSize));
+            reqVO.remove("pageSize");
+        }
+        if (StringUtils.isNotEmpty(orderBy)){
+            pageParam.setOrderBy(orderBy);
+            reqVO.remove("orderBy");
+        }
+        //业务参数里，不能使用和分页参数同名的参数，这是强制规定
+        T res = (T) JacksonUtils.toJavaObject(reqVO, clazz);
+        pageParam.setParam(res);
+        return pageParam;
+    }
 
     public PageParam<T> setOrderBy(String orderBy) {
         // 此处可优化 优化详情且看解析
