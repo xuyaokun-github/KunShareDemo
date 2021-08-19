@@ -67,7 +67,7 @@ public class HystrixRateLimitDemoService {
      * @param sendChannel
      */
     public ResultVo fallbackMethod(Map<String, String> paramMap, String sendChannel){
-        LOGGER.info("触发限流后执行的方法");
+        LOGGER.info("触发限流后执行的方法,当前场景：{}", sendChannel);
         return ResultVo.valueOfError("触发限流");
     }
 
@@ -92,7 +92,9 @@ public class HystrixRateLimitDemoService {
     public ResultVo method2(Map<String, String> paramMap, String sendChannel){
 
         try {
-            Thread.sleep(2000);
+//            Thread.sleep(2000);
+            Thread.sleep(2);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,4 +108,35 @@ public class HystrixRateLimitDemoService {
         return ResultVo.valueOfSuccess();
     }
 
+
+    @HystrixRateLimitExtend(bizSceneName="sendmsg", key = "#sendChannel")
+    @HystrixCommand(
+            commandKey = "commandKey-method3",
+            commandProperties = {
+//                    @HystrixProperty(name="key", value="mykey"), //
+                    @HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE"), // 信号量隔离（用了ThreadLocal最好用信号量）
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "100000"), //超时时间
+                    //限流配置
+                    @HystrixProperty(name = "execution.isolation.semaphore.maxConcurrentRequests", value="30"),// 单机最高并发
+                    @HystrixProperty(name = "fallback.isolation.semaphore.maxConcurrentRequests", value="200")// fallback单机最高并发
+            },
+            fallbackMethod = "fallbackMethod"//指定降级方法，在熔断和异常时会走降级方法
+    )
+    public ResultVo method3(Map<String, String> paramMap, String sendChannel){
+
+        LOGGER.info("HystrixRateLimitDemoService开始调用第三方接口，场景：{}", sendChannel);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * 怎么根据发送渠道，结合@HystrixCommand配置不同的限流值？
+         * 不同的渠道，设置不同的限流值，怎么做？
+         */
+        LOGGER.info("HystrixRateLimitDemoService结束调用第三方接口，场景：{}", sendChannel);
+
+        return ResultVo.valueOfSuccess();
+    }
 }

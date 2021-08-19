@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.sql.DataSource;
 
 //@Component
-//@Aspect//假如了这个注解，就相当于定义一个切面类，但是前提是该类也被定义为bean
+//加了这个注解，就相当于定义一个切面类，但是前提是该类也被定义为bean
+//@Aspect
 public class MyAspect {
 
     public final static Logger logger = LoggerFactory.getLogger(SecretResponseBodyAdvice.class);
