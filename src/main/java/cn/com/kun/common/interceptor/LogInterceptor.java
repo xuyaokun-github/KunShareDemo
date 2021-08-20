@@ -1,4 +1,4 @@
-package cn.com.kun.component.interceptor;
+package cn.com.kun.common.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

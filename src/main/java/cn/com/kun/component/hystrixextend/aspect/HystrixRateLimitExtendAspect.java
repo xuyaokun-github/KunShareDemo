@@ -1,6 +1,6 @@
-package cn.com.kun.component.aspect;
+package cn.com.kun.component.hystrixextend.aspect;
 
-import cn.com.kun.common.annotation.HystrixRateLimitExtend;
+import cn.com.kun.component.hystrixextend.HystrixRateLimitExtend;
 import cn.com.kun.component.hystrixextend.HystrixRateLimitValueHolder;
 import cn.com.kun.component.spel.SpELHelper;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -23,9 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 自定义Hystrix切面--实现按场景限流
@@ -33,6 +31,8 @@ import java.util.Set;
  * 为了保护下游，限制同时调用下游的请求数量，
  * 这种场景不需要考虑时间窗口，所以用Hystrix的限流算法是够用的
  *
+ * TODO：
+ * 通过反射修改HystrixCommand对象的值，会有多线程安全的问题
  *
  * author:xuyaokun_kzx
  * date:2021/7/2
@@ -48,17 +48,13 @@ public class HystrixRateLimitExtendAspect {
 
     public final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitExtendAspect.class);
 
-    private final String commandKeyPrefix = "";
-
-    private Set<String> newCommandKeySet = new HashSet<>();
-
     @Autowired
     private SpELHelper spELHelper;
 
     @Autowired
     private HystrixRateLimitValueHolder hystrixRateLimitValueHolder;
 
-    @Pointcut("@annotation(cn.com.kun.common.annotation.HystrixRateLimitExtend)")
+    @Pointcut("@annotation(cn.com.kun.component.hystrixextend.HystrixRateLimitExtend)")
     public void pointCut() {
 
     }

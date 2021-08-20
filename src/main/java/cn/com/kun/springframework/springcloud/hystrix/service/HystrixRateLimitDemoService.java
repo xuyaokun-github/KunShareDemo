@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springcloud.hystrix.service;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.common.annotation.HystrixRateLimitExtend;
+import cn.com.kun.component.hystrixextend.HystrixRateLimitExtend;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.slf4j.Logger;

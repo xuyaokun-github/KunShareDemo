@@ -1,4 +1,4 @@
-package cn.com.kun.component.aspect;
+package cn.com.kun.common.aspect;
 
 import cn.com.kun.common.utils.ThreadUtils;
 import org.aspectj.lang.JoinPoint;

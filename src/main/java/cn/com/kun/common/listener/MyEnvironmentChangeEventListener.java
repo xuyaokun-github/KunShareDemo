@@ -1,4 +1,4 @@
-package cn.com.kun.component.listener;
+package cn.com.kun.common.listener;
 
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.config.threadpool.CustomThreadPoolProperties;

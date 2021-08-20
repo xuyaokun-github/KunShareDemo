@@ -1,6 +1,6 @@
 package cn.com.kun.config.redisson;
 
-import cn.com.kun.component.runner.MyCommandLineRunner;
+import cn.com.kun.common.runner.MyCommandLineRunner;
 import cn.com.kun.common.utils.RedissonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;

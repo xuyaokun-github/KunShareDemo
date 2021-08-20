@@ -1,4 +1,4 @@
-package cn.com.kun.component.format;
+package cn.com.kun.common.format;
 
 import java.text.*;
 import java.util.Date;

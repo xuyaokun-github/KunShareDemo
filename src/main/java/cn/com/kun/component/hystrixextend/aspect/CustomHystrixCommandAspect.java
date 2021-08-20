@@ -1,4 +1,4 @@
-package cn.com.kun.component.aspect;
+package cn.com.kun.component.hystrixextend.aspect;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;

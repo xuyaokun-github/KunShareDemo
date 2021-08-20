@@ -56,39 +56,45 @@ public class RateLimiterHolder {
      */
     public void resolveLimitConfig() {
 
-        Map<String, BizSceneLimit> bizSceneLimitMap = rateLimiterProperties.getBackwardRateLimit();
+        Map<String, BizSceneLimit> bizSceneLimitMap = rateLimiterProperties.getBackward();
         LOGGER.info("bizSceneLimitMap:{}", JacksonUtils.toJSONString(bizSceneLimitMap));
-        Iterator iterator = bizSceneLimitMap.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String key = (String) entry.getKey();//业务场景名称
-            BizSceneLimit bizSceneLimit = (BizSceneLimit) entry.getValue();
-            //创建限流器放入map容器，后续供限流判断使用
-            bizSceneRateLimiterMap.put(key, RateLimiter.create(bizSceneLimit.getDefaultRate()));
+        if (bizSceneLimitMap != null){
+            Iterator iterator = bizSceneLimitMap.entrySet().iterator();
+            while (iterator.hasNext()){
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String key = (String) entry.getKey();//业务场景名称
+                BizSceneLimit bizSceneLimit = (BizSceneLimit) entry.getValue();
+                //创建限流器放入map容器，后续供限流判断使用
+                bizSceneRateLimiterMap.put(key, RateLimiter.create(bizSceneLimit.getDefaultRate()));
 
-            List<LimitItem> limitItemList = bizSceneLimit.getLimitItem();
-            limitItemList.forEach(limitItem -> {
-                itemLimiterMap.put(key + "-" +limitItem.getName(), RateLimiter.create(limitItem.getRate()));
-            });
+                List<LimitItem> limitItemList = bizSceneLimit.getLimitItem();
+                limitItemList.forEach(limitItem -> {
+                    itemLimiterMap.put(key + "-" +limitItem.getName(), RateLimiter.create(limitItem.getRate()));
+                });
+            }
         }
 
-        Map<String, ForwardLimit> forwardLimitMap = rateLimiterProperties.getForwardRateLimit();
+
+        Map<String, ForwardLimit> forwardLimitMap = rateLimiterProperties.getForward();
         LOGGER.info("forwardLimitMap:{}", JacksonUtils.toJSONString(forwardLimitMap));
-        Iterator iterator2 = forwardLimitMap.entrySet().iterator();
-        while (iterator2.hasNext()){
-            Map.Entry entry = (Map.Entry) iterator2.next();
-            String controllerName = (String) entry.getKey();//控制器名称
-            ForwardLimit forwardLimit = (ForwardLimit) entry.getValue();
-            //创建限流器放入map容器，后续供限流判断使用
-            forwardLimiterMap.put(controllerName, RateLimiter.create(forwardLimit.getDefaultRate()));
+        if (forwardLimitMap != null){
+            Iterator iterator2 = forwardLimitMap.entrySet().iterator();
+            while (iterator2.hasNext()){
+                Map.Entry entry = (Map.Entry) iterator2.next();
+                String controllerName = (String) entry.getKey();//控制器名称
+                ForwardLimit forwardLimit = (ForwardLimit) entry.getValue();
+                //创建限流器放入map容器，后续供限流判断使用
+                forwardLimiterMap.put(controllerName, RateLimiter.create(forwardLimit.getDefaultRate()));
 
-            List<ApiLimit> apiLimitList = forwardLimit.getApiLimit();
-            Map<String, RateLimiter> rateLimiterMap = new HashMap<>();
-            apiLimitList.forEach(apiLimit -> {
-                rateLimiterMap.put(apiLimit.getApi(), RateLimiter.create(apiLimit.getApiRate()));
-            });
-            forwardLimitApiMap.put(controllerName, rateLimiterMap);
+                List<ApiLimit> apiLimitList = forwardLimit.getApiLimit();
+                Map<String, RateLimiter> rateLimiterMap = new HashMap<>();
+                apiLimitList.forEach(apiLimit -> {
+                    rateLimiterMap.put(apiLimit.getApi(), RateLimiter.create(apiLimit.getApiRate()));
+                });
+                forwardLimitApiMap.put(controllerName, rateLimiterMap);
+            }
         }
+
     }
 
     /**

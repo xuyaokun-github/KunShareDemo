@@ -1,16 +1,22 @@
 package cn.com.kun.springframework.springmvc;
 
+import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.List;
+
+import static org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE;
 
 /**
  */
@@ -78,4 +84,40 @@ public class SpringMvcDemoController {
         InputStream in = inputStream;
         return IOUtils.readLines(in, "UTF-8");
     }
+
+
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/testGetControllerNameFromRequest")
+    public ResultVo testGetControllerNameFromRequest(HttpServletRequest request){
+
+        Object handlerMethod = request.getAttribute(BEST_MATCHING_HANDLER_ATTRIBUTE);
+        if (handlerMethod != null && handlerMethod instanceof HandlerMethod){
+            HandlerMethod method = (HandlerMethod) handlerMethod;
+            //获取实际调用的方法
+            Method classMethod = method.getMethod();
+            Class clazz = method.getBeanType();
+            String clazzName = clazz.getSimpleName();
+            LOGGER.info(clazzName);
+
+            //即使这个controller被代理了，这里的bean还是拿到一个字符串，即beanName
+            //同理，即使这个controller被代理，className也还是原类型
+            Object bean = method.getBean();
+            if (bean instanceof String){
+                //有时候bean不一定是字符串类型
+                LOGGER.info((String) bean);
+            }
+
+            //但假如用这个bean名去bean工厂拿实例时，获取的引用是代理对象的引用
+            Object beanObj = SpringContextUtil.getBean((String) bean);
+            //输出的将是类似这种：cn.com.kun.springframework.springmvc.SpringMvcDemoController$$EnhancerBySpringCGLIB$$6a2feee9
+            LOGGER.info(beanObj.getClass().getTypeName());
+        }
+        return ResultVo.valueOfSuccess();
+    }
+
 }

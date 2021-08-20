@@ -1,6 +1,5 @@
-package cn.com.kun.component.aspect;
+package cn.com.kun.component.memorycache;
 
-import cn.com.kun.common.annotation.EvictCacheNotice;
 import cn.com.kun.component.memorycache.maintain.MemoryCacheNoticeProcessor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -44,7 +43,7 @@ public class EvictCacheNoticeAspect {
     @Autowired
     private MemoryCacheNoticeProcessor memoryCacheNoticeProcessor;
 
-    @Pointcut("@annotation(cn.com.kun.common.annotation.EvictCacheNotice)")
+    @Pointcut("@annotation(cn.com.kun.component.memorycache.EvictCacheNotice)")
     public void pointCut(){
 
     }

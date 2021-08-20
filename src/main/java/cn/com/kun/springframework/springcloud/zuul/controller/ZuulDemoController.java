@@ -110,7 +110,7 @@ public class ZuulDemoController {
      * 验证向前限流效果
      * @return
      */
-    @RateLimit(mode = "forward", controllerName = "ZuulDemoController")
+    @RateLimit(mode = "forward")
     @GetMapping("/testRateLimit")
     public ResultVo testRateLimit(){
 

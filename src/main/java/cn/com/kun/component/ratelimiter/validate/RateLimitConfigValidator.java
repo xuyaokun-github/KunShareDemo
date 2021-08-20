@@ -35,38 +35,45 @@ public class RateLimitConfigValidator implements ConstraintValidator<RateLimitCo
         }
 
         //校验向前限流的配置
-        Map<String, ForwardLimit>  forwardLimitMap = rateLimiterProperties.getForwardRateLimit();
-        Iterator iterator = forwardLimitMap.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String controllerName = (String) entry.getKey();
-            ForwardLimit forwardLimit = (ForwardLimit) entry.getValue();
-            List<ApiLimit> apiLimitList = forwardLimit.getApiLimit();
-            for (ApiLimit apiLimit : apiLimitList){
-                if(StringUtils.isEmpty(apiLimit.getApi()) || apiLimit.getApiRate() == null){
-                    //api和apiRate不能为空
-                    LOGGER.error("限流配置验证失败，控制器[{}]的配置有误，api和apiRate必须非空，请检查", controllerName);
-                    return false;
+        Map<String, ForwardLimit>  forwardLimitMap = rateLimiterProperties.getForward();
+        Iterator iterator;
+        if (forwardLimitMap != null){
+            iterator = forwardLimitMap.entrySet().iterator();
+            while (iterator.hasNext()){
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String controllerName = (String) entry.getKey();
+                ForwardLimit forwardLimit = (ForwardLimit) entry.getValue();
+                List<ApiLimit> apiLimitList = forwardLimit.getApiLimit();
+                for (ApiLimit apiLimit : apiLimitList){
+                    if(StringUtils.isEmpty(apiLimit.getApi()) || apiLimit.getApiRate() == null){
+                        //api和apiRate不能为空
+                        LOGGER.error("限流配置验证失败，控制器[{}]的配置有误，api和apiRate必须非空，请检查", controllerName);
+                        return false;
+                    }
                 }
             }
         }
 
+
         //校验向后限流的配置
-        Map<String, BizSceneLimit>  backwardRateLimit = rateLimiterProperties.getBackwardRateLimit();
-        iterator = backwardRateLimit.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String controllerName = (String) entry.getKey();
-            BizSceneLimit bizSceneLimit = (BizSceneLimit) entry.getValue();
-            List<LimitItem> limitItemList = bizSceneLimit.getLimitItem();
-            for (LimitItem limitItem : limitItemList){
-                if(StringUtils.isEmpty(limitItem.getName()) || limitItem.getRate() == null){
-                    //api和apiRate不能为空
-                    LOGGER.error("限流配置验证失败，场景[{}]的配置有误，name和rate必须非空，请检查", controllerName);
-                    return false;
+        Map<String, BizSceneLimit>  backwardRateLimit = rateLimiterProperties.getBackward();
+        if (backwardRateLimit != null){
+            iterator = backwardRateLimit.entrySet().iterator();
+            while (iterator.hasNext()){
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String controllerName = (String) entry.getKey();
+                BizSceneLimit bizSceneLimit = (BizSceneLimit) entry.getValue();
+                List<LimitItem> limitItemList = bizSceneLimit.getLimitItem();
+                for (LimitItem limitItem : limitItemList){
+                    if(StringUtils.isEmpty(limitItem.getName()) || limitItem.getRate() == null){
+                        //api和apiRate不能为空
+                        LOGGER.error("限流配置验证失败，场景[{}]的配置有误，name和rate必须非空，请检查", controllerName);
+                        return false;
+                    }
                 }
             }
         }
+
 
         LOGGER.info("限流配置验证成功！！");
         return true;

@@ -1,7 +1,7 @@
 package cn.com.kun.common.advice;
 
 import cn.com.kun.common.exception.BizException;
-import cn.com.kun.common.exception.RateLimitException;
+import cn.com.kun.component.ratelimiter.exception.RateLimitException;
 import cn.com.kun.common.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,9 +1,10 @@
-package cn.com.kun.common.annotation;
+package cn.com.kun.component.memorycache;
 
 import java.lang.annotation.*;
 
 /**
- * 基于Hystrix限流功能的扩展
+ * 清除内存缓存通知
+ * 用了该注解的方法执行前要发出清除内存缓存的通知
  *
  * author:xuyaokun_kzx
  * date:2021/6/29
@@ -13,17 +14,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface HystrixRateLimitExtend {
+public @interface EvictCacheNotice {
 
     /**
-     * 业务场景名称
+     * 要清除的内存缓存管理器的名称
      * @return
      */
-    String bizSceneName() default "";
+    String configName();
 
     /**
      * SpEl表达式
      * @return
      */
     String key() default "";
+
 }

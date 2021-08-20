@@ -1,4 +1,4 @@
-package cn.com.kun.common.exception;
+package cn.com.kun.component.ratelimiter.exception;
 
 /**
  * 限流异常
@@ -8,7 +8,7 @@ package cn.com.kun.common.exception;
 */
 public class RateLimitException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+    private static final String LIMIT_REJECT_RETURN_CODE = "777777";
 
     /**
      * 错误码
@@ -21,6 +21,11 @@ public class RateLimitException extends RuntimeException {
 
     public RateLimitException() {
         super();
+    }
+
+    public RateLimitException(String errorMsg) {
+        this.errorMsg = errorMsg;
+        this.errorCode = LIMIT_REJECT_RETURN_CODE;
     }
 
     public RateLimitException(String errorCode, String errorMsg) {

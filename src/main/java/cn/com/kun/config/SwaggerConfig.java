@@ -11,6 +11,12 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+/**
+ * http://localhost:8080/kunsharedemo/swagger-ui/index.html
+ * author:xuyaokun_kzx
+ * date:2021/8/20
+ * desc:
+*/
 @Profile({"dev", "sit", "uat"})
 @Configuration
 public class SwaggerConfig {
