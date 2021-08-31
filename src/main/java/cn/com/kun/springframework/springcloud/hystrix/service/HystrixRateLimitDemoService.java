@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class HystrixRateLimitDemoService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitDemoService.class);
 
 //    @HystrixCommand
     @HystrixCommand(
@@ -130,6 +130,30 @@ public class HystrixRateLimitDemoService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        /**
+         * 怎么根据发送渠道，结合@HystrixCommand配置不同的限流值？
+         * 不同的渠道，设置不同的限流值，怎么做？
+         */
+        LOGGER.info("HystrixRateLimitDemoService结束调用第三方接口，场景：{}", sendChannel);
+
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 这个方法将由自定义的CustomHystrixCommand来进行调用
+     * @param paramMap
+     * @param sendChannel
+     * @return
+     */
+    public ResultVo method4(Map<String, String> paramMap, String sendChannel){
+
+        LOGGER.info("HystrixRateLimitDemoService开始调用第三方接口，场景：{}", sendChannel);
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         /**
          * 怎么根据发送渠道，结合@HystrixCommand配置不同的限流值？

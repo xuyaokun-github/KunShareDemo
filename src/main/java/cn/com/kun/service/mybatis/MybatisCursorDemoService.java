@@ -17,7 +17,7 @@ import java.io.IOException;
 @Service
 public class MybatisCursorDemoService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MybatisCursorDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MybatisCursorDemoService.class);
 
 //    @Autowired
 //    UserMapper userMapper;

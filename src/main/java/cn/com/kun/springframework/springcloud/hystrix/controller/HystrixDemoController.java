@@ -1,11 +1,17 @@
 package cn.com.kun.springframework.springcloud.hystrix.controller;
 
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.springframework.springcloud.hystrix.BizHandler;
+import cn.com.kun.springframework.springcloud.hystrix.CustomHystrixCommand;
+import cn.com.kun.springframework.springcloud.hystrix.CustomHystrixCommand2;
 import cn.com.kun.springframework.springcloud.hystrix.service.HystrixDemoService;
 import cn.com.kun.springframework.springcloud.hystrix.service.HystrixRateLimitDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RequestMapping("/hystrix-demo")
 @RestController
@@ -16,6 +22,9 @@ public class HystrixDemoController {
 
     @Autowired
     private HystrixRateLimitDemoService hystrixRateLimitDemoService;
+
+    @Autowired
+    CustomHystrixCommand2 customHystrixCommand2;
 
     @RequestMapping("/test1")
     public String testHello(){
@@ -253,5 +262,43 @@ public class HystrixDemoController {
         return ResultVo.valueOfSuccess();
     }
 
+
+    @GetMapping("/testRateLimit10")
+    public ResultVo testRateLimit10(){
+
+        //已知入参
+        Map<String, String> paramMap = null;
+        String sendChannel = "DX";
+        BizHandler bizHandler = ()->{
+            hystrixRateLimitDemoService.method4(paramMap, sendChannel);
+        };
+
+        for (int i = 0; i < 3; i++) {
+            CustomHystrixCommand customHystrixCommand = new CustomHystrixCommand(bizHandler);
+            new Thread(()->{
+                customHystrixCommand.execute();
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess();
+    }
+
+    @GetMapping("/testRateLimit11")
+    public ResultVo testRateLimit11(){
+
+        //已知入参
+        Map<String, String> paramMap = null;
+        String sendChannel = "DX";
+        BizHandler bizHandler = ()->{
+            hystrixRateLimitDemoService.method4(paramMap, sendChannel);
+        };
+
+        for (int i = 0; i < 3; i++) {
+            new Thread(()->{
+                customHystrixCommand2.execute();
+            }).start();
+        }
+        return ResultVo.valueOfSuccess();
+    }
 
 }

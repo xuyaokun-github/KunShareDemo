@@ -91,4 +91,15 @@ public class PageParam<T>  implements IPage {
     public void setParam(T param) {
         this.param = param;
     }
+
+    /**
+     * 该vo也可以用在es的dao层做分页
+     * 调用该方法获取起始行，es中的from表示的不是页码，而是起始行
+     * this.pageNum表示的是页码，供前端使用
+     * @return
+     */
+    private Integer getStartRow() {
+        return this.pageNum > 0 ? (this.pageNum - 1) * this.pageSize : 0;
+//        this.endRow = this.startRow + this.pageSize * (this.pageNum > 0 ? 1 : 0);
+    }
 }

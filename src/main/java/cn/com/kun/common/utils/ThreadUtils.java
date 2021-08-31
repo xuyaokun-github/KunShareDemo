@@ -22,4 +22,22 @@ public class ThreadUtils {
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[2];
         return stackTraceElement.getClassName() + "#" + stackTraceElement.getMethodName();
     }
+
+    /**
+     * 永久运行
+     */
+    public static void runForever(){
+        while (true){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void logWithThreadInfo(String msg){
+        System.out.println(String.format("%s ----[当前线程：%s]", msg, Thread.currentThread().getName()));
+    }
+
 }

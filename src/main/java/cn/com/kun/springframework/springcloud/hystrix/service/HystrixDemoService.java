@@ -3,6 +3,8 @@ package cn.com.kun.springframework.springcloud.hystrix.service;
 import cn.com.kun.common.utils.HttpClientUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,14 +16,28 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class HystrixDemoService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HystrixDemoService.class);
+
     @Autowired
     private RestTemplate restTemplate;
 
-    @HystrixCommand(fallbackMethod = "errorCallBack")
+    @HystrixCommand(
+            fallbackMethod = "errorCallBack",
+            commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50000"),
+            @HystrixProperty(name = "execution.timeout.enabled", value = "false")})
     public String method1() {
         //http://eureka-client-two/two/testHello2
-        String result = restTemplate.getForObject("http://localhost:8082/two/testHello", String.class);
-        System.out.println(result);
+//        String result = restTemplate.getForObject("http://localhost:8082/two/testHello", String.class);
+//        System.out.println(result);
+
+        LOGGER.info("当前执行业务方法的线程名：{}", Thread.currentThread().getName());
+        String result = "ok";
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
