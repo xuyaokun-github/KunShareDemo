@@ -1,5 +1,7 @@
 package cn.com.kun.springframework.springcloud.hystrix.service;
 
+import cn.com.kun.common.exception.BizException;
+import cn.com.kun.common.exception.MyHystrixDemoException;
 import cn.com.kun.common.utils.HttpClientUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -24,24 +26,56 @@ public class HystrixDemoService {
     @HystrixCommand(
             fallbackMethod = "errorCallBack",
             commandProperties = {
-            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50000"),
-            @HystrixProperty(name = "execution.timeout.enabled", value = "false")})
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000"),
+            @HystrixProperty(name = "execution.timeout.enabled", value = "true")})
     public String method1() {
-        //http://eureka-client-two/two/testHello2
-//        String result = restTemplate.getForObject("http://localhost:8082/two/testHello", String.class);
-//        System.out.println(result);
-
         LOGGER.info("当前执行业务方法的线程名：{}", Thread.currentThread().getName());
         String result = "ok";
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < (120 * 1000)){
+
         }
+//        try {
+//            Thread.sleep(60000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        LOGGER.info("(结束)当前执行业务方法的线程名：{}", Thread.currentThread().getName());
         return result;
     }
 
-    @HystrixCommand(fallbackMethod = "errorCallBack")
+    /**
+     * 验证 限流异常
+     * @return
+     */
+    @HystrixCommand(
+            fallbackMethod = "errorCallBack",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000000"),
+                    @HystrixProperty(name = "execution.timeout.enabled", value = "true")},
+            threadPoolKey = "HystrixDemoService-method11", //假如希望本方法用独立的线程池，必须指定threadPoolKey
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "1"),
+//                    @HystrixProperty(name = "maximumSize", value = "100"), //这个值在这里定义会报错，是个bug
+                    @HystrixProperty(name = "maxQueueSize", value = "2"),
+                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "10"),
+                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "1"),
+            })
+    public String method11() {
+        LOGGER.info("当前执行业务方法的线程名：{}", Thread.currentThread().getName());
+        String result = "ok";
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < (10 * 1000)){
+
+        }
+        LOGGER.info("(结束)当前执行业务方法的线程名：{}", Thread.currentThread().getName());
+        return result;
+    }
+
+
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000")},
+            fallbackMethod = "errorCallBack")
     public String method2() {
         String result = HttpClientUtils.doGet("http://localhost:8082/two/testHello", null);
         System.out.println(result);
@@ -51,7 +85,8 @@ public class HystrixDemoService {
     //execution.timeout.enabled说的是执行超时，不影响execution.isolation.thread.timeoutInMilliseconds的设置
     @HystrixCommand(commandProperties = {
                @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
-              @HystrixProperty(name = "execution.timeout.enabled", value = "false")}, fallbackMethod = "errorCallBack")
+              @HystrixProperty(name = "execution.timeout.enabled", value = "false")},
+            fallbackMethod = "errorCallBack")
     public String method4() {
 
         System.out.println("正在进行真实调用");
@@ -61,10 +96,88 @@ public class HystrixDemoService {
     }
 
 
-    @HystrixCommand(fallbackMethod = "errorCallBack")
+    /**
+     * 模拟出异常时的降级
+     * @return
+     */
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50000000")
+    },
+//            ignoreExceptions = {BizException.class},
+                    fallbackMethod = "errorCallBack")
     public String method3() {
         String result = "000";
-        int a = 1/0;
+
+//        int a = 1/0;
+
+        //抛出自定义异常，也可以触发降级
+        if (true){
+            throw new BizException("业务异常");
+        }
+
+        return result;
+    }
+
+    /**
+     * 例子--设置只有超时和限流发生时才触发熔断
+     *
+     * @param flag
+     * @return
+     */
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
+    },
+            ignoreExceptions = {BizException.class},
+            fallbackMethod = "errorCallBack2")
+    public String method31(String flag) {
+
+        String result = "000";
+        try {
+            //抛出自定义异常，也可以触发降级
+            if ("true".equals(flag)){
+                throw new BizException("业务异常");
+            }
+        }catch (Exception e){
+            if (e instanceof BizException) {
+                throw e;
+            }else {
+                throw new BizException(e.getMessage());
+            }
+        }
+
+        //模拟一个执行超时
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * ExceptionNotWrappedByHystrix的使用
+     * @param flag
+     * @return
+     */
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
+    },
+            fallbackMethod = "errorCallBack2")
+    public String method32(String flag) {
+
+        String result = "000";
+        if ("true".equals(flag)){
+            //程序可以自由决定，
+            //假如不希望触发降级，就抛出MyHystrixDemoException（hystrix不会针对该异常做降级处理）
+            //假如想走降级，那就抛出非MyHystrixDemoException异常
+            throw new MyHystrixDemoException();
+        }
+        //模拟一个执行超时
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -107,8 +220,12 @@ public class HystrixDemoService {
      * @return
      */
     public String errorCallBack() {
+        LOGGER.info("触发降级：{}", Thread.currentThread().getName());
         return "sorry 触发服务降级";
     }
 
+    public String errorCallBack2(String flag) {
 
+        return "sorry 触发超时降级";
+    }
 }

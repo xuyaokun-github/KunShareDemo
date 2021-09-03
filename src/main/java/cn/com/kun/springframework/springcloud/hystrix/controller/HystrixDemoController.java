@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RequestMapping("/hystrix-demo")
 @RestController
@@ -26,7 +27,7 @@ public class HystrixDemoController {
     @Autowired
     CustomHystrixCommand2 customHystrixCommand2;
 
-    @RequestMapping("/test1")
+    @GetMapping("/test1")
     public String testHello(){
 
         String res = hystrixDemoService.method1();
@@ -34,19 +35,43 @@ public class HystrixDemoController {
         return res;
     }
 
+    @GetMapping("/test11")
+    public String test11(){
+
+        for (int i = 0; i < 5; i++) {
+            new Thread(()->{
+                String res = hystrixDemoService.method11();
+            }, "demoThread-" + i).start();
+        }
+
+        return "ok";
+    }
+
     @RequestMapping("/test2")
     public String test2(){
 
         String res = hystrixDemoService.method2();
-        System.out.println(res);
         return res;
     }
 
-    @RequestMapping("/test3")
+    @GetMapping("/test3")
     public String test3(){
 
         String res = hystrixDemoService.method3();
-        System.out.println(res);
+        return res;
+    }
+
+    @GetMapping("/test31")
+    public String test3test31(){
+
+        String res = hystrixDemoService.method31(ThreadLocalRandom.current().nextInt(10)%2 == 0 ? "true": "false");
+        return res;
+    }
+
+    @GetMapping("/test32")
+    public String test32(){
+
+        String res = hystrixDemoService.method32(ThreadLocalRandom.current().nextInt(10)%2 == 0 ? "true": "false");
         return res;
     }
 
@@ -54,7 +79,6 @@ public class HystrixDemoController {
     public String test4(){
 
         String res = hystrixDemoService.method4();
-        System.out.println(res);
         return res;
     }
 
@@ -62,7 +86,6 @@ public class HystrixDemoController {
     public String test5(){
 
         String res = hystrixDemoService.method5();
-        System.out.println(res);
         return res;
     }
 

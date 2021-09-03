@@ -68,7 +68,7 @@ public class ClusterIdGenerator {
     public void refreshIdLiveTime(){
         try {
             //当前节点主机名
-            LOGGER.info("refreshIdLiveTime, workerId:{}",  workerId);
+//            LOGGER.info("refreshIdLiveTime, workerId:{}",  workerId);
             //一分钟刷新一次，更新有效时间为2分钟
             // （假如2分钟内重启很多次，可能会获取不到workerId,所以可以将刷新间隔尽量设置小一点，存活时间尽量短一点）
             redisTemplateHelper.set(WORKERID_KEY_PREFIX + ":" + workerId, hostname, 120);
