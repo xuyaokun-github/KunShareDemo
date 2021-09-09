@@ -29,4 +29,14 @@ public class UserServiceServiceImpl implements UserService {
         return userMapper.list(userQueryParam);
     }
 
+    /**
+     * 覆盖父类的方法（也不可以不覆盖，假如不覆盖就表示用父类的默认的排序规则）
+     * @return
+     */
+//    @Override
+//    public String getOrderBy() {
+//
+//        //可以自由选择，用什么排序
+//        return "create_time desc";
+//    }
 }

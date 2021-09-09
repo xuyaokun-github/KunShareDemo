@@ -23,6 +23,9 @@ public class PageParam<T>  implements IPage {
     // description = "页数", defaultValue = 20
     private Integer pageSize = 20;
 
+    /**
+     * 这个让前端进行传递可能会有sql注入
+     */
     // description = "排序", example = "id desc"
     private String orderBy;
 

@@ -31,8 +31,20 @@ public interface BaseService<Param, Result> {
          * 我建议是不，因为前端不需要用到这么多信息，信息应该尽量精简化
          * 应该在服务层做一下转换，再返回给控制层
          */
+        String orderBy = getOrderBy();
+        param.setOrderBy(orderBy);
         //注意，这里返回的具体对象的类型 和 list方法的返回类型无关，只和dao层执行拿到的对象类型有关！
         return PageHelper.startPage(param).doSelectPageInfo(() -> list(param.getParam()));
+    }
+
+    /**
+     * 考虑到sql注入风险，order by字段建议不要让前端传
+     * 假如希望让前端传，必须做好正则表达式判断
+     * 因此这里提供一个默认方法出来，让各个子服务层实现
+     * @return
+     */
+    default String getOrderBy(){
+        return "update_time desc";
     }
 
     /**

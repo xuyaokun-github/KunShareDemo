@@ -31,6 +31,21 @@ public class PageQueryDemoController {
 
     /**
      * 分页查询
+
+     {
+     "orderBy": "string",
+     "pageNum": 0,
+     "pageSize": 0,
+     "param": {
+     "createTime": "2021-09-09 08:00:56",
+     "createTime2": "2021-09-08",
+     "email": "string",
+     "firstname": "string",
+     "lastname": "string",
+     "phone": "string"
+     }
+     }
+
      *
      * @param pageParam 分页查询参数
      * @return 分页查询响应
