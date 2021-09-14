@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2
+    http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+    <!-- id 标识符，添加到生成文件名称的后缀符。
+    如果指定 id 的话（这里指定的是项目的版本），
+    目标文件则是 ${artifactId}-${id}.jar。【如terminal-dispatch-5.0.0.0.jar】 -->
+<!--
+    <id>${project.version}</id>
+-->
+    <!--  -->
+    <id>kunsharedemo</id>
+
+    <!-- 指定打包格式。
+    maven-assembly-plugin插件支持的打包格式有zip、tar、tar.gz (or tgz)、
+    tar.bz2 (or tbz2)、jar、dir、war，可以同时指定多个打包格式 -->
+    <formats>
+        <format>jar</format>
+    </formats>
+
+    <!-- 指定打的包是否包含打包层目录（比如finalName是terminal-dispatch，
+    当值为true，所有文件被放在包内的terminal-dispatch目录下，
+    否则直接放在包的根目录下）-->
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <!-- 指定将工程依赖的包打到包里的指定目录下 -->
+    <dependencySets>
+        <dependencySet>
+            <!-- 指定打包时是否包含工程自身生成的jar包
+                设置为true,本工程也会被打成jar包
+                设置为false之后，在包里找不到本工程的类了。如果要排除工程自身生成的jar，则可以设置为false-->
+            <useProjectArtifact>false</useProjectArtifact>
+            <!-- 指定将这些依赖包打到包里lib目录下
+                jar包的根目录下将会新建一个lib目录放所有第三方依赖，包括本工程的jar也可以放在lib下
+                但是这个lib目录，在执行main方法却不会被加载，因为这个lib目录是在jar包里，java命令找不到-->
+            <outputDirectory>lib</outputDirectory>
+            <!-- 用于管理依赖的部署，runtime表示只在运行时使用 -->
+            <scope>runtime</scope>
+            <!-- 放到lib下的包是否解压，默认是false -->
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
+    <!-- 指定要包含的文件集，可以定义多个fileSet -->
+    <fileSets>
+            <fileSet>
+                <directory>${project.basedir}/target/classes/</directory>
+                <outputDirectory>/</outputDirectory>
+                <includes>
+                    <include>/**/*</include>
+                </includes>
+            </fileSet>
+
+        <fileSet>
+            <!-- 指定归档文件（要打的jar包）要包含的目录（下的文件及文件夹） -->
+            <directory>src/main/script/linux/bin</directory>
+            <!--
+            指定要将当前目录（<directory>标签中的目录放在归档文件（要打的jar包）
+            bin目录下） -->
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>terminal-dispatch</include>
+                <!-- 精确控制要包含的文件，<exclude>用于精确控制要排除的文件  -->
+                <include>server</include>
+            </includes>
+            <!-- 设置文件 UNIX 属性，是一种读写权限 -->
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>conf</outputDirectory>
+            <includes>
+                <include>config.properties</include>
+                <include>logback.xml</include>
+            </includes>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+
+</assembly>

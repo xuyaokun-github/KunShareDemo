@@ -76,7 +76,7 @@ public class BatchDemo1JobConfig {
 
         //创建FlatFileItemReader
         FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("batch/batchDemoOne.txt"));
+        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
         reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
             setLineTokenizer(new DelimitedLineTokenizer("|") {{
                 setNames(new String[]{"uid", "tag", "type"});

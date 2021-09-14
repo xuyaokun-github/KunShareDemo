@@ -27,3 +27,12 @@ http://localhost:8061/xxl-job-admin
 
 9.整合配置中心
 http://localhost:8097/kunshare-config-server/kunsharedemo/dev/master
+
+10.引入flink
+mvn clean compile package -Dmaven.test.skip=true -Dspring-boot.repackage.skip=true
+java -jar .\kunsharedemo-1.0.2-jar-with-dependencies.jar flinkClassName=cn.com.kun.apache.flink.demo1.LocalRunningDataSourceTestJob
+flinkClassName=cn.com.kun.apache.flink.demo1.RemoteServerRunTestJob
+java -jar .\kunsharedemo-1.0.2-jar-with-dependencies.jar flinkClassName=cn.com.kun.apache.flink.demo1.MyFlinkDemoJob
+
+用springboot打包：
+mvn clean compile package -Dmaven.test.skip=true

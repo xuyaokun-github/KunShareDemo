@@ -2,7 +2,7 @@ package cn.com.kun.component.clusterlock.dblock;
 
 import cn.com.kun.component.clusterlock.ClusterLockHandler;
 import cn.com.kun.mapper.PessimisticLockMapper;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException;
+//import com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -100,7 +100,7 @@ public class DBClusterLockHandler implements ClusterLockHandler {
                 }
             }catch (Exception e){
                 //com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException: Lock wait timeout exceeded; try restarting transaction
-                if (e != null && e.getCause() != null && e.getCause() instanceof MySQLTransactionRollbackException
+                if (e != null && e.getCause() != null /*&& e.getCause() instanceof MySQLTransactionRollbackException*/
                         && e.getCause().getMessage().contains("Lock wait timeout")){
                     LOGGER.info("出现抢锁超时，继续下一次尝试抢锁。当前抢锁线程{}, 当前占有锁线程为：{}",
                             Thread.currentThread().getName(), acquireLockThreadName.get(resourceName));

@@ -10,15 +10,21 @@
     </parent>
     <groupId>com.kunghsu</groupId>
     <artifactId>kunsharedemo</artifactId>
-    <version>0.0.2</version>
-    <packaging>war</packaging>
+    <version>1.0.2</version>
+    <!-- 假如需要访问工程内的前端，用war -->
+<!--    <packaging>war</packaging>-->
+    <packaging>jar</packaging>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
         <skipTests>true</skipTests>
+        <!-- 这个值通常会由Jenkins生成 -->
+        <build.number>1</build.number>
         <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
+        <flink.version>1.10.0</flink.version>
+        <scala.binary.version>2.11</scala.binary.version>
     </properties>
 
     <dependencies>
@@ -396,6 +402,27 @@
             <version>3.0.0</version>
         </dependency>
 
+        <!-- apache flink  start -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-java</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- This dependency is provided, because it should not be packaged into
+            the JAR file. -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!-- apache flink  end -->
+
     </dependencies>
 
 <!--    <repositories>
@@ -485,11 +512,99 @@
         </resources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- 这里相对的是jar包所在的路径
+                                 和jar包同级的位置下，有一个lib文件夹-->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!-- 此处为主入口-->
+                            <mainClass>cn.com.kun.apache.flink.FlinkDemoCommonEntrance</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 这里会将所有依赖的jar包放到target目录下的lib文件夹 -->
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <!-- 如果只想有finalName,不需要连接release.xml中的id -->
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
+                    <!-- 用了descriptor就不需要用descriptorRefs
+                        假如希望将第三方依赖打进jar包且能被加载，用jar-with-dependencies-->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <archive>
+                        <manifest>
+<!--                            <addClasspath>true</addClasspath>-->
+                            <!-- assembly.xml文件里指定了依赖包输出到lib下了，所以这里必须指定classpathPrefix，从lib下找包
+                             注意，这里的路径是指jar包外的路径，假如lib放到jar包内是找不到的
+                             当把依赖包copy到jar包外时，才有必要指定classpathPrefix-->
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+                            <mainClass>cn.com.kun.apache.flink.FlinkDemoCommonEntrance</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- 此处为主入口-->
+                            <mainClass>cn.com.kun.apache.flink.demo1.LocalRunningDataSourceTest2</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>cn.com.kun.KunShareDemoApplication</mainClass>
                     <addResources>true</addResources>
+                    <!-- skip设置为true,可以跳过spring-boot-maven-plugin的执行 -->
+<!--
+                    <skip>true</skip>
+-->
                 </configuration>
                 <executions>
                     <execution>
