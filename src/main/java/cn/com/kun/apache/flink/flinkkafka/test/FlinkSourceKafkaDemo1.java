@@ -1,5 +1,9 @@
-package cn.com.kun.apache.flink.demo2;
+package cn.com.kun.apache.flink.flinkkafka.test;
 
+import cn.com.kun.apache.flink.flinkkafka.model.FlinkTopicMsg;
+import cn.com.kun.common.utils.JacksonUtils;
+import org.apache.flink.api.common.functions.FilterFunction;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -7,6 +11,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.streaming.connectors.kafka.internals.KeyedSerializationSchemaWrapper;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -33,8 +38,37 @@ public class FlinkSourceKafkaDemo1 {
         //添加输入源
         DataStream<String> stream = env.addSource(myConsumer);
 
+        //数据的中间处理操作
+        //得到一个新的输入流
+        DataStream<String> newStream = stream.map(new MapFunction<String, String>() {
+            @Override
+            public String map(String value) {
+
+                Map<String, Object> map = JacksonUtils.toMap(value);
+                map.put("processFlag", true);//进过加工的数据，加一个字段属性
+                return JacksonUtils.toJSONString(map);
+            }
+        });
+
+        //做一个过滤操作
+        newStream = newStream.filter(new FilterFunction<String>(){
+
+            @Override
+            public boolean filter(String s) throws Exception {
+
+                //返回true,表示需要该记录，返回false表示丢弃
+                FlinkTopicMsg flinkTopicMsg = JacksonUtils.toJavaObject(s, FlinkTopicMsg.class);
+                if ("0".equals(flinkTopicMsg.getStatusCode())) {
+                    //只要状态码为0的记录
+                    System.out.println("找到StatusCode为0的记录：" + s);
+                    return true;
+                }
+                return false;
+            }
+        });
+
         //输出到控制台
-        stream.print();
+        newStream.print();
 
         //生产者配置
         Properties produceProperties = new Properties();
@@ -47,7 +81,7 @@ public class FlinkSourceKafkaDemo1 {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE); //容错
 
         //添加输出源
-        stream.addSink(myProducer);
+        newStream.addSink(myProducer);
 
         try {
             System.out.println("调用execute方法");

@@ -94,6 +94,7 @@ public class BatchDemo4JobConfig {
                 .writer(job4Writer4ForCustom)
                 //假如异常被自定义异常处理器跳过了，则skip-limit机制就不会再统计到。
 //                .exceptionHandler(new MyBatchExceptionHandler()) //设置异常处理器
+//                .taskExecutor(null) //可以指定多线程执行
                 .build();
     }
 
