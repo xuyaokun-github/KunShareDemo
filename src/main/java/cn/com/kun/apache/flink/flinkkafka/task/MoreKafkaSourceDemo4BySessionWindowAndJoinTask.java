@@ -1,14 +1,12 @@
-package cn.com.kun.apache.flink.flinkkafka.test;
+package cn.com.kun.apache.flink.flinkkafka.task;
 
-import cn.com.kun.apache.flink.flinkkafka.FlinkKafkaConfig;
 import cn.com.kun.apache.flink.flinkkafka.TopicConstants;
-import cn.com.kun.apache.flink.flinkkafka.model.FlinkTopicDealResultMsg;
+import cn.com.kun.apache.flink.flinkkafka.config.FlinkKafkaConfig;
 import cn.com.kun.apache.flink.flinkkafka.model.FlinkTopicMsg;
+import cn.com.kun.apache.flink.flinkkafka.operators.join.MoreKafkaSourceByJoinAndSessionWindowJoinFunction;
+import cn.com.kun.apache.flink.flinkkafka.operators.map.MoreKafkaSourceByJoinAndSessionWindowFlatMapFunction;
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.common.vo.ResultVo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.functions.JoinFunction;
+import cn.com.kun.common.utils.PropertiesUtil;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -17,7 +15,6 @@ import org.apache.flink.streaming.api.windowing.assigners.ProcessingTimeSessionW
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import org.apache.flink.util.Collector;
 
 /**
  * 验证同时消费多个kafka的topic
@@ -29,10 +26,11 @@ import org.apache.flink.util.Collector;
  * date:2021/9/15
  * desc:
  */
-public class MoreKafkaSourceDemo4BySessionWindowAndJoin {
+public class MoreKafkaSourceDemo4BySessionWindowAndJoinTask {
 
     public static void main(String[] args) throws Exception {
 
+        String value = PropertiesUtil.get("spring.application.name", "111");
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         //设置time
@@ -54,48 +52,8 @@ public class MoreKafkaSourceDemo4BySessionWindowAndJoin {
                 .where(new MyKeySelector())
                 .equalTo(new MyKeySelector()) //两个函数用的key可以是不一样的，假如字段真的完全不同名的话
                 .window(ProcessingTimeSessionWindows.withGap(Time.seconds(10)))
-                .apply(new JoinFunction<String, String, FlinkTopicDealResultMsg>() {
-
-                    /**
-                     * 这种情况假如数据没到齐，不会触发任何处理！！因为where和equal没匹配成功，所以不会有后续
-                     *
-                     * @param first
-                     * @param second
-                     * @return
-                     * @throws Exception
-                     */
-                    @Override
-                    public FlinkTopicDealResultMsg join(String first, String second) throws Exception {
-
-                        //整个之后，可以自由决定返回什么
-                        //
-                        FlinkTopicMsg flinkTopic1Msg = JacksonUtils.toJavaObject(first, FlinkTopicMsg.class);
-                        FlinkTopicMsg flinkTopic2Msg = JacksonUtils.toJavaObject(first, FlinkTopicMsg.class);
-                        FlinkTopicDealResultMsg flinkTopicResMsg = new FlinkTopicDealResultMsg();
-                        if (flinkTopic1Msg.getTradeId().equals(flinkTopic2Msg.getTradeId())){
-                            flinkTopicResMsg.setMsgId(flinkTopic1Msg.getMsgId());
-                            flinkTopicResMsg.setStatusCode(flinkTopic2Msg.getStatusCode());
-                        }
-                        return flinkTopicResMsg;
-                    }
-
-                })
-                .flatMap(new FlatMapFunction<FlinkTopicDealResultMsg, String>() {
-
-                    @Override
-                    public void flatMap(FlinkTopicDealResultMsg value, Collector<String> out) throws Exception {
-
-                        if (StringUtils.isNotEmpty(value.getMsgId())){
-                            //说明得到正确的处理
-                            String newRes = JacksonUtils.toJSONString(value);
-                            //放到输出流
-                            out.collect(newRes);
-                        }else {
-                            out.collect(JacksonUtils.toJSONString(ResultVo.valueOfError("处理异常")));
-                        }
-
-                    }
-                });
+                .apply(new MoreKafkaSourceByJoinAndSessionWindowJoinFunction())
+                .flatMap(new MoreKafkaSourceByJoinAndSessionWindowFlatMapFunction());
 
         //输出到控制台,这里输出的是最后一次调用collect设置的结果
         stream.print();

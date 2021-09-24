@@ -1,6 +1,6 @@
 package cn.com.kun.apache.flink.flinkkafka.test;
 
-import cn.com.kun.apache.flink.flinkkafka.FlinkKafkaConfig;
+import cn.com.kun.apache.flink.flinkkafka.config.FlinkKafkaConfig;
 import cn.com.kun.apache.flink.flinkkafka.model.FlinkTopicMsg;
 import cn.com.kun.apache.flink.flinkkafka.TopicConstants;
 import cn.com.kun.common.utils.JacksonUtils;

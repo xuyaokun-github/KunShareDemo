@@ -1,5 +1,6 @@
-package cn.com.kun.apache.flink.flinkkafka;
+package cn.com.kun.apache.flink.flinkkafka.config;
 
+import cn.com.kun.apache.flink.flinkkafka.MyJsonDeserializationSchema;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
