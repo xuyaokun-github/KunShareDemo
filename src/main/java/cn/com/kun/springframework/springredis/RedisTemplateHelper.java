@@ -454,9 +454,21 @@ public class RedisTemplateHelper {
      * @param end 结束  0 到 -1代表所有值
      * @return
      */
-    public List<Object> lGet(String key, long start, long end){
+    public <T> List<T> lGet(String key, long start, long end){
         try {
+            /*
+                假如传0 4 表示取5条记录，下标是从0开始，而且用的是闭区间
+             */
             return redisTemplate.opsForList().range(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public <T> T lLeftPop(String key){
+        try {
+            return (T) redisTemplate.opsForList().leftPop(key);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -483,7 +495,7 @@ public class RedisTemplateHelper {
      * @param index 索引  index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
      * @return
      */
-    public Object lGetIndex(String key,long index){
+    public Object lGetIndex(String key, long index){
         try {
             return redisTemplate.opsForList().index(key, index);
         } catch (Exception e) {
@@ -518,7 +530,10 @@ public class RedisTemplateHelper {
     public boolean lSet(String key, Object value, long time) {
         try {
             redisTemplate.opsForList().rightPush(key, value);
-            if (time > 0) expire(key, time);
+            if (time > 0){
+                //不能单独针对某个value设置时间，这个和set同理的
+                expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -528,6 +543,7 @@ public class RedisTemplateHelper {
 
     /**
      * 将list放入缓存
+     *
      * @param key 键
      * @param value 值
      * @return
@@ -584,7 +600,7 @@ public class RedisTemplateHelper {
      * @param value 值
      * @return 移除的个数
      */
-    public long lRemove(String key,long count,Object value) {
+    public long lRemove(String key, long count, Object value) {
         try {
             Long remove = redisTemplate.opsForList().remove(key, count, value);
             return remove;
@@ -593,6 +609,15 @@ public class RedisTemplateHelper {
             return 0;
         }
     }
+
+    public void lTrim(String key, long start, long end) {
+        try {
+            redisTemplate.opsForList().trim(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //=============================== channel topic =================================
 
     /**
      * 发送主题消息

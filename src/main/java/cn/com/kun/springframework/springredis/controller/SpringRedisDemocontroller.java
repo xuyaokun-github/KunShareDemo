@@ -1,19 +1,24 @@
 package cn.com.kun.springframework.springredis.controller;
 
 import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.springframework.springredis.service.RedisListDemoService;
+import cn.com.kun.springframework.springredis.vo.JobVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +42,9 @@ public class SpringRedisDemocontroller {
 
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;
+
+    @Autowired
+    private RedisListDemoService redisListDemoService;
 
     /**
      * 测试生成唯一的递增流水号
@@ -207,6 +215,72 @@ public class SpringRedisDemocontroller {
         boolean res = redisTemplateHelper.sHasKey("spring-redis-demo-testSetAdd", UUID.randomUUID().toString());
         LOGGER.info("耗时：{}ms", System.currentTimeMillis() - start);
 
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @RequestMapping(value = "/testList", method = RequestMethod.GET)
+    public ResultVo testList(HttpServletRequest request){
+
+        for (int i = 0; i < 10; i++) {
+            JobVO jobVO = new JobVO();
+            jobVO.setName("job" + i);
+            jobVO.setPriority(i);
+            redisListDemoService.add(jobVO);
+        }
+
+//        for (int i = 0; i < 3; i++) {
+//            //pop三次
+//            JobVO jobVO = redisListDemoService.popOne();
+//            LOGGER.info(JacksonUtils.toJSONString(jobVO));
+//        }
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping(value = "/testListPop")
+    public ResultVo testListPop(HttpServletRequest request){
+
+        for (;;) {
+            //pop三次
+            JobVO jobVO = redisListDemoService.popOne();
+            if (jobVO == null){
+                break;
+            }
+            LOGGER.info(JacksonUtils.toJSONString(jobVO));
+        }
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping(value = "/testListPopMoreThread")
+    public ResultVo testListPopMoreThread(HttpServletRequest request){
+
+        for (int i = 0; i < 10; i++) {
+            //启动多个线程pop
+            new Thread(()->{
+                JobVO jobVO = redisListDemoService.popOne();
+                LOGGER.info(JacksonUtils.toJSONString(jobVO));
+            }).start();
+        }
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping(value = "/testListPopMoreAndDelete")
+    public ResultVo testListPopMoreAndDelete(HttpServletRequest request){
+
+        List<JobVO> jobVOList = redisListDemoService.popMore(3);
+        LOGGER.info(JacksonUtils.toJSONString(jobVOList));
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping(value = "/testListPopMoreAndDeleteByMoreThread")
+    public ResultVo testListPopMoreAndDeleteByMoreThread(HttpServletRequest request){
+
+        for (int i = 0; i < 5; i++) {
+            new Thread(() -> {
+                //popMore这个方法内置锁逻辑
+                List<JobVO> jobVOList = redisListDemoService.popMore(3);
+                LOGGER.info(JacksonUtils.toJSONString(jobVOList));
+            }).start();
+        }
         return ResultVo.valueOfSuccess("");
     }
 
