@@ -36,3 +36,6 @@ java -jar .\kunsharedemo-1.0.2-jar-with-dependencies.jar flinkClassName=cn.com.k
 
 用springboot打包：
 mvn clean compile package -Dmaven.test.skip=true
+
+11.引入sentinel
+java -Dserver.port=8070 -Dcsp.sentinel.dashboard.server=localhost:8070 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar

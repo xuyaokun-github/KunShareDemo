@@ -10,7 +10,7 @@ import java.util.Map;
 @Service
 public class ZuulDemoService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ZuulDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ZuulDemoService.class);
 
     /**
      * 首先将调用第三方平台的接口的逻辑封装成一个方法入口

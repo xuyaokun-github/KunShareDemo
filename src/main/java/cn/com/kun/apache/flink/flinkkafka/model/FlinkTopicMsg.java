@@ -25,10 +25,10 @@ public class FlinkTopicMsg {
      * 服务端返回的消息是字符串类型，需要转换成date类型，必须加@JsonFormat注解
      * 否则序列化，拿到的对象是空
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     public String getMsgId() {

@@ -1,5 +1,6 @@
 package cn.com.kun.springframework.core.jackson;
 
+import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
 
 import java.util.Date;
@@ -26,6 +27,7 @@ public class TestJackson {
     private static void testMethod2() {
 
         Date date = new Date();
+        System.out.println(DateUtils.toStr(date, DateUtils.PATTERN_YYYY_MM_DD_HH_MM_SS));
         JacksonVO2 jacksonVO2 = new JacksonVO2();
         jacksonVO2.setCreateTime(date);
         JacksonVO3 jacksonVO3 = new JacksonVO3();
