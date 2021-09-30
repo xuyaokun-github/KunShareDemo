@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.guanwangdemo;
+package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.officialWebsite;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;

@@ -1,11 +1,13 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.controller;
 
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelExtendService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
@@ -20,6 +22,8 @@ public class SentinelDemoController {
     @Autowired
     private SentinelDemoService sentinelDemoService;
 
+    @Autowired
+    private SentinelExtendService sentinelExtendService;
 
     @GetMapping("/testSimpleLimit")
     public String testSimpleLimit() throws FileNotFoundException {
@@ -60,4 +64,19 @@ public class SentinelDemoController {
         }
         return "OK";
     }
+
+    @GetMapping("/testGetAllJsonInfo")
+    public String testGetAllJsonInfo() throws Exception {
+
+        sentinelExtendService.getAllJsonInfo();
+        return "OK";
+    }
+
+    @GetMapping("/testChangeSleepMillis")
+    public String testChangeSleepMillis(@RequestParam("sleep") String sleep) throws Exception {
+
+        sentinelDemoService.changeSleepMillis(sleep);
+        return "OK";
+    }
+
 }
