@@ -36,7 +36,7 @@ public class SentinelExtendService {
 
     public List<NodeVo> getAllJsonInfo(){
 
-        List<NodeVo> results = MyFetchJsonTreeHandler.getJsonTreeForSentinelDefaultContext();
+        List<NodeVo> results = CustomFetchJsonTreeHandler.getJsonTreeForSentinelDefaultContext();
         return results;
     }
 

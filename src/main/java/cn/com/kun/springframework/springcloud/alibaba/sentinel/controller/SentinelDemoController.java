@@ -1,5 +1,8 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.controller;
 
+import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.scenelimit.SceneLimitDemoService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelExtendService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelDemoService;
 import org.slf4j.Logger;
@@ -24,6 +27,9 @@ public class SentinelDemoController {
 
     @Autowired
     private SentinelExtendService sentinelExtendService;
+
+    @Autowired
+    private SceneLimitDemoService sceneLimitDemoService;
 
     @GetMapping("/testSimpleLimit")
     public String testSimpleLimit() throws FileNotFoundException {
@@ -68,8 +74,7 @@ public class SentinelDemoController {
     @GetMapping("/testGetAllJsonInfo")
     public String testGetAllJsonInfo() throws Exception {
 
-        sentinelExtendService.getAllJsonInfo();
-        return "OK";
+        return JacksonUtils.toJSONString(sentinelExtendService.getAllJsonInfo());
     }
 
     @GetMapping("/testChangeSleepMillis")
@@ -79,4 +84,44 @@ public class SentinelDemoController {
         return "OK";
     }
 
+    @GetMapping("/testSceneLimit")
+    public String testSceneLimit() throws Exception {
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                for (int j = 0; j < 9; j++) {
+                    ResultVo res = sceneLimitDemoService.method(null, "DX");
+                }
+            }).start();
+        }
+//        for (int i = 0; i < 1; i++) {
+//            new Thread(()->{
+//                for (int j = 0; j < 9; j++) {
+//                    ResultVo res = sceneLimitDemoService.method(null, "WX");
+//                }
+//            }).start();
+//        }
+        return "OK";
+    }
+
+
+    @GetMapping("/testSceneLimit2")
+    public String testSceneLimit2() throws Exception {
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                for (int j = 0; j < 9; j++) {
+                    ResultVo res = sceneLimitDemoService.method2(null, "DX");
+                }
+            }).start();
+        }
+//        for (int i = 0; i < 1; i++) {
+//            new Thread(()->{
+//                for (int j = 0; j < 9; j++) {
+//                    ResultVo res = sceneLimitDemoService.method(null, "WX");
+//                }
+//            }).start();
+//        }
+        return "OK";
+    }
 }

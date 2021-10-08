@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +27,7 @@ public class MemoryCacheScheduleTask {
     @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
-    @Scheduled(fixedRate = 60000L)
+//    @Scheduled(fixedRate = 60000L)
     public void detect(){
         LOGGER.info("MemoryCacheDBDetector running");
         if (!memoryCacheProperties.isMultiRedis() || StringUtils.isEmpty(memoryCacheProperties.getClusterName())){

@@ -6,7 +6,9 @@ import com.alibaba.csp.sentinel.node.DefaultNode;
 import com.alibaba.csp.sentinel.node.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -17,11 +19,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * date:2021/9/30
  * desc:
 */
-public class MyFetchJsonTreeHandler {
+public class CustomFetchJsonTreeHandler {
 
     static DefaultNode SENTINEL_DEFAULT_CONTEXT_NODE = null;
+    static Map<String, DefaultNode> NODE_MAP = new HashMap<>();
 
     public static List<NodeVo> handle(){
+
         List<NodeVo> results = new ArrayList<NodeVo>();
         visit(Constants.ROOT, results, null);
         return results;
@@ -46,7 +50,7 @@ public class MyFetchJsonTreeHandler {
             if (sentinelDefaultContextNode.get() != null){
                 SENTINEL_DEFAULT_CONTEXT_NODE = sentinelDefaultContextNode.get();
             }else {
-                //假如jar包后面改名字，这里就会有问题
+                //假如jar包里的常量后续改名字，这里就会有问题
                 throw new RuntimeException("sentinel_default_context获取失败");
             }
         }
@@ -55,6 +59,31 @@ public class MyFetchJsonTreeHandler {
         return results;
     }
 
+    public static List<NodeVo> getJsonTreeForFixedContext(String contextName){
+
+        DefaultNode parentNode = null;
+        parentNode = NODE_MAP.get(contextName);
+        if (parentNode == null){
+            AtomicReference<DefaultNode> contextNodeAtomicReference = new AtomicReference<>();
+            Constants.ROOT.getChildList().forEach(node -> {
+                DefaultNode defaultNode = (DefaultNode) node;
+                if (contextName.equals(defaultNode.getId().getName())){
+                    contextNodeAtomicReference.set(defaultNode);
+                }
+            });
+            if (contextNodeAtomicReference.get() != null){
+                parentNode = contextNodeAtomicReference.get();
+                NODE_MAP.put(contextName, parentNode);
+            }else {
+                //假如jar包里的常量后续改名字，这里就会有问题
+                throw new RuntimeException("sentinel_default_context获取失败");
+            }
+        }
+
+        List<NodeVo> results = new ArrayList<NodeVo>();
+        visit(parentNode, results, null);
+        return results;
+    }
 
 
     /**
