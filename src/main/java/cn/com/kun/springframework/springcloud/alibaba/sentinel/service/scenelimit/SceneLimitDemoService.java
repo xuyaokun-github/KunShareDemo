@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.scenelimit;
+package cn.com.kun.springframework.springcloud.alibaba.sentinel.service.scenelimit;
 
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.FlowMonitorCallback;
@@ -22,6 +22,8 @@ import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelRe
 
 /**
  * 按场景限流demo
+ * 多规则限流--分场景限流
+ *
  * <p>
  * author:xuyaokun_kzx
  * date:2021/10/8
@@ -57,7 +59,7 @@ public class SceneLimitDemoService {
         flowMonitorProcessor.registFlowMonitorCallback("MSG_PUSH", new FlowMonitorCallback() {
             @Override
             public void monitorCallback(MonitorFlag monitorFlag) {
-                LOGGER.info("触发了业务层注册的回调逻辑：{}", monitorFlag);
+//                LOGGER.info("触发了业务层注册的回调逻辑：{}", monitorFlag);
                 setMonitorFlag(monitorFlag);
             }
         });
@@ -118,7 +120,7 @@ public class SceneLimitDemoService {
      */
     public ResultVo method2(Map<String, String> paramMap, String sendChannel) {
 
-
+        //ContextUtil.enter标记调用链路
         ContextUtil.enter("MSG_PUSH");
 
         ResultVo res = null;

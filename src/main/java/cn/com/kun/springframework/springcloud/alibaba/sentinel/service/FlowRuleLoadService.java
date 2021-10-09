@@ -2,6 +2,8 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.service;
 
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.FlowMonitorProcessor;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,8 @@ public class FlowRuleLoadService {
         rules.add(rule2);
         rules.add(buildFlowRule(RESOURCE_SCENE_DX, 5, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
         rules.add(buildFlowRule(RESOURCE_SCENE_WX, 10, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
+        rules.add(buildFlowRule(RESOURCE_NAME_3, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
+        rules.add(buildFlowRule(RESOURCE_NAME_TESTLIMITANDDEGRADE2, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
 
         FlowRuleManager.loadRules(rules);
 
@@ -55,6 +59,35 @@ public class FlowRuleLoadService {
         flowMonitorProcessor.registGreedYellowLineThreshold(RESOURCE_NAME, 20L);
 
 
+        //------------------降级规则---------------------------
+        List<DegradeRule> degradeRuleList = new ArrayList<>();
+        //给资源RESOURCE_NAME，指定一个降级规则
+        DegradeRule degradeRule = new DegradeRule(RESOURCE_NAME_3)
+                .setGrade(RuleConstant.DEGRADE_GRADE_RT)
+                // Max allowed response time
+                //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
+                .setCount(1000)
+                // Retry timeout (in second)
+                .setTimeWindow(60);
+                // Circuit breaker opens when slow request ratio > 60% (下面三个都是后面版本才有的)
+//                .setSlowRatioThreshold(0.6)
+//                .setMinRequestAmount(100)
+//                .setStatIntervalMs(20000);
+
+        degradeRuleList.add(degradeRule);
+        degradeRuleList.add(buildDegradeRule(RESOURCE_NAME_TESTLIMITANDDEGRADE2, RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT, 1, 120));
+        DegradeRuleManager.loadRules(degradeRuleList);
+    }
+
+    private DegradeRule buildDegradeRule(String resource, int grade, int count, int timeWindow) {
+        DegradeRule degradeRule = new DegradeRule(resource)
+                .setGrade(grade)
+                // Max allowed response time
+                //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
+                .setCount(count)
+                // Retry timeout (in second)
+                .setTimeWindow(timeWindow);
+        return degradeRule;
     }
 
     private FlowRule buildFlowRule(String resource, int count, int controlBehavior) {
@@ -81,6 +114,8 @@ public class FlowRuleLoadService {
         rule2.setCount(count);
         return rule2;
     }
+
+
 
 
 }

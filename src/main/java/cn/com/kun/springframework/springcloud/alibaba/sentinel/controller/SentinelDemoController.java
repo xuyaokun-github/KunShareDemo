@@ -2,7 +2,7 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.controller;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.scenelimit.SceneLimitDemoService;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.scenelimit.SceneLimitDemoService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelExtendService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelDemoService;
 import org.slf4j.Logger;
@@ -70,6 +70,37 @@ public class SentinelDemoController {
         }
         return "OK";
     }
+
+    /**
+     * @return
+     * @throws FileNotFoundException
+     */
+    @GetMapping("/testLimitAndDegrade")
+    public String testLimitAndDegrade() throws FileNotFoundException {
+
+        for (int i = 0; i < 10; i++) {
+            sentinelDemoService.testLimitAndDegrade();
+        }
+        return "OK";
+    }
+
+    @GetMapping("/testLimitAndDegrade2")
+    public String testLimitAndDegrade2() throws Exception {
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                for (int j = 0; j < 5; j++) {
+                    sentinelDemoService.testLimitAndDegrade2();
+                }
+            }).start();
+        }
+//        for (int i = 0; i < 20; i++) {
+//            sentinelDemoService.testLimitAndDegrade2();
+//        }
+        return "OK";
+    }
+
+
 
     @GetMapping("/testGetAllJsonInfo")
     public String testGetAllJsonInfo() throws Exception {
