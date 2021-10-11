@@ -35,7 +35,7 @@ public class KafkaSentinelThreadDemoService {
                     //正常情况下，拉消息是一直拉，没有睡眠 或者是睡眠1秒
                     //假如触发了黄线或者红线
                     //就开始sleep
-                    kafkaConsumerThreadManager.await();
+                    kafkaConsumerThreadManager.await(KafkaConsumerThreadConstants.CONSUMER_THREAD_TYPE_MIDDLE);
 
                 }catch (Exception e){
                     LOGGER.error("kafka消费线程异常", e);
