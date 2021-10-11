@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class SecretDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(SecretDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(SecretDemoController.class);
 
     //可以同时加密解密，针对入参解密，针对返回做加密
     @SecretAnnotation(decode = true) //表示需要解密
