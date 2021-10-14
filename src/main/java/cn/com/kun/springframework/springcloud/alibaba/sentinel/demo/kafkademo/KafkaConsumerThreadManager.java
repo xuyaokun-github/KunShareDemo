@@ -1,8 +1,8 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.kafkademo;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.FlowMonitorProcessor;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.MonitorFlag;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelFlowMonitor;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.RESOURCE_NAME;
+import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.*;
 
 /**
  * Kafka消费线程管理器
@@ -27,7 +27,7 @@ public class KafkaConsumerThreadManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerThreadManager.class);
 
     @Autowired
-    private FlowMonitorProcessor flowMonitorProcessor;
+    private SentinelFlowMonitor sentinelFlowMonitor;
 
     //
     @Autowired
@@ -48,11 +48,12 @@ public class KafkaConsumerThreadManager {
         /*
          * 需要监听哪些资源，根据业务决定
          */
-        MonitorFlag monitorFlag = flowMonitorProcessor.getFlowMonitorFlag(RESOURCE_NAME);
-        LOGGER.info("monitorFlag：{}", JacksonUtils.toJSONString(monitorFlag));
-        if (monitorFlag != null){
+//        FlowMonitorRes flowMonitorRes = flowMonitorProcessor.getFlowMonitorRes(RESOURCE_NAME);
+        FlowMonitorRes flowMonitorRes = sentinelFlowMonitor.getMergeFlowMonitorRes(RESOURCE_SCENE_DX, RESOURCE_SCENE_WX);
+        LOGGER.info("flowMonitorRes：{}", JacksonUtils.toJSONString(flowMonitorRes));
+        if (flowMonitorRes != null){
             //计算睡眠时间
-            long sleepTime = calculateWaitTime(monitorFlag, consumerThreadType);
+            long sleepTime = calculateWaitTime(flowMonitorRes, consumerThreadType);
             if (sleepTime > 0){
                 Thread.sleep(sleepTime);
             }
@@ -62,11 +63,11 @@ public class KafkaConsumerThreadManager {
 
     /**
      * 计算睡眠时间
-     * @param monitorFlag
+     * @param flowMonitorRes
      * @param consumerThreadType
      * @return
      */
-    private long calculateWaitTime(MonitorFlag monitorFlag, String consumerThreadType){
+    private long calculateWaitTime(FlowMonitorRes flowMonitorRes, String consumerThreadType){
 
         String time = "";
 
@@ -74,9 +75,9 @@ public class KafkaConsumerThreadManager {
             /*
              * 决定睡眠多久，可以灵活设置
              */
-            if (monitorFlag.getRedFlag().get()){
+            if (flowMonitorRes.getRedFlag().get()){
                 time = kafkaConsumerSpeedProperties.getHighSleepTimeWhenRed();
-            }else if (monitorFlag.getYellowFlag().get()){
+            }else if (flowMonitorRes.getYellowFlag().get()){
                 time = kafkaConsumerSpeedProperties.getHighSleepTimeWhenYellow();
             } else {
                 time = kafkaConsumerSpeedProperties.getHighSleepTimeWhenGreen();
@@ -85,9 +86,9 @@ public class KafkaConsumerThreadManager {
             /*
              * 决定睡眠多久，可以灵活设置
              */
-            if (monitorFlag.getRedFlag().get()){
+            if (flowMonitorRes.getRedFlag().get()){
                 time = kafkaConsumerSpeedProperties.getMiddleSleepTimeWhenRed();
-            }else if (monitorFlag.getYellowFlag().get()){
+            }else if (flowMonitorRes.getYellowFlag().get()){
                 time = kafkaConsumerSpeedProperties.getMiddleSleepTimeWhenYellow();
             } else {
                 time = kafkaConsumerSpeedProperties.getMiddleSleepTimeWhenGreen();
@@ -96,9 +97,9 @@ public class KafkaConsumerThreadManager {
             /*
              * 决定睡眠多久，可以灵活设置
              */
-            if (monitorFlag.getRedFlag().get()){
+            if (flowMonitorRes.getRedFlag().get()){
                 time = kafkaConsumerSpeedProperties.getLowSleepTimeWhenRed();
-            }else if (monitorFlag.getYellowFlag().get()){
+            }else if (flowMonitorRes.getYellowFlag().get()){
                 time = kafkaConsumerSpeedProperties.getLowSleepTimeWhenYellow();
             } else {
                 time = kafkaConsumerSpeedProperties.getLowSleepTimeWhenGreen();
@@ -106,7 +107,8 @@ public class KafkaConsumerThreadManager {
         }
 
         //也可以根据具体的QPS值决定该睡多久,可以制定一个公式，灵活判断
-        monitorFlag.getTotalQps();
+//        flowMonitorRes.getTotalQps();
+
         return StringUtils.isEmpty(time) ? 0L : Long.valueOf(time);
     }
 

@@ -1,7 +1,9 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
 
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.MonitorFlag;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
 import com.alibaba.csp.sentinel.command.vo.NodeVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,8 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * desc:
 */
 @Service
-public class FlowMonitorProcessor {
+public class SentinelFlowMonitor {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(SentinelFlowMonitor.class);
 
     /**
      * 需要监控的所有context
@@ -29,14 +32,14 @@ public class FlowMonitorProcessor {
 
     /**
      * key ->
-     * value -> MonitorFlag(装载着红、黄、绿三个状态的标识)
+     * value -> FlowMonitorRes(装载着红、黄、绿三个状态的标识)
      */
-    private Map<String, MonitorFlag> monitorFlagMap = new ConcurrentHashMap();
+    private Map<String, FlowMonitorRes> monitorFlagMap = new ConcurrentHashMap();
 
     /**
      * 绿黄分隔线具体值
      */
-    private Map<String, Long> greedYellowLineThresholdMap = new ConcurrentHashMap<>();
+    private Map<String, Long> yellowLineThresholdMap = new ConcurrentHashMap<>();
 
     /**
      * 回调实例
@@ -66,14 +69,51 @@ public class FlowMonitorProcessor {
     }
 
     /**
-     * 根据资源名称获取对应的 流量监控标记
-     *
+     * 根据资源名称获取对应的 流量监控结果
+     * （获取单个资源对应的结果）
      * @param resourceName
      * @return
      */
-    public MonitorFlag getFlowMonitorFlag(String resourceName) {
+    public FlowMonitorRes getFlowMonitorRes(String resourceName) {
 
         return monitorFlagMap.get(resourceName);
+    }
+
+
+    /**
+     * 获取多个资源对应的监控结果，合并成一个统一结果返回
+     * 注意合并结果，只获取超过了阈值线的监控结果的数据，因为上层更关心的是超负荷情况
+     *
+     * @param resourceNames
+     * @return
+     */
+    public FlowMonitorRes getMergeFlowMonitorRes(String... resourceNames) {
+
+        FlowMonitorRes mergeRes = new FlowMonitorRes();
+        mergeRes.setResource(String.join(",", resourceNames));
+        mergeRes.markGreen();
+        for (String resourceName : resourceNames) {
+            //遍历所有资源对应的监控结果，合并成一个统一结果返回
+            FlowMonitorRes flowMonitorRes = monitorFlagMap.get(resourceName);
+            if (flowMonitorRes != null){
+                if (flowMonitorRes.isRed()){
+                    //打上红色标记并退出
+                    mergeRes.markRed();
+                    mergeRes.setResource(flowMonitorRes.getResource());
+                    mergeRes.setTotalQps(flowMonitorRes.getTotalQps());
+                    break;
+                }
+                if (!mergeRes.isYellow() && flowMonitorRes.isYellow()){
+                    //运行到这里，假如mergeRes未被打上黄色 && 当前遍历元素为黄色，打上黄色标记
+                    mergeRes.markYellow();
+                    mergeRes.setResource(flowMonitorRes.getResource());
+                    mergeRes.setTotalQps(flowMonitorRes.getTotalQps());
+                    //这里是跳过，因为可能下一个资源是红色状态，所以仍需继续循环
+                    continue;
+                }
+            }
+        }
+        return mergeRes;
     }
 
     /**
@@ -95,15 +135,15 @@ public class FlowMonitorProcessor {
     }
 
     /**
-     *  设置某个资源的绿黄分隔线
-     *  假如没设置绿黄分隔线，则统一设置为绿，这样就无法做到更平稳的控制
-     *  例如，没设置绿黄分割线，则无法针对 10% 和 95% 做进一步的区分对待，95%理应被标记为黄区
+     *  设置某个资源的黄色预警线
+     *  假如没设置黄色预警线，则统一设置为绿色状态，这样就无法做到更平稳的控制
+     *  例如，没设置黄色预警线，则无法针对 10% 和 95% 做进一步的区分对待，95%理应被标记为黄区
      * @param resourceName
-     * @param greedYellowLineThreshold
+     * @param yellowLineThreshold
      */
-    public void registGreedYellowLineThreshold(String resourceName, Long greedYellowLineThreshold){
+    public void registYellowLineThreshold(String resourceName, Long yellowLineThreshold){
 
-        greedYellowLineThresholdMap.put(resourceName, greedYellowLineThreshold);
+        yellowLineThresholdMap.put(resourceName, yellowLineThreshold);
     }
 
     class FlowMonitorTask implements Runnable{
@@ -115,25 +155,33 @@ public class FlowMonitorProcessor {
                 try {
                     for (String contextName : contextNameList){
                         List<NodeVo> results = CustomFetchJsonTreeHandler.getJsonTreeForFixedContext(contextName);
+                        if (results == null){
+                            continue;
+                        }
                         results.forEach(nodeVo -> {
                             String resourceName = nodeVo.getResource();
-                            MonitorFlag monitorFlag = monitorFlagMap.get(resourceName);
-                            if(monitorFlag == null){
-                                monitorFlag = new MonitorFlag();
-                                monitorFlag.setResource(resourceName);
-                                monitorFlagMap.put(resourceName, monitorFlag);
+                            FlowMonitorRes flowMonitorRes = monitorFlagMap.get(resourceName);
+                            if(flowMonitorRes == null){
+                                flowMonitorRes = new FlowMonitorRes();
+                                flowMonitorRes.setResource(resourceName);
+                                monitorFlagMap.put(resourceName, flowMonitorRes);
                             }
                             //刷新MonitorFlag对象
-                            refreshMonitorFlag(monitorFlag, nodeVo);
+                            refreshMonitorFlag(flowMonitorRes, nodeVo);
                             //触发回调
-                            invokeMonitorCallback(monitorFlag);
+                            invokeMonitorCallback(flowMonitorRes);
                         });
                     }
-
-                    //监控频率间隔1秒或者几秒，这个可以通过阈值设置
-                    Thread.sleep(1000);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("FlowMonitorTask异常", e);
+//                    e.printStackTrace();
+                }finally {
+                    //监控频率间隔1秒或者几秒，这个可以通过阈值设置
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        LOGGER.error("FlowMonitorTask InterruptedException", e);
+                    }
                 }
             }
         }
@@ -142,16 +190,16 @@ public class FlowMonitorProcessor {
 
     /**
      * 触发监控后回调
-     * @param monitorFlag
+     * @param flowMonitorRes
      */
-    private void invokeMonitorCallback(MonitorFlag monitorFlag) {
+    private void invokeMonitorCallback(FlowMonitorRes flowMonitorRes) {
 
-        FlowMonitorCallback flowMonitorCallback = callbackMap.get(monitorFlag.getResource());
+        FlowMonitorCallback flowMonitorCallback = callbackMap.get(flowMonitorRes.getResource());
         if (flowMonitorCallback != null){
             /*
                 回调动作是由FlowMonitorProcessor组件完成，因此回调逻辑不能太重，不能有长耗时操作，否则会影响监控频率
              */
-            flowMonitorCallback.monitorCallback(monitorFlag);
+            flowMonitorCallback.monitorCallback(flowMonitorRes);
         }
 
     }
@@ -159,34 +207,34 @@ public class FlowMonitorProcessor {
     /**
      * 刷新监控结果信息
      *
-     * @param monitorFlag
+     * @param flowMonitorRes
      * @param nodeVo
      */
-    private void refreshMonitorFlag(MonitorFlag monitorFlag, NodeVo nodeVo) {
+    private void refreshMonitorFlag(FlowMonitorRes flowMonitorRes, NodeVo nodeVo) {
 
         //一个NodeVo表示一个资源，但PassQps表示的是当个线程的值，BlockQps表示的所有线程的被拒绝的合计
         long totalQps = nodeVo.getTotalQps();
-        monitorFlag.setTotalQps(totalQps);
+        flowMonitorRes.setTotalQps(totalQps);
         //判断是否达到红线
         long blockQps = nodeVo.getBlockQps();
         if (blockQps > 0){
             //拒绝Qps大于0，说明限流已经发生，置为红，表示当前系统已到高峰
-            monitorFlag.markRed();
+            flowMonitorRes.markRed();
         }else {
             long passQps = nodeVo.getPassQps();
-            Long greedYellowLineThreshold = greedYellowLineThresholdMap.get(nodeVo.getResource());
+            Long greedYellowLineThreshold = yellowLineThresholdMap.get(nodeVo.getResource());
             if (greedYellowLineThreshold != null){
                 if (passQps < greedYellowLineThreshold){
                     //小于某个值，就置为绿（这个值可以写死，也可以通过其他map来获取）
                     //这个值，其实就是绿区和黄区的分界线
-                    monitorFlag.markGreen();
+                    flowMonitorRes.markGreen();
                 }else {
                     //非绿即黄
                     //其他情况置为黄
-                    monitorFlag.markYellow();
+                    flowMonitorRes.markYellow();
                 }
             }else {
-                monitorFlag.markGreen();
+                flowMonitorRes.markGreen();
             }
         }
     }

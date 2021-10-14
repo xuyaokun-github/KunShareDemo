@@ -3,6 +3,7 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.vo;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 流量监控标志
  * 假设限流TPS是20TPS,取个中间值为15TPS
  * 当流量到了20以上，就到达红线，到了15-20之间就是黄色状态，表示当前负荷较高，可以适当让业务变慢
  * 当在15TPS之下，表示正常状态，无需干预业务执行速度
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * date:2021/10/8
  * desc:
 */
-public class MonitorFlag {
+public class FlowMonitorRes {
 
     /**
      * 资源名
@@ -97,9 +98,22 @@ public class MonitorFlag {
         this.yellowFlag.set(false);
     }
 
+    public boolean isRed() {
+        return this.redFlag.get();
+    }
+
+
+    public boolean isYellow() {
+        return this.yellowFlag.get();
+    }
+
+    public boolean isGreen() {
+        return this.greenFlag.get();
+    }
+
     @Override
     public String toString() {
-        return "MonitorFlag{" +
+        return "FlowMonitorRes{" +
                 "resource='" + resource + '\'' +
                 ", redFlag=" + redFlag +
                 ", yellowFlag=" + yellowFlag +
@@ -107,4 +121,6 @@ public class MonitorFlag {
                 ", totalQps=" + totalQps +
                 '}';
     }
+
+
 }

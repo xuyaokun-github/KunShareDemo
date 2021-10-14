@@ -2,8 +2,8 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.service.scenelim
 
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.FlowMonitorCallback;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.FlowMonitorProcessor;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.MonitorFlag;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelFlowMonitor;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.context.ContextUtil;
@@ -17,8 +17,7 @@ import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.RESOURCE_SCENE_DX;
-import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.RESOURCE_SCENE_WX;
+import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.*;
 
 /**
  * 按场景限流demo
@@ -37,16 +36,16 @@ public class SceneLimitDemoService {
     private AtomicLong sleepMillis = new AtomicLong(100L);
 
     @Autowired
-    FlowMonitorProcessor flowMonitorProcessor;
+    SentinelFlowMonitor sentinelFlowMonitor;
 
-    private MonitorFlag monitorFlag;
+    private FlowMonitorRes flowMonitorRes;
 
-    public MonitorFlag getMonitorFlag() {
-        return monitorFlag;
+    public FlowMonitorRes getFlowMonitorRes() {
+        return flowMonitorRes;
     }
 
-    public void setMonitorFlag(MonitorFlag monitorFlag) {
-        this.monitorFlag = monitorFlag;
+    public void setFlowMonitorRes(FlowMonitorRes flowMonitorRes) {
+        this.flowMonitorRes = flowMonitorRes;
     }
 
     @PostConstruct
@@ -56,29 +55,28 @@ public class SceneLimitDemoService {
             注册一个回调
             注册动作由使用方自行决定
          */
-        flowMonitorProcessor.registFlowMonitorCallback("MSG_PUSH", new FlowMonitorCallback() {
+        sentinelFlowMonitor.registFlowMonitorCallback(CONTEXT_MSG_PUSH, new FlowMonitorCallback() {
             @Override
-            public void monitorCallback(MonitorFlag monitorFlag) {
-//                LOGGER.info("触发了业务层注册的回调逻辑：{}", monitorFlag);
-                setMonitorFlag(monitorFlag);
+            public void monitorCallback(FlowMonitorRes flowMonitorRes) {
+//                LOGGER.info("触发了业务层注册的回调逻辑：{}", flowMonitorRes);
+                setFlowMonitorRes(flowMonitorRes);
             }
         });
 
-        for (int i = 0; i < 10; i++) {
-            //起一个线程一直调用testSimpleLimit方法，让它一直有流量
-            new Thread(()->{
-                try {
-                    while (true){
-                        //
-                        method(null, "DX");
-                        method(null, "WX");
-                        Thread.sleep(sleepMillis.get());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }).start();
-        }
+//        for (int i = 0; i < 10; i++) {
+//            new Thread(()->{
+//                while (true){
+//                    try {
+//                        //
+//                        method(null, "DX");
+//                        method(null, "WX");
+//                        Thread.sleep(sleepMillis.get());
+//                    } catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+//        }
     }
 
     /**
@@ -90,7 +88,7 @@ public class SceneLimitDemoService {
      */
     public ResultVo method(Map<String, String> paramMap, String sendChannel) {
 
-        ContextUtil.enter("MSG_PUSH");
+        ContextUtil.enter(CONTEXT_MSG_PUSH);
 
         //根据业务标识，决定采用哪个限流配置
         String resourceName = "";
@@ -121,7 +119,7 @@ public class SceneLimitDemoService {
     public ResultVo method2(Map<String, String> paramMap, String sendChannel) {
 
         //ContextUtil.enter标记调用链路
-        ContextUtil.enter("MSG_PUSH");
+        ContextUtil.enter(CONTEXT_MSG_PUSH);
 
         ResultVo res = null;
         //根据业务标识，决定采用哪个限流配置

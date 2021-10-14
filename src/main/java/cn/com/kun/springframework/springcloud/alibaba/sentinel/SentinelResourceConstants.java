@@ -2,7 +2,7 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel;
 
 public class SentinelResourceConstants {
 
-    public static final String RESOURCE_NAME = "cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelDemoService.testSimpleLimit";
+    public static final String RESOURCE_NAME = "testSimpleLimit";
 
     public static final String RESOURCE_NAME2 = "testSimpleLimit2";
 
@@ -14,5 +14,6 @@ public class SentinelResourceConstants {
 
     public static final String RESOURCE_SCENE_WX = "SENDCHANNEL_WX";
 
+    public static final String CONTEXT_MSG_PUSH = "MSG_PUSH";
 
 }

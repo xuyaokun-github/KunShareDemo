@@ -25,20 +25,20 @@ public class SentinelDemoService {
     @PostConstruct
     public void init(){
 
-        for (int i = 0; i < 10; i++) {
-            //起一个线程一直调用testSimpleLimit方法，让它一直有流量
-            new Thread(()->{
-                try {
-                    while (true){
-                        //
-                        testSimpleLimit();
-                        Thread.sleep(sleepMillis.get());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }).start();
-        }
+//        for (int i = 0; i < 10; i++) {
+//            //起一个线程一直调用testSimpleLimit方法，让它一直有流量
+//            new Thread(()->{
+//                try {
+//                    while (true){
+//                        //
+//                        testSimpleLimit();
+//                        Thread.sleep(sleepMillis.get());
+//                    }
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }).start();
+//        }
     }
 
 

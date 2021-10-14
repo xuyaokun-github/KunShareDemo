@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 解析jsonTree,只获取感兴趣的resource对应的统计信息
- * 参考com.alibaba.csp.sentinel.command.handler.FetchJsonTreeCommandHandler
+ * 参考源类com.alibaba.csp.sentinel.command.handler.FetchJsonTreeCommandHandler
  *
  * author:xuyaokun_kzx
  * date:2021/9/30
@@ -76,7 +76,9 @@ public class CustomFetchJsonTreeHandler {
                 NODE_MAP.put(contextName, parentNode);
             }else {
                 //假如jar包里的常量后续改名字，这里就会有问题
-                throw new RuntimeException("sentinel_default_context获取失败");
+//                throw new RuntimeException(contextName + "获取失败");
+                //不要直接抛异常，返回空，让上层判断，假如非要抛出异常，应该在方法上指明抛出啥异常，让上层代码显示捕获
+                return null;
             }
         }
 
