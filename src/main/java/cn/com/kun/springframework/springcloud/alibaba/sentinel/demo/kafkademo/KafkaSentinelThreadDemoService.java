@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 /**
  * 这个类模拟一个消费者线程
  *
@@ -23,7 +21,7 @@ public class KafkaSentinelThreadDemoService {
     @Autowired
     KafkaConsumerThreadManager kafkaConsumerThreadManager;
 
-    @PostConstruct
+//    @PostConstruct
     public void init(){
 
         new Thread(()->{

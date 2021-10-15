@@ -2,15 +2,17 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
 
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
 import com.alibaba.csp.sentinel.command.vo.NodeVo;
+import com.alibaba.csp.sentinel.concurrent.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 流量监控处理器
@@ -23,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SentinelFlowMonitor {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SentinelFlowMonitor.class);
+
+    private static ExecutorService pool = Executors.newFixedThreadPool(
+            1, new NamedThreadFactory("sentinel-flowMonitor", true));
 
     /**
      * 需要监控的所有context
@@ -47,7 +52,7 @@ public class SentinelFlowMonitor {
     private Map<String, FlowMonitorCallback> callbackMap = new ConcurrentHashMap<>();
 
 
-    @PostConstruct
+//    @PostConstruct
     public void init(){
 
         //每隔一定的时间，就要进行判断
@@ -55,8 +60,9 @@ public class SentinelFlowMonitor {
         //假如出现 拒绝QPS大于0，说明已经有某个线程开始出现限流了，这时候就可以将标识置为 红
         //假如 通过QPS大于某个值，但未到限流阶段，设置为黄
         //假如 低于某个值，设置为绿！
-        new Thread(new FlowMonitorTask()).start();
+//        new Thread(new FlowMonitorTask()).start();
 
+        pool.execute(new FlowMonitorTask());
         //kafka消费线程可以根据 红黄绿标识，自己判断是否需要加大睡眠时间，从而调整消费速度
         /*
             有三组kafka消费线程，高优先级线程、中优先级线程、低优先级线程

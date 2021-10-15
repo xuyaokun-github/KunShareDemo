@@ -81,6 +81,8 @@ public class SentinelRuleLoader {
     }
 
     private void addDegradeRuleFromConfig(List<DegradeRule> degradeRuleList) {
+
+        //测试例子
         //给资源RESOURCE_NAME，指定一个降级规则
         DegradeRule degradeRule = new DegradeRule(RESOURCE_NAME_3)
                 .setGrade(RuleConstant.DEGRADE_GRADE_RT)
@@ -93,9 +95,16 @@ public class SentinelRuleLoader {
 //                .setSlowRatioThreshold(0.6)
 //                .setMinRequestAmount(100)
 //                .setStatIntervalMs(20000);
-
         degradeRuleList.add(degradeRule);
-        degradeRuleList.add(buildDegradeRule(RESOURCE_NAME_TESTLIMITANDDEGRADE2, RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT, 1, 120));
+
+        Map<String, DegradeRule> degradeRuleMap = sentinelRuleProperties.getDegradeRule();
+        Iterator iterator = degradeRuleMap.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry entry = (Map.Entry) iterator.next();
+            String key = (String) entry.getKey();
+            DegradeRule degradeRule1 = (DegradeRule) entry.getValue();
+            degradeRuleList.add(buildDegradeRule(key, degradeRule1.getGrade(), degradeRule1.getCount(), degradeRule1.getTimeWindow()));
+        }
     }
 
     private void addTestRules(List<FlowRule> rules) {
@@ -137,13 +146,13 @@ public class SentinelRuleLoader {
         }
     }
 
-    private DegradeRule buildDegradeRule(String resource, int grade, int count, int timeWindow) {
+    private DegradeRule buildDegradeRule(String resource, int grade, double count, int timeWindow) {
         DegradeRule degradeRule = new DegradeRule(resource)
                 .setGrade(grade)
                 // Max allowed response time
                 //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
                 .setCount(count)
-                // Retry timeout (in second)
+                // Retry timeout (in second) 单位是秒
                 .setTimeWindow(timeWindow);
         return degradeRule;
     }

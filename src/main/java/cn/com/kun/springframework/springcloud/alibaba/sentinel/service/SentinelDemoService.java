@@ -6,6 +6,8 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -88,7 +90,7 @@ public class SentinelDemoService {
 
     /**
      * 测试限流和降级一起使用
-     * 熔断策略： 慢比例调用
+     * 熔断策略： 慢调用比例
      *
      * @return
      */
@@ -110,7 +112,13 @@ public class SentinelDemoService {
             /*
                 假如触发的是降级，拿到的将是 DegradeException
              */
-            LOGGER.error("testLimitAndDegrade触发限流", ex);
+            if (ex instanceof FlowException){
+                LOGGER.error("testLimitAndDegrade触发限流", ex);
+
+            }else if (ex instanceof DegradeException){
+                LOGGER.error("testLimitAndDegrade触发熔断", ex);
+
+            }
         }
         // 被保护的逻辑
         LOGGER.info(ThreadUtils.getCurrentInvokeClassAndMethod());
@@ -153,6 +161,7 @@ public class SentinelDemoService {
 //             */
 //        }
 
+        //正例：假如用了异常类的熔断策略，则不能用try-with-resource语法糖
         Entry entry = null;
         try {
             entry = SphU.entry(RESOURCE_NAME_TESTLIMITANDDEGRADE2);
