@@ -1,5 +1,9 @@
 package cn.com.kun.component.clusterid.snowflake;
 
+import cn.com.kun.common.utils.DateUtils;
+
+import java.util.Date;
+
 /**
  * 基于雪花算法的分布式ID
  * 已解决解决时钟回拨问题
@@ -254,6 +258,14 @@ public class IdWorker {
         return System.currentTimeMillis();
     }
 
+    /**
+     * 传入一个id,反解得到这个id对应的时间戳
+     * @param id
+     * @return
+     */
+    public long timeStamp(long id){
+        return (id >> (timestampLeftShift)) + twepoch;
+    }
 
     public static void main(String[] args) {
 
@@ -278,6 +290,12 @@ public class IdWorker {
             System.out.println(worker.nextId());
         }
 
+        System.out.println("----------------------------------");
+        long id = worker.nextId();
+        System.out.println(id);
+        System.out.println(worker.timeStamp(id));
+        Date date2 = new Date(worker.timeStamp(id));
+        System.out.println(DateUtils.toStr(date2, DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS));
 
     }
 
