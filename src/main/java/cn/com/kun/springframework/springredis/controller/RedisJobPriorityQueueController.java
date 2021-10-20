@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 public class RedisJobPriorityQueueController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisJobPriorityQueueController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisJobPriorityQueueController.class);
 
     @Autowired
     RedisJobPriorityQueueService redisJobPriorityQueueService;

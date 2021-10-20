@@ -5,6 +5,7 @@ import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.springframework.springredis.counter.RedisCounterDemoService;
 import cn.com.kun.springframework.springredis.service.RedisListDemoService;
 import cn.com.kun.springframework.springredis.vo.JobVO;
 import org.slf4j.Logger;
@@ -45,6 +46,9 @@ public class SpringRedisDemocontroller {
 
     @Autowired
     private RedisListDemoService redisListDemoService;
+
+    @Autowired
+    private RedisCounterDemoService redisCounterDemoService;
 
     /**
      * 测试生成唯一的递增流水号
@@ -281,6 +285,22 @@ public class SpringRedisDemocontroller {
                 LOGGER.info(JacksonUtils.toJSONString(jobVOList));
             }).start();
         }
+        return ResultVo.valueOfSuccess("");
+    }
+
+
+    @GetMapping(value = "/testRedisCounter")
+    public ResultVo testRedisCounter(HttpServletRequest request){
+
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                redisCounterDemoService.addRequest();
+            }).start();
+        }
+
+//        开启多个线程添加
+
         return ResultVo.valueOfSuccess("");
     }
 
