@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DBClusterLockDemoService2 {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockDemoService2.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockDemoService2.class);
 
     @Autowired
     DBClusterLockHandler dbClusterLockHandler;

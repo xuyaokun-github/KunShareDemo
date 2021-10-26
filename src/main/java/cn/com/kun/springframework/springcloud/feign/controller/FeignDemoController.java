@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FeignDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(FeignDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(FeignDemoController.class);
 
     @Autowired
     private KunShareClientOneFeignService kunShareClientOneFeignService;

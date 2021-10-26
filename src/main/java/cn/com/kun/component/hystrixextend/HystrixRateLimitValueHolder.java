@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class HystrixRateLimitValueHolder {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitValueHolder.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitValueHolder.class);
 
 
     @Autowired

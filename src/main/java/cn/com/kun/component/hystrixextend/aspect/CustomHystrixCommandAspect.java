@@ -28,7 +28,7 @@ import java.util.Map;
 //@Order(Integer.MIN_VALUE)
 public class CustomHystrixCommandAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(CustomHystrixCommandAspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CustomHystrixCommandAspect.class);
 
     @Pointcut("@annotation(com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand)")
     public void pointCut() {

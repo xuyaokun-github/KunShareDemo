@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 @ControllerAdvice //注解必不可少
 public class DesRequestBodyAdvice implements RequestBodyAdvice {
 
-    public final static Logger logger = LoggerFactory.getLogger(DesRequestBodyAdvice.class);
+    private final static Logger logger = LoggerFactory.getLogger(DesRequestBodyAdvice.class);
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type type, Class<? extends HttpMessageConverter<?>> aClass) {

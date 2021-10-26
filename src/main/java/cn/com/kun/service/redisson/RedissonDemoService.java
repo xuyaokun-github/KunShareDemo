@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedissonDemoService {
 
-    public final static Logger logger = LoggerFactory.getLogger(RedissonDemoService.class);
+    private final static Logger logger = LoggerFactory.getLogger(RedissonDemoService.class);
 
     /**
      * 基于注解自动注入Redisson对象

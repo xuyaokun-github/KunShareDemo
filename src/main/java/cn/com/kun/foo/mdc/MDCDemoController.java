@@ -11,7 +11,7 @@ import java.util.UUID;
 @RestController
 public class MDCDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(MDCDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(MDCDemoController.class);
 
     @RequestMapping("/testMDC2")
     public String testMDC2(){

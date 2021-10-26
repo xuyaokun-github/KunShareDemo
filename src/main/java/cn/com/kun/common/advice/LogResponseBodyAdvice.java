@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 @ControllerAdvice
 public class LogResponseBodyAdvice implements ResponseBodyAdvice {
 
-    public final static Logger logger = LoggerFactory.getLogger(LogResponseBodyAdvice.class);
+    private final static Logger logger = LoggerFactory.getLogger(LogResponseBodyAdvice.class);
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class aClass) {

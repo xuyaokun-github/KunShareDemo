@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ClusterIdGenerator {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdGenerator.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdGenerator.class);
 
     private String WORKERID_KEY_PREFIX = "WORKERID";
 

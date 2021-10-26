@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 @RestController
 public class EurekaDemoController implements ApplicationContextAware {
 
-    public final static Logger logger = LoggerFactory.getLogger(EurekaDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(EurekaDemoController.class);
 
     private ApplicationContext context;
 

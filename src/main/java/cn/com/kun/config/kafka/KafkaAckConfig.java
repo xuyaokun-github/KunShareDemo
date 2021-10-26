@@ -25,7 +25,7 @@ import static org.springframework.kafka.listener.ContainerProperties.AckMode.MAN
 @Configuration
 public class KafkaAckConfig {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(KafkaAckConfig.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaAckConfig.class);
 
     public Map<String, Object> consumerProps() {
         Map<String, Object> props = new HashMap<>();

@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 
 public class HelloWorldCommandLineRunner implements CommandLineRunner {
 
-    public final static Logger logger = LoggerFactory.getLogger(HelloWorldCommandLineRunner.class);
+    private final static Logger logger = LoggerFactory.getLogger(HelloWorldCommandLineRunner.class);
 
     @Override
     public void run(String... strings) throws Exception {

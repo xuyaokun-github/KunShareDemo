@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 @RestController
 public class HelloController {
 
-    public final static Logger logger = LoggerFactory.getLogger(HelloController.class);
+    private final static Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @Autowired
     private RestTemplate restTemplate;

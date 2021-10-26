@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderComparatorDemoImpl2 implements OrderComparatorDemo{
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoImpl2.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoImpl2.class);
 
     @Override
     public void show() {

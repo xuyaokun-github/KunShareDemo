@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 @Aspect
 public class MyAspect {
 
-    public final static Logger logger = LoggerFactory.getLogger(MyAspect.class);
+    private final static Logger logger = LoggerFactory.getLogger(MyAspect.class);
 
     @Autowired
     private DataSource druidDataSource;

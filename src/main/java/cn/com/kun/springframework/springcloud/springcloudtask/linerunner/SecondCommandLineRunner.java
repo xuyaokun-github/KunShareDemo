@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 
 public class SecondCommandLineRunner implements CommandLineRunner {
 
-    public final static Logger logger = LoggerFactory.getLogger(SecondCommandLineRunner.class);
+    private final static Logger logger = LoggerFactory.getLogger(SecondCommandLineRunner.class);
 
     @Override
     public void run(String... strings) throws Exception {

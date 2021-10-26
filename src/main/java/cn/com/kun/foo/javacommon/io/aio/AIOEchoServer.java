@@ -13,8 +13,8 @@ import java.util.concurrent.TimeoutException;
 
 public class AIOEchoServer {
 
-    public final static int PORT = 8001;
-    public final static String IP = "127.0.0.1";
+    private final static int PORT = 8001;
+    private final static String IP = "127.0.0.1";
 
     //
     private AsynchronousServerSocketChannel server = null;

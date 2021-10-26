@@ -20,7 +20,7 @@ import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACH
 @Service
 public class MemoryCacheApplyAppStudentService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheApplyAppStudentService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheApplyAppStudentService.class);
 
     @Autowired
     @Qualifier("caffeineCacheManager")

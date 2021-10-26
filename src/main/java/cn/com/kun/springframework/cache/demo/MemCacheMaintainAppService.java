@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemCacheMaintainAppService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemCacheMaintainAppService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemCacheMaintainAppService.class);
 
     @Autowired
     private StudentMapper studentMapper;

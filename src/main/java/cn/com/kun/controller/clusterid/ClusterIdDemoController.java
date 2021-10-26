@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ClusterIdDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdDemoController.class);
 
     @Autowired
     ClusterIdGenerator clusterIdGenerator;

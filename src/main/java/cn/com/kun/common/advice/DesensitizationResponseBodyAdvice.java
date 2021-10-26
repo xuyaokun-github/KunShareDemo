@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 public class DesensitizationResponseBodyAdvice implements ResponseBodyAdvice {
 
-    public final static Logger logger = LoggerFactory.getLogger(DesensitizationResponseBodyAdvice.class);
+    private final static Logger logger = LoggerFactory.getLogger(DesensitizationResponseBodyAdvice.class);
 
     /**
      * 加解密组件

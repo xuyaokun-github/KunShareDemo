@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 @Aspect
 public class MyAnno3Aspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MyAnno3Aspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyAnno3Aspect.class);
 
     @Pointcut("@annotation(cn.com.kun.common.annotation.MyAnno1)")
     public void pointCut(){

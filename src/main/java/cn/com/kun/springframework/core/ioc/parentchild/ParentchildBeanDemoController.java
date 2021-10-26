@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/parentchildBeanDemo")
 public class ParentchildBeanDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ParentchildBeanDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ParentchildBeanDemoController.class);
 
     @RequestMapping("/hello")
     public String testString(){

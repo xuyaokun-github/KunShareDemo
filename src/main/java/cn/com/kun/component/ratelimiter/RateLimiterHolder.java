@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RateLimiterHolder {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RateLimiterHolder.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RateLimiterHolder.class);
 
 
     @Autowired

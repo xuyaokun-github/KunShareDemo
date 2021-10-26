@@ -25,7 +25,7 @@ import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TOPIC
 @Component
 public class MemoryCacheNoticeProcessor {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheNoticeProcessor.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheNoticeProcessor.class);
 
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;

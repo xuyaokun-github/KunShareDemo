@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class MyThirdCacheDemoAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MyThirdCacheDemoAspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyThirdCacheDemoAspect.class);
 
     /**
      * 定义一个切入点 例子：cn.com.kun.controller这个包下的所有类的所有方法都会被切入

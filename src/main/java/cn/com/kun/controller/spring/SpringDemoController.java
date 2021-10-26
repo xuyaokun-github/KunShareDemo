@@ -4,8 +4,6 @@ import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.springframework.core.aop.SpringAopDemoService;
-import cn.com.kun.springframework.core.aop.demo1.AopProxyUtilsDemo;
 import cn.com.kun.springframework.core.applicationContextInitializer.ApplicationContextInitializerDemoBean;
 import cn.com.kun.springframework.core.beanDefinition.BeanDefinitionDemoService;
 import cn.com.kun.springframework.core.binder.NbaplayBinderDemo;
@@ -38,10 +36,7 @@ import java.util.List;
 @RestController
 public class SpringDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
-
-    @Autowired
-    private SpringAopDemoService springAopDemoService;
+    private final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
 
     @Value("${nbaplay.level}")
     private String nbaplayLevel;
@@ -57,9 +52,6 @@ public class SpringDemoController {
 
     @Autowired
     ApplicationContextInitializerDemoBean applicationContextInitializerDemoBean;
-
-    @Autowired
-    AopProxyUtilsDemo aopProxyUtilsDemo;
 
     @Autowired
     Environment environment;
@@ -103,12 +95,6 @@ public class SpringDemoController {
         return ResultVo.valueOfSuccess(userList);
     }
 
-    @GetMapping("/testAop")
-    public ResultVo testAop(){
-
-        springAopDemoService.method();
-        return ResultVo.valueOfSuccess(null);
-    }
 
     @GetMapping("/testBeanDefinition")
     public ResultVo testBeanDefinition(){
@@ -149,17 +135,6 @@ public class SpringDemoController {
     public ResultVo testApplicationContextInitializerDemoBean(){
 
         applicationContextInitializerDemoBean.show();
-        return ResultVo.valueOfSuccess(null);
-    }
-
-    /**
-     * 验证通过ApplicationContextInitializer注册单例bean
-     * @return
-     */
-    @GetMapping("/testAopProxyUtilsDemo")
-    public ResultVo testAopProxyUtilsDemo(){
-
-        aopProxyUtilsDemo.method();
         return ResultVo.valueOfSuccess(null);
     }
 

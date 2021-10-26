@@ -23,7 +23,7 @@ import java.util.List;
 @Component
 public class MemoryCacheDBDetector {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheDBDetector.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheDBDetector.class);
 
     @Autowired
     private MemoryCacheNoticeProcessor memoryCacheNoticeProcessor;

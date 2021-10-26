@@ -17,7 +17,7 @@ import java.util.Collection;
 @RestController
 public class SpringCloudConfigDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringCloudConfigDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringCloudConfigDemoController.class);
 
     @Autowired
     SpringCloudConfigDemoService springCloudConfigDemoService;

@@ -24,7 +24,7 @@ import static org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_HANDL
 @RestController
 public class SpringMvcDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringMvcDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringMvcDemoController.class);
 
     //@CrossOrigin(value = "*")
     @CrossOrigin(value = "http://localhost:8081") //这是正常的

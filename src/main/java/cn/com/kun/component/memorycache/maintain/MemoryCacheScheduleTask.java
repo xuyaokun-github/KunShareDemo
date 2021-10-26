@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemoryCacheScheduleTask {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheScheduleTask.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheScheduleTask.class);
 
     @Autowired
     private MemoryCacheDBDetector memoryCacheDBDetector;

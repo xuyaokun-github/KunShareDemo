@@ -16,7 +16,7 @@ import java.util.Set;
 */
 public abstract class RedisPriorityQueue<T> {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisPriorityQueue.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisPriorityQueue.class);
 
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;

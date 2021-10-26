@@ -1,6 +1,5 @@
 package cn.com.kun.springframework.core.aop.demo1;
 
-import cn.com.kun.controller.spring.SpringDemoController;
 import cn.com.kun.springframework.core.aop.SpringAopDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AopProxyUtilsDemo {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AopProxyUtilsDemo.class);
 
     //SpringAopDemoService是一个被aop代理的类
     @Autowired

@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 @Component
 public class SecretHelper {
 
-    public final static Logger logger = LoggerFactory.getLogger(SecretHelper.class);
+    private final static Logger logger = LoggerFactory.getLogger(SecretHelper.class);
 
     /**
      * 解密

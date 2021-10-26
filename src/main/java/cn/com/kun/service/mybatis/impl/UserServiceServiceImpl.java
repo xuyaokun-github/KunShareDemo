@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class UserServiceServiceImpl implements UserService {
 
-    public final static Logger logger = LoggerFactory.getLogger(UserServiceServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserServiceServiceImpl.class);
 
     @Autowired
     private UserMapper userMapper;

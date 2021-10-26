@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 */
 public class MemoryCacheNoticeListener implements MessageListener {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheNoticeListener.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheNoticeListener.class);
 
     @Autowired
     @Qualifier("caffeineCacheManager")

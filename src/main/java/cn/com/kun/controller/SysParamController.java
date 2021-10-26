@@ -23,7 +23,7 @@ import java.util.Map;
 @RestController
 public class SysParamController extends BaseController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SysParamController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SysParamController.class);
 
 
     /**

@@ -33,7 +33,7 @@ import java.util.List;
 @Service
 public class NbaPlayerElasticServiceImpl implements INbaPlayerElasticService {
 
-    public final static Logger logger = LoggerFactory.getLogger(NbaPlayerElasticServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(NbaPlayerElasticServiceImpl.class);
 
     //官方推荐用这个
     @Autowired(required = false)

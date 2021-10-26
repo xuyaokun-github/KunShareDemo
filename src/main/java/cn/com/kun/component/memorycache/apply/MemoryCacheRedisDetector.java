@@ -27,7 +27,7 @@ import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TIMEM
 @Component
 public class MemoryCacheRedisDetector {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheRedisDetector.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheRedisDetector.class);
 
     @Autowired
     @Qualifier("caffeineCacheManager")

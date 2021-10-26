@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RateLimitDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(HelloController.class);
+    private final static Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @Autowired
     RateLimitDemoService rateLimitDemoService;

@@ -19,7 +19,7 @@ import java.util.Collection;
 @RestController
 public class RedisCacheManagerDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisCacheManagerDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisCacheManagerDemoController.class);
 
     @Autowired
     private RedisCacheManagerDemoService redisCacheManagerDemoService;

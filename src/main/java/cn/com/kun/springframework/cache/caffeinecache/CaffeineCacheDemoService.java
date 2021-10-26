@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CaffeineCacheDemoService {
 
-    public final static Logger logger = LoggerFactory.getLogger(CaffeineCacheDemoService.class);
+    private final static Logger logger = LoggerFactory.getLogger(CaffeineCacheDemoService.class);
 
     /**
      * 更新缓存

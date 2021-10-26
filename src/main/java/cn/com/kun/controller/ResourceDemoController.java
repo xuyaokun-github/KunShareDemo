@@ -17,7 +17,7 @@ import static org.springframework.core.io.support.SpringFactoriesLoader.FACTORIE
 @RestController
 public class ResourceDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ResourceDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ResourceDemoController.class);
 
     /**
      * 模拟springboot加载FACTORIES文件的过程

@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 public class RedisClusterLockDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisClusterLockDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisClusterLockDemoController.class);
 
     @Autowired
     RedisLockUtil redisLockUtil;

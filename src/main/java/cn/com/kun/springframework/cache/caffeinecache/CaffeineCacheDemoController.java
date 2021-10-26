@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CaffeineCacheDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(CaffeineCacheDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CaffeineCacheDemoController.class);
 
     @Autowired
     private CaffeineCacheDemoService caffeineCacheDemoService;

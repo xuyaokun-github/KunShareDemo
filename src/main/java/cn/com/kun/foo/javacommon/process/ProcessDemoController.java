@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class ProcessDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(ProcessDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ProcessDemoController.class);
 
     //限流器
     RateLimiter rateLimiter = RateLimiter.create(100, 20, TimeUnit.HOURS);

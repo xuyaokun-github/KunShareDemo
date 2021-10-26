@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 @RestController
 public class CaffeineCacheMgrController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(CaffeineCacheMgrController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CaffeineCacheMgrController.class);
 
     /**
      * 拿到缓存管理器，它可以操作所有缓存对象

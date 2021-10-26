@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class OrderComparatorDemoServcie {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoServcie.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoServcie.class);
 
     List<OrderComparatorDemo> demoList = new ArrayList<>();
 

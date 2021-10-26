@@ -23,7 +23,7 @@ import java.util.UUID;
 @Service
 public class RedisBlackListDemoService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisBlackListDemocontroller.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisBlackListDemocontroller.class);
 
     private String BLACKLIST_KEY = "user-blacklist";
 

@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 public class ZuulDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ZuulDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ZuulDemoController.class);
 
     @Autowired
     private RestTemplate restTemplate;

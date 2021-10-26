@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 @RestController
 public class SpringTaskExecutorDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringTaskExecutorDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringTaskExecutorDemoController.class);
 
     @Autowired
     Executor myBizCommonExecutor;

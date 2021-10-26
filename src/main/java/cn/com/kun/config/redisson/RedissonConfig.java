@@ -32,7 +32,7 @@ import java.io.InputStream;
 @Configuration
 public class RedissonConfig {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MyCommandLineRunner.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyCommandLineRunner.class);
 
     //自定义的配置项--start
     @Value("${redisson.url}")

@@ -46,7 +46,7 @@ import java.util.Map;
 //@Order(Ordered.HIGHEST_PRECEDENCE) //任何切面都不能定义成最高优先级
 public class HystrixRateLimitExtendAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitExtendAspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(HystrixRateLimitExtendAspect.class);
 
     @Autowired
     private SpELHelper spELHelper;

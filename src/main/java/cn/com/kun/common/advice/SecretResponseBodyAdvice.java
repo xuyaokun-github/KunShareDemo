@@ -22,7 +22,7 @@ import static cn.com.kun.common.utils.AESUtils.DEFAULT_KEY;
 @ControllerAdvice
 public class SecretResponseBodyAdvice implements ResponseBodyAdvice {
 
-    public final static Logger logger = LoggerFactory.getLogger(SecretResponseBodyAdvice.class);
+    private final static Logger logger = LoggerFactory.getLogger(SecretResponseBodyAdvice.class);
 
     /**
      * 加解密组件

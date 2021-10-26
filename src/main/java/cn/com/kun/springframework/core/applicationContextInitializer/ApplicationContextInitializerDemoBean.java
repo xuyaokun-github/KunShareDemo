@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ApplicationContextInitializerDemoBean {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ApplicationContextInitializerDemoBean.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ApplicationContextInitializerDemoBean.class);
 
     private String name;
 

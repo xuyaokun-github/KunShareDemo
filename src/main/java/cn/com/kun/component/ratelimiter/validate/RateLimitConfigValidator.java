@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class RateLimitConfigValidator implements ConstraintValidator<RateLimitConfigValidation, RateLimiterProperties> {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RateLimitConfigValidator.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RateLimitConfigValidator.class);
 
     @Override
     public void initialize(RateLimitConfigValidation constraintAnnotation) {

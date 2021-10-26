@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CustomRejectedExecutionHandler implements RejectedExecutionHandler {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringDemoController.class);
 
     int maxCount = 3;
 

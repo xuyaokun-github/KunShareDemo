@@ -26,7 +26,7 @@ import static cn.com.kun.common.utils.AESUtils.DEFAULT_KEY;
 @RestControllerAdvice
 public class SecretRequestBodyAdvice implements RequestBodyAdvice {
 
-    public final static Logger logger = LoggerFactory.getLogger(SecretRequestBodyAdvice.class);
+    private final static Logger logger = LoggerFactory.getLogger(SecretRequestBodyAdvice.class);
 
     /**
      * 加解密组件

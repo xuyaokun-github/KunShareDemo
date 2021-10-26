@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class TblExpiredDataRemoveService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(TblExpiredDataRemoveService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TblExpiredDataRemoveService.class);
 
     @Autowired
     private TblExpiredDataRemoveMapper tblExpiredDataRemoveMapper;

@@ -18,7 +18,7 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
 
     ApplicationContext context;
 
-    public final static Logger logger = LoggerFactory.getLogger(MyCommandLineRunner.class);
+    private final static Logger logger = LoggerFactory.getLogger(MyCommandLineRunner.class);
 
     public void run(String... args) {
 

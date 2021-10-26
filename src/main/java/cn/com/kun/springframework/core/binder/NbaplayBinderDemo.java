@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class NbaplayBinderDemo {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedissonDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedissonDemoService.class);
 
     @Autowired
     Environment environment;

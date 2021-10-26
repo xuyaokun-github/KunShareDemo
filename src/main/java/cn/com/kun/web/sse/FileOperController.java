@@ -24,7 +24,7 @@ import java.net.URL;
 @RestController
 public class FileOperController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(FileOperController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileOperController.class);
 
     @RequestMapping("/testGetResourceAsStream")
     public String testGetResourceAsStream(){

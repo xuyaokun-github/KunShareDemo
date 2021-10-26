@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class SpringRedisDemocontroller {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(SpringRedisDemocontroller.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringRedisDemocontroller.class);
 
     private final String HASH_KEY = "kunghsu.hash";
 

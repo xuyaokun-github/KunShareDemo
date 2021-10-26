@@ -17,7 +17,7 @@ import org.springframework.core.env.Environment;
  * * 2）对设置为lastSource，表示"当用户没有通过yml"配置选项时的默认值--担保策略。**/
 public class MyResourceLoaderInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MyResourceLoaderInitializer.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyResourceLoaderInitializer.class);
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {

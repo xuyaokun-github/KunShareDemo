@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 @Aspect
 public class DBClusterLockAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockAspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockAspect.class);
 
     @Autowired
     DBClusterLockHandler dbClusterLockHandler;

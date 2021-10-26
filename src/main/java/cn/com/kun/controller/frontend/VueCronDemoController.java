@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 public class VueCronDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(VueCronDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(VueCronDemoController.class);
 
     @RequestMapping("/cron")
     public ResultVo<List<PointCountResVO>> pointCount(@RequestBody Map<String,String> params){

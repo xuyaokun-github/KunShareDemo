@@ -27,7 +27,7 @@ import java.util.Map;
 @Component
 public class DBClusterLockHandler implements ClusterLockHandler {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockHandler.class);
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;

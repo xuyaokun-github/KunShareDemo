@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 //@Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class MyAnno2Aspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MyAnno2Aspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MyAnno2Aspect.class);
 
     @Pointcut("@annotation(cn.com.kun.common.annotation.MyAnno2)")
     public void pointCut(){

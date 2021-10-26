@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisBlackListCacheSyncService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisBlackListCacheSyncService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisBlackListCacheSyncService.class);
 
     private String blacklistSyncPrefix = "BLACKLISTSYNC:";
 

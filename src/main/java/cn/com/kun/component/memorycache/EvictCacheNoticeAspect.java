@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 @Aspect
 public class EvictCacheNoticeAspect {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(EvictCacheNoticeAspect.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EvictCacheNoticeAspect.class);
 
     /**
      * 用于SpEL表达式解析.

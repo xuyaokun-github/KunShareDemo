@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemoryCacheApplyAppController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheApplyAppController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheApplyAppController.class);
 
     @Autowired
     private MemoryCacheApplyAppStudentService memoryCacheDemoStudentService;

@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 public class PageQueryDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(PageQueryDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PageQueryDemoController.class);
 
     @Autowired
     private UserService userService;

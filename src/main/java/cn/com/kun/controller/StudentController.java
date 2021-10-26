@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class StudentController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
     StudentService studentService;

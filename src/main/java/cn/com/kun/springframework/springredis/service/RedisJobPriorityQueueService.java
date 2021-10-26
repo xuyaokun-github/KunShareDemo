@@ -19,7 +19,7 @@ import java.util.Set;
 @Service
 public class RedisJobPriorityQueueService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(RedisJobPriorityQueueService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisJobPriorityQueueService.class);
 
     private String key = "pending-job-list";//待处理任务列表
 

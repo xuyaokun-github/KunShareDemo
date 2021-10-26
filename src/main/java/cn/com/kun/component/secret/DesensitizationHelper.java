@@ -24,7 +24,7 @@ import java.util.Collection;
 @Component
 public class DesensitizationHelper {
 
-    public final static Logger logger = LoggerFactory.getLogger(DesensitizationHelper.class);
+    private final static Logger logger = LoggerFactory.getLogger(DesensitizationHelper.class);
 
     /**
      * 脱敏

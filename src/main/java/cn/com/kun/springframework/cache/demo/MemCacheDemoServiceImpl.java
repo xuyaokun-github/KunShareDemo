@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemCacheDemoServiceImpl implements IMemCacheDemoService {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(MemCacheDemoServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemCacheDemoServiceImpl.class);
 
     @EvictCacheNotice(configName = "memorycache-student-service", key = "#reqVO.id.toString()")
     @Override

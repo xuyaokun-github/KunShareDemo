@@ -34,7 +34,7 @@ import static cn.com.kun.common.utils.DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS;
 @RestController
 public class MybatisDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;

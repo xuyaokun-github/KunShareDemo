@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderComparatorDemoImpl1 implements OrderComparatorDemo{
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoImpl1.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderComparatorDemoImpl1.class);
 
     @Override
     public void show() {

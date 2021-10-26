@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ElasticsearchDemoController {
 
-    public final static Logger logger = LoggerFactory.getLogger(ElasticsearchDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ElasticsearchDemoController.class);
 
     @Autowired
     private INbaPlayerElasticService nbaPlayerElasticService;

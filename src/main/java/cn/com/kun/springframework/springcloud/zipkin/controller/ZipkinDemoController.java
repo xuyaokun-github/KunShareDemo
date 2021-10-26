@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
 @RestController
 public class ZipkinDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(ZipkinDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ZipkinDemoController.class);
 
     @Qualifier("myFirstTaskExecutor")
     @Autowired

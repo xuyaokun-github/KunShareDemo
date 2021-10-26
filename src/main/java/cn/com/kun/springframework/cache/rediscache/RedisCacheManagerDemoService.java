@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisCacheManagerDemoService {
 
-    public final static Logger logger = LoggerFactory.getLogger(RedisCacheManagerDemoService.class);
+    private final static Logger logger = LoggerFactory.getLogger(RedisCacheManagerDemoService.class);
 
 
 
