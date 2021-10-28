@@ -73,7 +73,7 @@ public class RedisClusterLockDemoController {
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
                 //上锁
-                redisClusterLockHandler.lockPessimistic(lockKey);
+                redisClusterLockHandler.lock(lockKey);
                 LOGGER.info("我是线程{}-start", Thread.currentThread().getName());
                 try {
                     Thread.sleep(1000);
@@ -82,7 +82,7 @@ public class RedisClusterLockDemoController {
                 }
                 LOGGER.info("我是线程{}-end", Thread.currentThread().getName());
                 //解锁
-                redisClusterLockHandler.unlockPessimistic(lockKey);
+                redisClusterLockHandler.unlock(lockKey);
             }).start();
         }
         return ResultVo.valueOfSuccess("");

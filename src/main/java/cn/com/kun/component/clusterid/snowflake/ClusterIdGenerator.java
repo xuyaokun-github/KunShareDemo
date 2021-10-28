@@ -90,7 +90,7 @@ public class ClusterIdGenerator {
         String lockKey = "workerid-lockkey";
         long number = 1;
         //上锁
-        redisClusterLockHandler.lockPessimistic(lockKey);
+        redisClusterLockHandler.lock(lockKey);
         //假如获取失败，直接抛异常，说明环境有问题
         while (true){
             number = redisTemplateHelper.incr("workerid-number", 1);
@@ -111,7 +111,7 @@ public class ClusterIdGenerator {
         }
 
         //解锁
-        redisClusterLockHandler.unlockPessimistic(lockKey);
+        redisClusterLockHandler.unlock(lockKey);
         return number;
     }
 

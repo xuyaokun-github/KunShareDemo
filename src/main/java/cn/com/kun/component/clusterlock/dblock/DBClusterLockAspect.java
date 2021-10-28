@@ -50,12 +50,12 @@ public class DBClusterLockAspect {
         if (withClusterCode && StringUtils.isEmpty(clusterCode)){
             resourceName = clusterCode + ":" + resourceName;
         }
-        boolean isLock = dbClusterLockHandler.lockPessimistic(resourceName);
+        boolean isLock = dbClusterLockHandler.lock(resourceName);
         if (!isLock){
             throw new RuntimeException("切面获取锁失败");
         }
         Object obj = pjp.proceed();
-        boolean isUnLock = dbClusterLockHandler.unlockPessimistic(resourceName);
+        boolean isUnLock = dbClusterLockHandler.unlock(resourceName);
         if (!isUnLock){
             throw new RuntimeException("切面释放锁失败");
         }

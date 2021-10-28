@@ -41,9 +41,9 @@ public class DBClusterLockDemoService3 {
             体现可重入特性
              */
         String resourceName = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno";
-        dbClusterLockHandler.lockPessimistic(resourceName);
+        dbClusterLockHandler.lock(resourceName);
         dbClusterLockDemoService2.testWithAnno();
-        dbClusterLockHandler.unlockPessimistic(resourceName);
+        dbClusterLockHandler.unlock(resourceName);
 
     }
 
@@ -63,7 +63,7 @@ public class DBClusterLockDemoService3 {
         String resourceName1 = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno";
         String resourceName2 = "cn.com.kun.service.clusterlock.DBClusterLockDemoService2.testWithAnno2";
         new Thread(()->{
-            dbClusterLockHandler.lockPessimistic(resourceName1);
+            dbClusterLockHandler.lock(resourceName1);
             LOGGER.info("我是线程1，已抢到锁");
             try {
                 Thread.sleep(15000);
@@ -71,7 +71,7 @@ public class DBClusterLockDemoService3 {
                 e.printStackTrace();
             }
             LOGGER.info("我是线程1，释放锁");
-            dbClusterLockHandler.unlockPessimistic(resourceName1);
+            dbClusterLockHandler.unlock(resourceName1);
         }).start();
         try {
             Thread.sleep(1000);
@@ -79,10 +79,10 @@ public class DBClusterLockDemoService3 {
             e.printStackTrace();
         }
         new Thread(()->{
-            dbClusterLockHandler.lockPessimistic(resourceName2);
+            dbClusterLockHandler.lock(resourceName2);
             LOGGER.info("我是线程2，已抢到锁");
             LOGGER.info("我是线程2，释放锁");
-            dbClusterLockHandler.unlockPessimistic(resourceName2);
+            dbClusterLockHandler.unlock(resourceName2);
         }).start();
 
     }

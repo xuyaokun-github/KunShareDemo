@@ -7,26 +7,16 @@ import org.springframework.stereotype.Component;
 public class RedissonLockHandler implements ClusterLockHandler {
 
     @Override
-    public boolean lockPessimistic(String resourceName) {
+    public boolean lock(String resourceName) {
 
 
         return false;
     }
 
     @Override
-    public boolean unlockPessimistic(String resourceName) {
+    public boolean unlock(String resourceName) {
 
         return false;
-    }
-
-    @Override
-    public void lockOptimism(String resourceName) {
-        throw new RuntimeException("RedissonLockHandler暂不支持乐观锁");
-    }
-
-    @Override
-    public void unlockOptimism() {
-        throw new RuntimeException("RedissonLockHandler暂不支持乐观锁");
     }
 
 }

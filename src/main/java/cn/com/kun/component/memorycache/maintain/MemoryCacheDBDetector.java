@@ -4,7 +4,7 @@ import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.component.clusterlock.dblock.DBClusterLock;
 import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.component.memorycache.MemoryCacheProperties;
-import cn.com.kun.mapper.MemoryCacheNoticeMapper;
+import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

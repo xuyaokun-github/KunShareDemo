@@ -53,7 +53,7 @@ public class RedisListDemoService {
 
         try {
             //上锁
-            redisClusterLockHandler.lockPessimistic(LOCK_NAME);
+            redisClusterLockHandler.lock(LOCK_NAME);
             //假如list为空，num超出最大长度，执行不会报错，会返回空
             List<JobVO> jobVOList = redisTemplateHelper.lGet(LIST_NAME, 0, num);
             //trim是保留的意思，假如下标超出最大长度，也不会报错，相当于do nothing
@@ -63,7 +63,7 @@ public class RedisListDemoService {
             LOGGER.error("popMore异常", e);
         }finally {
             //解锁
-            redisClusterLockHandler.unlockPessimistic(LOCK_NAME);
+            redisClusterLockHandler.unlock(LOCK_NAME);
         }
         return null;
     }

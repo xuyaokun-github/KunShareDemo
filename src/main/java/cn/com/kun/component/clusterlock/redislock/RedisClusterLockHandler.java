@@ -27,7 +27,7 @@ public class RedisClusterLockHandler implements ClusterLockHandler {
     private ThreadLocal<String> requestIdThreadLocal = new ThreadLocal<String>();
 
     @Override
-    public boolean lockPessimistic(String resourceName) {
+    public boolean lock(String resourceName) {
 
         //requestId可以放到ThreadLocal中
         String requestId = UUID.randomUUID().toString();
@@ -51,20 +51,11 @@ public class RedisClusterLockHandler implements ClusterLockHandler {
     }
 
     @Override
-    public boolean unlockPessimistic(String resourceName) {
+    public boolean unlock(String resourceName) {
         /*
             从ThreadLocal中拿requestId
          */
         return redisLockUtil.releaseLock(resourceName, requestIdThreadLocal.get());
     }
 
-    @Override
-    public void lockOptimism(String resourseName) {
-
-    }
-
-    @Override
-    public void unlockOptimism() {
-
-    }
 }

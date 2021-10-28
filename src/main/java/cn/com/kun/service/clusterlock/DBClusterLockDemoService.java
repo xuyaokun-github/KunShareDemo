@@ -18,7 +18,7 @@ public class DBClusterLockDemoService {
     public void test(){
         String resourceName = "cn.com.kun.service.clusterlock.DBClusterLockService.test";
         //上锁
-        dbClusterLockHandler.lockPessimistic(resourceName);
+        dbClusterLockHandler.lock(resourceName);
         LOGGER.info("i am DBClusterLockDemoService 开始执行任务,当前线程：{}", Thread.currentThread().getName());
         try {
 //            Thread.sleep(60000);//模拟一个耗时任务
@@ -28,7 +28,7 @@ public class DBClusterLockDemoService {
         }
         LOGGER.info("i am DBClusterLockDemoService 任务结束,当前线程：{}", Thread.currentThread().getName());
         //解锁
-        dbClusterLockHandler.unlockPessimistic(resourceName);
+        dbClusterLockHandler.unlock(resourceName);
     }
 
 

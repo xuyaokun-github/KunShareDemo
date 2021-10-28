@@ -1,4 +1,4 @@
-package cn.com.kun.mapper;
+package cn.com.kun.component.memorycache.dao;
 
 import cn.com.kun.component.memorycache.maintain.MemoryCacheNoticeDO;
 import org.apache.ibatis.annotations.Mapper;
