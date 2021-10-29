@@ -19,6 +19,8 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
         <!-- 这个值通常会由Jenkins生成 -->
         <build.number>1</build.number>

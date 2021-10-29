@@ -10,6 +10,9 @@ import cn.com.kun.component.redo.bean.vo.RedoTask;
  * 3.饥饿策略，补偿任务查出来后可连续执行，默认情况下只有数据库轮询查出来时执行一次
  * 4.退避策略，在第三点上加上退避策略（这个优先级不高，因为入库已经有延迟了，这个退避是否仍有意义）
  *
+ * 这个组件的代码在本工程里已停止开发，已单独抽取成一个独立的开源项目
+ * 具体代码请参考：https://github.com/kunghsu1021/Redo
+ *
  * author:xuyaokun_kzx
  * date:2021/10/27
  * desc:
