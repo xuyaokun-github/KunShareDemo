@@ -18,6 +18,19 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
+    /**
+     *
+
+
+     {
+     "idCard":"123",
+     "studentName":"234",
+     "address":"sz"
+     }
+
+     * @param reqVO
+     * @return
+     */
     @PutMapping("/add")
     public ResultVo<Integer> add(@RequestBody StudentReqVO reqVO){
         return studentService.add(reqVO);
