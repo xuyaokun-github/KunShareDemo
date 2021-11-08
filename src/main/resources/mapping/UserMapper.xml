@@ -2,6 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.kun.mapper.UserMapper">
 
+    <resultMap type="User" id="userResultMap">
+        <result property="firstname" column="firstname" />
+        <result property="lastname" column="lastname" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="create_time" column="createTime" />
+    </resultMap>
+
+    <resultMap type="User" id="userResultMap2">
+        <result property="firstname" column="firstname" />
+        <result property="lastname" column="lastname" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="create_time" column="createTime" />
+    </resultMap>
+
+    <select id="selectAllByMoreResultMap" parameterType="int" resultMap="userResultMap,userResultMap2"
+            flushCache="false" useCache="true"
+            timeout="10000" fetchSize="2" statementType="PREPARED" resultSetType="FORWARD_ONLY">
+        <![CDATA[
+            select * from tbl_user
+        ]]>
+    </select>
+
     <insert id="insert" parameterType="User" >
         INSERT INTO tbl_user(firstname,lastname,phone,email)
         VALUES(#{firstname},#{lastname},#{phone},#{email})

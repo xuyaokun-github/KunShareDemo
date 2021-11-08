@@ -6,7 +6,6 @@ import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.common.vo.user.UserQueryParam;
-import cn.com.kun.controller.spring.SpringDemoController;
 import cn.com.kun.mapper.StudentMapper;
 import cn.com.kun.mapper.UserMapper;
 import cn.com.kun.service.mybatis.MybatisCursorDemoService;
@@ -34,7 +33,7 @@ import static cn.com.kun.common.utils.DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS;
 @RestController
 public class MybatisDemoController {
 
-    private final static Logger logger = LoggerFactory.getLogger(SpringDemoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(MybatisDemoController.class);
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;

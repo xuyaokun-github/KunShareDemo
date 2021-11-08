@@ -18,6 +18,8 @@ public interface UserMapper {
 
     List<User> query(Map map);
 
+    List<User> selectAllByMoreResultMap(int id);
+
     List<User> list(UserQueryParam userQueryParam);
 
     int deleteByFirstname(String firstname);

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.Executors;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * date:2021/10/27
  * desc:
 */
-@Component
+//@Component
 public class RedoTaskScheduler implements CommandLineRunner {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RedoTaskScheduler.class);

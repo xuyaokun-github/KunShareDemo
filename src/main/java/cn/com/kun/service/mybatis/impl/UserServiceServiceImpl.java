@@ -29,6 +29,19 @@ public class UserServiceServiceImpl implements UserService {
         return userMapper.list(userQueryParam);
     }
 
+
+    /**
+     * 非分页查询
+     * @param userQueryParam
+     * @return
+     */
+    @Override
+    public List<User> selectAllByMoreResultMap(UserQueryParam userQueryParam) {
+        return userMapper.selectAllByMoreResultMap(0);
+    }
+
+
+
     /**
      * 覆盖父类的方法（也不可以不覆盖，假如不覆盖就表示用父类的默认的排序规则）
      * @return

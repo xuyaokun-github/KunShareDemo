@@ -9,7 +9,6 @@ import cn.com.kun.service.StudentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import static cn.com.kun.common.constants.RedisCacheConstants.CACHE_CONFIGURATIONS_NAME_STUDENT;
@@ -43,7 +42,7 @@ public class StudentServiceImpl implements StudentService {
      * @param id
      * @return
      */
-    @Cacheable(value = CACHE_CONFIGURATIONS_NAME_STUDENT, key = "#id.toString()")
+//    @Cacheable(value = CACHE_CONFIGURATIONS_NAME_STUDENT, key = "#id.toString()")
     @Override
     public ResultVo<StudentResVO> getStudentById(Long id) {
 

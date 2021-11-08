@@ -32,7 +32,7 @@ public class JacksonUtils {
         mapper = new ObjectMapper();
         //如果json中有新增的字段并且是实体类类中不存在的，不报错
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        //如果存在未知属性，则忽略不报错
+        //反序列化时，如果存在未知属性，则忽略不报错
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //允许key没有双引号
 //        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);

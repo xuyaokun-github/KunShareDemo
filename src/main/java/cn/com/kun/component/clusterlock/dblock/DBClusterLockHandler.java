@@ -31,6 +31,8 @@ public class DBClusterLockHandler implements ClusterLockHandler {
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
+    private PessimisticLockMapper pessimisticLockMapper;
+
     /**
      * 线程副本--锁队列
      */
@@ -42,6 +44,7 @@ public class DBClusterLockHandler implements ClusterLockHandler {
      * value-> 线程名
      */
     private Map<String, String> acquireLockThreadName = new HashMap<>();
+
 
     /**
      * 悲观锁-上锁
@@ -81,7 +84,13 @@ public class DBClusterLockHandler implements ClusterLockHandler {
         while (true){
             try {
                 //假如PessimisticLockMapper是通过xml文件定义，可以通过getMapper获取
-                PessimisticLockMapper mapper = sqlSession.getMapper(PessimisticLockMapper.class);
+                //这里获取mapper的过程每次都会通过反射创建代理类，
+                // 是否应该建个缓存，把这个mapper实例缓存下来，避免重复调用
+                //这里不能将这个mapper缓存下来，因为每个sqlSession都是重新创建的，一个mapper实例对应一个sqlSession
+                //假如你用执行过的sqlSession继续执行，会报错，因为之前的sqlSession已经被关闭了
+                //所以必须每次都重新新开一个mapper实例
+                PessimisticLockMapper mapper;
+                mapper = sqlSession.getMapper(PessimisticLockMapper.class);
                 PessimisticLockDO pessimisticLockDO = mapper.acquireLock(paramMap);
                 if (pessimisticLockDO == null){
                     //抢锁失败
