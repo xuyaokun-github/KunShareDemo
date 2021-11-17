@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.*;
  * date:2021/5/26
  * desc:
 */
-@FeignClient(name = "other-client", url = "http://127.0.0.1:8091")
-public interface OtherClientFeignService {
+//@FeignClient(name = "kunwebdemo", url = "http://127.0.0.1:8091")
+@FeignClient(name = "kunwebdemo") //假如不指定url,则走注册中心
+public interface KunwebdemoFeignService {
 
     /**
      * Get请求-不带参数
      * @return
      */
-    @GetMapping("/hello/test")
+//    @GetMapping("/feigndemo/test") //错误示例，因为少了上下文，服务端那边定义了上下文，则接口这里必须加上下文
+    @GetMapping("/kunwebdemo/feigndemo/test")
     ResultVo result();
 
     /**
@@ -27,7 +29,7 @@ public interface OtherClientFeignService {
      * @param name
      * @return
      */
-    @GetMapping("/hello/test1")
+    @GetMapping("/kunwebdemo/feigndemo/test1")
     ResultVo result1(@RequestParam("name") String name);
 
     /**
@@ -35,7 +37,7 @@ public interface OtherClientFeignService {
      * @param name
      * @return
      */
-    @PostMapping("/hello/test2")
+    @PostMapping("/kunwebdemo/feigndemo/test2")
     ResultVo result2(@RequestBody People name);
 
     /**
@@ -44,7 +46,7 @@ public interface OtherClientFeignService {
      * @param name
      * @return
      */
-    @PostMapping("/hello/test3")
+    @PostMapping("/kunwebdemo/feigndemo/test3")
     ResultVo result3(@RequestBody People name,
                      @RequestHeader(value = "source", required = false) String source);
 

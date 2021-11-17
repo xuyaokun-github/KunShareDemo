@@ -9,4 +9,9 @@ import java.util.List;
 public interface UserService extends BaseService<UserQueryParam, User> {
 
     List<User> selectAllByMoreResultMap(UserQueryParam userQueryParam);
+
+    int update(User user);
+
+    int updateMore(User user);
+
 }

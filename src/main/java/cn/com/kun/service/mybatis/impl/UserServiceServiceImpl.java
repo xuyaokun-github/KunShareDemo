@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,7 +41,22 @@ public class UserServiceServiceImpl implements UserService {
         return userMapper.selectAllByMoreResultMap(0);
     }
 
+    @Transactional
+    @Override
+    public int update(User user) {
 
+        return userMapper.update(user);
+    }
+
+    @Transactional
+    @Override
+    public int updateMore(User user) {
+
+        userMapper.update(user);
+        userMapper.update(user);
+        userMapper.update(user);
+        return 0;
+    }
 
     /**
      * 覆盖父类的方法（也不可以不覆盖，假如不覆盖就表示用父类的默认的排序规则）

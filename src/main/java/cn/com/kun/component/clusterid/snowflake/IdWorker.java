@@ -126,6 +126,7 @@ public class IdWorker {
      */
     public IdWorker(long workerId, long datacenterId) {
         // 检查机房id和机器id是否超过31 不能小于0
+        //这个校验非常重要，假如传了一个超出阈值的机器ID或者机房ID,都会导致最终算法出问题
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(
                     String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));

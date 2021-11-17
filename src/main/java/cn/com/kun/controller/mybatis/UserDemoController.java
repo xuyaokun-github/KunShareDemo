@@ -2,6 +2,7 @@ package cn.com.kun.controller.mybatis;
 
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.mapper.UserMapper;
+import cn.com.kun.service.mybatis.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class UserDemoController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    UserService userService;
+
     @GetMapping("/test")
     public String test(){
 
@@ -29,10 +33,26 @@ public class UserDemoController {
     }
 
     @Transactional
-    @GetMapping("/test2")
-    public String test2(){
+    @GetMapping("/testSelectAllByMoreResultMap")
+    public String testSelectAllByMoreResultMap(){
 
         List<User> userList = userMapper.selectAllByMoreResultMap(0);
+        return "OK";
+    }
+
+    @GetMapping("/testUpdate")
+    public String testUpdate(){
+
+        User user = new User();
+        int res = userService.update(user);
+        return "OK";
+    }
+
+    @GetMapping("/testUpdateMore")
+    public String testUpdateMore(){
+
+        User user = new User();
+        int res = userService.updateMore(user);
         return "OK";
     }
 }
