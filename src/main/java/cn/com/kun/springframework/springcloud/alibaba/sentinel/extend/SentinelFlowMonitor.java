@@ -174,6 +174,10 @@ public class SentinelFlowMonitor {
                             }
                             //刷新MonitorFlag对象
                             refreshMonitorFlag(flowMonitorRes, nodeVo);
+                            //
+                            if (!flowMonitorRes.isGreen()){
+                                storeMonitorResult(flowMonitorRes);
+                            }
                             //触发回调
                             invokeMonitorCallback(flowMonitorRes);
                         });
@@ -192,6 +196,19 @@ public class SentinelFlowMonitor {
             }
         }
 
+    }
+
+    /**
+     * 保存监控结果
+     * @param flowMonitorRes
+     */
+    private void storeMonitorResult(FlowMonitorRes flowMonitorRes) {
+
+        StoreMonitorResultService service = StoreMonitorResultServiceRegistry.getStoreMonitorResultService();
+        if (service != null){
+            //假如用户有注册监控结果持久化实现类，则进行持久化
+            service.storeMonitorResult(flowMonitorRes);
+        }
     }
 
     /**

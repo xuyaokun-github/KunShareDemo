@@ -39,14 +39,31 @@ public class MoreKafkaSourceDemo4BySessionWindowAndJoinTask {
 //         env.setStreamTimeCharacteristic(TimeCharacteristic.IngestionTime);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
+//        env.setParallelism(5);
+//        /*
+//            Checkpoint机制
+//            假如
+//         */
+//        env.enableCheckpointing(1000);
+//        env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+//        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
+//        env.getCheckpointConfig().setCheckpointTimeout(70000);
+//        env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
+//        env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+
+
         //同时监听多个主题
         //创建消费者
         FlinkKafkaConsumer<String> flinkKafkaConsumer = FlinkKafkaConfig.getFlinkKafkaConsumer(TopicConstants.TOPIC_FLINK_DEMO_1);
         FlinkKafkaConsumer<String> flinkKafkaConsumer2 = FlinkKafkaConfig.getFlinkKafkaConsumer(TopicConstants.TOPIC_FLINK_DEMO_2);
 
         //添加输入源
+        //设置并行度为3
+        int parallelism = 3;
         DataStream<String> topic1Stream = env.addSource(flinkKafkaConsumer);
         DataStream<String> topic2Stream = env.addSource(flinkKafkaConsumer2);
+//        DataStream<String> topic1Stream = env.addSource(flinkKafkaConsumer).setParallelism(parallelism);
+//        DataStream<String> topic2Stream = env.addSource(flinkKafkaConsumer2).setParallelism(parallelism);
         //将流进行合并
         DataStream<String> stream = topic1Stream.join(topic2Stream)
                 .where(new MyKeySelector())

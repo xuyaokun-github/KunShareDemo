@@ -22,4 +22,9 @@ public class TestFlink {
             list.add(people);
         }
     }
+
+    /*
+        ./kafka-topics.bat --zookeeper 127.0.0.1:2181 --alter --topic flink-demo-topic-1 --partitions 3
+        ./kafka-topics.bat --zookeeper 127.0.0.1:2181 --alter --topic flink-demo-topic-2 --partitions 3
+     */
 }

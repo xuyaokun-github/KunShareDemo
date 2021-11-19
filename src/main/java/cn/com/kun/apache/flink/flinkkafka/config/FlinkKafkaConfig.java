@@ -40,6 +40,7 @@ public class FlinkKafkaConfig {
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.setProperty("group.id", "kunsharedemo");
+        properties.setProperty("max.poll.records", "1");
 
         FlinkKafkaConsumer<String> myConsumer = new FlinkKafkaConsumer<String>(topic, new SimpleStringSchema(), properties);
         myConsumer.setStartFromGroupOffsets(); // 默认的方法（消费过的不会再被消费）

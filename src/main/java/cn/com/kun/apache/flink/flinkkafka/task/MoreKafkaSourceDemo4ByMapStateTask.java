@@ -1,4 +1,4 @@
-package cn.com.kun.apache.flink.flinkkafka.test;
+package cn.com.kun.apache.flink.flinkkafka.task;
 
 import cn.com.kun.apache.flink.flinkkafka.config.FlinkKafkaConfig;
 import cn.com.kun.apache.flink.flinkkafka.model.FlinkTopicMsg;
@@ -28,12 +28,13 @@ import java.util.Map;
  * 假如两个topic不是在同一个kafka服务端，需要建不同的KafkaConsumer，即需要两个流
  *
  * 不使用窗口，用mapState
+ * 方案也是可行的。
  *
  * author:xuyaokun_kzx
  * date:2021/9/15
  * desc:
  */
-public class MoreKafkaSourceDemo4ByMapState {
+public class MoreKafkaSourceDemo4ByMapStateTask {
 
     public static void main(String[] args) throws Exception {
 
@@ -59,7 +60,7 @@ public class MoreKafkaSourceDemo4ByMapState {
         //数据的中间处理操作
         SingleOutputStreamOperator newStream = stream
                 .keyBy(new MyKeySelector())
-                .flatMap(new MyFlatMapFunction());
+                .flatMap(new MyRichFlatMapFunction());
 
         //输出到控制台,这里输出的是最后一次调用collect设置的结果
         newStream.print();
@@ -72,6 +73,7 @@ public class MoreKafkaSourceDemo4ByMapState {
         System.out.println("调用execute方法");
         //注意：因为flink是懒加载的，所以必须调用execute方法，上面的代码才会执行
         env.execute();
+        //因为是无界流，所以正常情况下不会执行到这里
         System.out.println("执行结束");
     }
 
@@ -90,7 +92,7 @@ public class MoreKafkaSourceDemo4ByMapState {
         }
     }
 
-    public static class MyFlatMapFunction extends RichFlatMapFunction<String, String> {
+    public static class MyRichFlatMapFunction extends RichFlatMapFunction<String, String> {
 
         private MapState<String, String> mapState;
 
@@ -101,12 +103,26 @@ public class MoreKafkaSourceDemo4ByMapState {
 
             // 设置状态过期配置
             StateTtlConfig ttlConfig = StateTtlConfig
-                    .newBuilder(Time.seconds(8))
+                    /*
+                        状态缓存的时间很重要
+                        假如时间太小，topic1的数据放入状态中了，但是topic2来得迟了，状态就过期了，所以两个topic就关联不起来
+                        假如时间太大，系统需要暂存的内容就较多，增加内存磁盘占用
+
+                        亲测时间到了之后，状态值将获取不到。
+                     */
+                    .newBuilder(Time.seconds(10))
+                    // 设置状态的更新类型
                     .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)
+                    // 已过期还未被清理掉的状态数据不返回给用户
                     .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)
+                    // 过期对象的清理策略 全量清理
+//                    .cleanupFullSnapshot()
+                    //增量清理
+//                    .cleanupIncrementally(1, true)
+//                    .cleanupInBackground()
                     .build();
 
-            MapStateDescriptor descriptor = new MapStateDescriptor("MapDescriptor",String.class,String.class);
+            MapStateDescriptor descriptor = new MapStateDescriptor("MapDescriptor", String.class, String.class);
             // 状态过期配置与状态绑定
             descriptor.enableTimeToLive(ttlConfig);
             mapState = getRuntimeContext().getMapState(descriptor);
@@ -125,8 +141,8 @@ public class MoreKafkaSourceDemo4ByMapState {
 
             FlinkTopicMsg flinkTopicMsg = JacksonUtils.toJavaObject(sentence, FlinkTopicMsg.class);
             //首先判断，是否已经有msgId了，假如有了，说明第一个topic的数据已经回来了
-            System.out.println("当前mapState： values:" + JacksonUtils.toJSONString(mapState.values())
-                    + " keys:" + JacksonUtils.toJSONString(mapState.keys()));
+//            System.out.println("当前mapState： values:" + JacksonUtils.toJSONString(mapState.values())
+//                    + " keys:" + JacksonUtils.toJSONString(mapState.keys()));
             //每个key,都会有一个独立的mapState
             if (StringUtils.isNotEmpty(flinkTopicMsg.getMsgId())){
                 //假如msgId不为空，说明是第一个topic
