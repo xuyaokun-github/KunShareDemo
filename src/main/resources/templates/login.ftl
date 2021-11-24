@@ -9,5 +9,19 @@
 <p> ${request.getContextPath()}</p>
 <p> ${password}</p>
 <p> ${userName}</p>
+<#--语法展示，多层级-->
+<#list users as user>
+<div>
+    <P>${user.name}</P>
+    <P>${user.address}</P>
+    <#list user.books as book>
+    <ul>
+        <li>${book.name}</li>
+        <li>${book.price}</li>
+    </ul>
+    </#list>
+</div>
+</#list>
+
 </body>
 </html>

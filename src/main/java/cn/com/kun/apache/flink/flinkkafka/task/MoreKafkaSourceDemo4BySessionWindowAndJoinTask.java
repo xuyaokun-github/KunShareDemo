@@ -68,7 +68,7 @@ public class MoreKafkaSourceDemo4BySessionWindowAndJoinTask {
         DataStream<String> stream = topic1Stream.join(topic2Stream)
                 .where(new MyKeySelector())
                 .equalTo(new MyKeySelector()) //两个函数用的key可以是不一样的，假如字段真的完全不同名的话
-                .window(ProcessingTimeSessionWindows.withGap(Time.seconds(10)))
+                .window(ProcessingTimeSessionWindows.withGap(Time.seconds(3)))
                 .apply(new MoreKafkaSourceByJoinAndSessionWindowJoinFunction())
                 .flatMap(new MoreKafkaSourceByJoinAndSessionWindowFlatMapFunction());
 

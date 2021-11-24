@@ -40,4 +40,7 @@ public class ThreadUtils {
         System.out.println(String.format("%s ----[当前线程：%s]", msg, Thread.currentThread().getName()));
     }
 
+    public static void runAsyncByRunnable(Runnable runnable) {
+        new Thread(runnable).start();
+    }
 }
