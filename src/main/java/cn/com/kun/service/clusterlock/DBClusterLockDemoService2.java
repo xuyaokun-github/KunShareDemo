@@ -1,8 +1,8 @@
 package cn.com.kun.service.clusterlock;
 
 import cn.com.kun.bean.entity.Student;
-import cn.com.kun.component.clusterlock.dblock.DBClusterLock;
-import cn.com.kun.component.clusterlock.dblock.DBClusterLockHandler;
+import cn.com.kun.component.distributedlock.dblock.DBClusterLock;
+import cn.com.kun.component.distributedlock.dblock.DBDistributedLockHandler;
 import cn.com.kun.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ public class DBClusterLockDemoService2 {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockDemoService2.class);
 
     @Autowired
-    DBClusterLockHandler dbClusterLockHandler;
+    DBDistributedLockHandler dbClusterLockHandler;
 
     @Autowired
     StudentMapper studentMapper;

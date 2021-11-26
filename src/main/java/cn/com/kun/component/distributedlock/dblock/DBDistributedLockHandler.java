@@ -1,6 +1,6 @@
-package cn.com.kun.component.clusterlock.dblock;
+package cn.com.kun.component.distributedlock.dblock;
 
-import cn.com.kun.component.clusterlock.ClusterLockHandler;
+import cn.com.kun.component.distributedlock.DistributedLockHandler;
 //import com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -24,9 +24,9 @@ import java.util.Map;
  * desc:
 */
 @Component
-public class DBClusterLockHandler implements ClusterLockHandler {
+public class DBDistributedLockHandler implements DistributedLockHandler {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DBDistributedLockHandler.class);
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;

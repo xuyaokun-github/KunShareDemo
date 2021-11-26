@@ -1,7 +1,7 @@
 package cn.com.kun.controller.clusterid;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.component.clusterid.snowflake.ClusterIdGenerator;
+import cn.com.kun.component.distributedId.snowflake.DistributedIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ public class ClusterIdDemoController {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdDemoController.class);
 
     @Autowired
-    ClusterIdGenerator clusterIdGenerator;
+    DistributedIdGenerator distributedIdGenerator;
 
     @GetMapping("/test")
     public ResultVo<String> test(){
 
         for (int i = 0; i < 50; i++) {
-            LOGGER.info("" + clusterIdGenerator.id());
+            LOGGER.info("" + distributedIdGenerator.id());
         }
         return ResultVo.valueOfSuccess("");
     }
@@ -48,7 +48,7 @@ public class ClusterIdDemoController {
                 int count = 0;
                 List<String> tempList = new ArrayList<>();
                 while (true){
-                    tempList.add(String.valueOf(clusterIdGenerator.id()));
+                    tempList.add(String.valueOf(distributedIdGenerator.id()));
                     count++;
                     if (count == 30000){
                         break;

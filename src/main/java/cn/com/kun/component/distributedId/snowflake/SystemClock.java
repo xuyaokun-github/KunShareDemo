@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterid.snowflake;
+package cn.com.kun.component.distributedId.snowflake;
 
 import java.sql.Timestamp;
 import java.util.concurrent.Executors;

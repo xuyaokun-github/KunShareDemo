@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterlock;
+package cn.com.kun.component.distributedlock;
 
 /**
  * 分布式锁处理器接口
@@ -8,7 +8,7 @@ package cn.com.kun.component.clusterlock;
  * date:2021/7/7
  * desc:
 */
-public interface ClusterLockHandler {
+public interface DistributedLockHandler {
 
     boolean lock(String resourceName);
 

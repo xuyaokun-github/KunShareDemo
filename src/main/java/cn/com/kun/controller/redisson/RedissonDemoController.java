@@ -14,11 +14,11 @@ public class RedissonDemoController {
     @Autowired
     private RedissonDemoService redissonDemoService;
 
-    @RequestMapping("/test")
-    public String test(){
+    @RequestMapping("/testLock")
+    public String testLock(){
 
-        redissonDemoService.test();
-        return "cn.com.kun.controller.redisson.RedissonDemoController.test";
+        redissonDemoService.testLock();
+        return "cn.com.kun.controller.redisson.RedissonDemoController.testLock";
     }
 
 

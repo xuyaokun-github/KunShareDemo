@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springredis.service;
 
-import cn.com.kun.component.clusterlock.redislock.RedisClusterLockHandler;
+import cn.com.kun.component.distributedlock.redislock.RedisDistributedLockHandler;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.vo.JobVO;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class RedisListDemoService {
     private RedisTemplate redisTemplate;
 
     @Autowired
-    private RedisClusterLockHandler redisClusterLockHandler;
+    private RedisDistributedLockHandler redisClusterLockHandler;
 
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;

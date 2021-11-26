@@ -1,13 +1,14 @@
-package cn.com.kun.component.clusterid.snowflake;
+package cn.com.kun.component.distributedId.snowflake;
 
 import cn.com.kun.common.utils.InetAddressUtils;
-import cn.com.kun.component.clusterlock.redislock.RedisClusterLockHandler;
+import cn.com.kun.component.distributedlock.redislock.RedisDistributedLockHandler;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.Executors;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 分布式ID工具类-基于雪花算法
- * 1.扩展了workerId的生成
+ * 1.扩展了workerId的生成（缺点，强依赖了redis）
  * 2.解决了时钟回拨问题
  *
  * author:xuyaokun_kzx
@@ -24,9 +25,9 @@ import java.util.concurrent.TimeUnit;
  * desc:
 */
 @Component
-public class ClusterIdGenerator {
+public class DistributedIdGenerator {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ClusterIdGenerator.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DistributedIdGenerator.class);
 
     private String WORKERID_KEY_PREFIX = "WORKERID";
 
@@ -49,19 +50,26 @@ public class ClusterIdGenerator {
      * 分布式锁
      */
     @Autowired
-    RedisClusterLockHandler redisClusterLockHandler;
+    RedisDistributedLockHandler redisClusterLockHandler;
 
     @PostConstruct
     public void init(){
-        hostname = InetAddressUtils.getHostName();
-        workerId = getWorkerId();
-        idWorker = new IdWorker(workerId, datacenterId);
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "ClusterIdGenerator-keeplive-thread");
-            thread.setDaemon(true);
-            return thread;
-        });
-        scheduler.scheduleAtFixedRate(() -> refreshIdLiveTime(), 1, 1, TimeUnit.MINUTES);
+
+        new Thread(()->{
+            hostname = InetAddressUtils.getHostName();
+            //这里获取ID的过程中有阻塞等待锁的过程，假如一直获取不到锁，将会一直阻塞，应用始终无法正常启动
+            //这里的锁，必须要设置成可自动超时，因为这个过程不是复杂的过程，锁太久说明肯定出问题
+            //或者可以尝试优化成，将这个初始化的过程异步化完成，假如初始化失败，这个类对外不提供正常功能（比较推荐这个）
+            workerId = getWorkerId();
+            idWorker = new IdWorker(workerId, datacenterId);
+            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "ClusterIdGenerator-keeplive-thread");
+                thread.setDaemon(true);
+                return thread;
+            });
+            scheduler.scheduleAtFixedRate(() -> refreshIdLiveTime(), 1, 1, TimeUnit.MINUTES);
+        }).start();
+
     }
 
     //定时发送心跳
@@ -90,6 +98,8 @@ public class ClusterIdGenerator {
         String lockKey = "workerid-lockkey";
         long number = 1;
         //上锁
+        //这里上锁的过程是阻塞的，假如一直上锁失败，这里将会一直卡住，下面程序无法继续往下，所以应该优化 TODO 设置一个等待阈值
+        //假如超过这个阈值还获取不到，就抛异常结束了，不要让程序一直干等
         redisClusterLockHandler.lock(lockKey);
         //假如获取失败，直接抛异常，说明环境有问题
         while (true){
@@ -116,6 +126,8 @@ public class ClusterIdGenerator {
     }
 
     public long id(){
+
+        Assert.notNull(idWorker, "分布式ID组件暂不可用");
         return idWorker.nextId();
     }
 
@@ -125,6 +137,7 @@ public class ClusterIdGenerator {
      * @return
      */
     public String idStr(){
+        Assert.notNull(idWorker, "分布式ID组件暂不可用");
         return String.valueOf(idWorker.nextId());
     }
 

@@ -1,8 +1,8 @@
-package cn.com.kun.component.clusterlock.dblock;
+package cn.com.kun.component.distributedlock.dblock;
 
-import cn.com.kun.component.clusterlock.ClusterLockHandler;
+import cn.com.kun.component.distributedlock.DistributedLockHandler;
 
-public class DBOptimismClusterLockHandler implements ClusterLockHandler {
+public class DBOptimismDistributedLockHandler implements DistributedLockHandler {
 
     /**
      * 乐观锁-上锁

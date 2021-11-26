@@ -26,7 +26,7 @@ public class RedissonDemoService {
     @RedissonAutowired
     private RBucket<String> bucket;
 
-    public void test(){
+    public void testLock(){
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
                 while (true){

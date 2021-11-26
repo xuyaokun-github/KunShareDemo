@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterlock.dblock;
+package cn.com.kun.component.distributedlock.dblock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -26,12 +26,12 @@ public class DBClusterLockAspect {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockAspect.class);
 
     @Autowired
-    DBClusterLockHandler dbClusterLockHandler;
+    DBDistributedLockHandler dbClusterLockHandler;
 
     @Value("${dbclusterlock.clusterCode:}")
     private String clusterCode;
 
-    @Pointcut("@annotation(cn.com.kun.component.clusterlock.dblock.DBClusterLock)")
+    @Pointcut("@annotation(cn.com.kun.component.distributedlock.dblock.DBClusterLock)")
     public void pointCut(){
 
     }

@@ -1,6 +1,6 @@
 package cn.com.kun.service.clusterlock;
 
-import cn.com.kun.component.clusterlock.dblock.DBClusterLockHandler;
+import cn.com.kun.component.distributedlock.dblock.DBDistributedLockHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class DBClusterLockDemoService3 {
     DBClusterLockDemoService2 dbClusterLockDemoService2;
 
     @Autowired
-    DBClusterLockHandler dbClusterLockHandler;
+    DBDistributedLockHandler dbClusterLockHandler;
 
     /**
      * 验证锁是否可重入

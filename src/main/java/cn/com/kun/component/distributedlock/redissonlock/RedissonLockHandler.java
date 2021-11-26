@@ -1,10 +1,10 @@
-package cn.com.kun.component.clusterlock.redissonlock;
+package cn.com.kun.component.distributedlock.redissonlock;
 
-import cn.com.kun.component.clusterlock.ClusterLockHandler;
+import cn.com.kun.component.distributedlock.DistributedLockHandler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RedissonLockHandler implements ClusterLockHandler {
+public class RedissonLockHandler implements DistributedLockHandler {
 
     @Override
     public boolean lock(String resourceName) {

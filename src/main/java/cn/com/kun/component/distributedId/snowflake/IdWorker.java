@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterid.snowflake;
+package cn.com.kun.component.distributedId.snowflake;
 
 import cn.com.kun.common.utils.DateUtils;
 

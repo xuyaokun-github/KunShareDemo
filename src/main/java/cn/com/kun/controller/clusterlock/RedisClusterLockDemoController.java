@@ -1,8 +1,8 @@
 package cn.com.kun.controller.clusterlock;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.component.clusterlock.redislock.RedisClusterLockHandler;
-import cn.com.kun.component.clusterlock.redislock.RedisLockUtil;
+import cn.com.kun.component.distributedlock.redislock.RedisDistributedLockHandler;
+import cn.com.kun.component.distributedlock.redislock.RedisLockUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class RedisClusterLockDemoController {
     RedisLockUtil redisLockUtil;
 
     @Autowired
-    RedisClusterLockHandler redisClusterLockHandler;
+    RedisDistributedLockHandler redisClusterLockHandler;
 
     /**
      * http://localhost:8080/kunsharedemo/redisClusterLock-demo/test

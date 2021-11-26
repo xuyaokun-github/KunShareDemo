@@ -1,6 +1,6 @@
-package cn.com.kun.component.clusterlock.redislock;
+package cn.com.kun.component.distributedlock.redislock;
 
-import cn.com.kun.component.clusterlock.ClusterLockHandler;
+import cn.com.kun.component.distributedlock.DistributedLockHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
  * desc:
 */
 @Component
-public class RedisClusterLockHandler implements ClusterLockHandler {
+public class RedisDistributedLockHandler implements DistributedLockHandler {
 
     @Autowired
     RedisLockUtil redisLockUtil;

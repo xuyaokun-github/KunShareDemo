@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterlock.dblock;
+package cn.com.kun.component.distributedlock.dblock;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -24,7 +24,7 @@ public interface PessimisticLockMapper {
      *         FROM
      *         tbl_pessimistic_lock a force index(uiq_idx_resource)
      *         WHERE 1=1
-     *         <if test="resource!=null and resource!=''">
+     *         <if testLock="resource!=null and resource!=''">
      *             AND a.resource = #{resource}
      *         </if>
      *         for update

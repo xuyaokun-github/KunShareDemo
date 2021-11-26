@@ -1,4 +1,4 @@
-package cn.com.kun.component.clusterlock.redislock;
+package cn.com.kun.component.distributedlock.redislock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisStringCommands;

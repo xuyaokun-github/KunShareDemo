@@ -1,6 +1,6 @@
 package cn.com.kun.service.clusterlock;
 
-import cn.com.kun.component.clusterlock.dblock.DBClusterLockHandler;
+import cn.com.kun.component.distributedlock.dblock.DBDistributedLockHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,11 @@ public class DBClusterLockDemoService {
     private final static Logger LOGGER = LoggerFactory.getLogger(DBClusterLockDemoService.class);
 
     @Autowired
-    DBClusterLockHandler dbClusterLockHandler;
+    DBDistributedLockHandler dbClusterLockHandler;
 
 //    @Transactional
     public void test(){
-        String resourceName = "cn.com.kun.service.clusterlock.DBClusterLockService.test";
+        String resourceName = "cn.com.kun.service.clusterlock.DBClusterLockService.testLock";
         //上锁
         dbClusterLockHandler.lock(resourceName);
         LOGGER.info("i am DBClusterLockDemoService 开始执行任务,当前线程：{}", Thread.currentThread().getName());
