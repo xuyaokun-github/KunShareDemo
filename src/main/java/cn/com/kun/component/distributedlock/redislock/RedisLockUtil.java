@@ -44,7 +44,7 @@ public class RedisLockUtil {
      *
      * @param lockKey 每把锁都有它的业务标识
      * @param requestId 不同的线程加锁要加以区分，可以使用时间戳或者客户端ID
-     * @param expireTime 锁的超时时间
+     * @param expireTime 锁的超时时间(秒)
      * @return
      */
     public boolean getLock(String lockKey, String requestId, int expireTime) {

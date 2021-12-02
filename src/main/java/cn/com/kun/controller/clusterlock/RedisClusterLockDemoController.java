@@ -64,6 +64,7 @@ public class RedisClusterLockDemoController {
 
 
     /**
+     * RedisDistributedLockHandler使用例子
      * http://localhost:8080/kunsharedemo/redisClusterLock-demo/test2
      * @return
      */
@@ -87,4 +88,68 @@ public class RedisClusterLockDemoController {
         }
         return ResultVo.valueOfSuccess("");
     }
+
+    /**
+     * RedisDistributedLockHandler使用例子
+     * http://localhost:8080/kunsharedemo/redisClusterLock-demo/test2
+     * @return
+     */
+    @GetMapping("/test2BySleep60Seconds")
+    public ResultVo<String> test2BySleep60Seconds(){
+        String lockKey = "redisClusterLock-lockkey";
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                //上锁
+                redisClusterLockHandler.lock(lockKey);
+                LOGGER.info("我是线程{}-start", Thread.currentThread().getName());
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                LOGGER.info("我是线程{}-end", Thread.currentThread().getName());
+                //解锁
+                redisClusterLockHandler.unlock(lockKey);
+            }).start();
+        }
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping("/test2By2ThreadSleep60Seconds")
+    public ResultVo<String> test2By2ThreadSleep60Seconds() throws InterruptedException {
+        String lockKey = "redisClusterLock-lockkey-2";
+        new Thread(()->{
+            //上锁
+            redisClusterLockHandler.lock(lockKey);
+            LOGGER.info("我是线程{}-start", Thread.currentThread().getName());
+            try {
+                Thread.sleep(1800000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("我是线程{}-end", Thread.currentThread().getName());
+            //解锁
+            redisClusterLockHandler.unlock(lockKey);
+        }).start();
+
+        Thread.sleep(1000);
+
+        new Thread(()->{
+            //上锁
+            redisClusterLockHandler.lock(lockKey);
+            LOGGER.info("我是线程{}-start", Thread.currentThread().getName());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("我是线程{}-end", Thread.currentThread().getName());
+            //解锁
+            redisClusterLockHandler.unlock(lockKey);
+        }).start();
+
+
+        return ResultVo.valueOfSuccess("");
+    }
+
 }

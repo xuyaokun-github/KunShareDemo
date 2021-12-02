@@ -36,4 +36,4 @@ CREATE TABLE `tbl_custom_quartz_job` (
 -- ----------------------------
 -- Records of tbl_custom_quartz_job
 -- ----------------------------
-INSERT INTO `tbl_custom_quartz_job` VALUES ('1', 'cn.com.kun.quartz.job.MyFirstCustomQuartzJob', 'MyFirstCustomQuartzJob', 'MyFirstCustomQuartzGroup', '{\'name\':\'kunghsu\'}', 'MyFirstCustomQuartzTrigger', 'MyFirstCustomQuartzTriggerGroup', '{\'name\':\'kunghsu\'}', '0/2 * * * * ? 2020', 'Y');
+INSERT INTO `tbl_custom_quartz_job` VALUES ('1', 'cn.com.kun.framework.quartz.job.MyFirstCustomQuartzJob', 'MyFirstCustomQuartzJob', 'MyFirstCustomQuartzGroup', '{\'name\':\'kunghsu\'}', 'MyFirstCustomQuartzTrigger', 'MyFirstCustomQuartzTriggerGroup', '{\'name\':\'kunghsu\'}', '0/2 * * * * ? 2020', 'Y');

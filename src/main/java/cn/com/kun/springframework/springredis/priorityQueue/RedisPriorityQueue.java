@@ -63,10 +63,10 @@ public abstract class RedisPriorityQueue<T> {
             Long deleteRes = redisTemplateHelper.zsetRemove(getKey(), value);
             if (deleteRes > 0){
                 //假如大于0，说明删除成功，否则说明存在并发，该元素已经被其他线程成功弹出（不需要再额外上锁就能解决线程安全问题）
-                LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), value);
+//                LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), value);
                 return (T) JacksonUtils.toJavaObject(value, clazz);
             }else {
-                LOGGER.info("线程：{} 查询到内容：{}，但不能弹出！", Thread.currentThread().getName(), value);
+//                LOGGER.info("线程：{} 查询到内容：{}，但不能弹出！", Thread.currentThread().getName(), value);
                 return null;
             }
         }

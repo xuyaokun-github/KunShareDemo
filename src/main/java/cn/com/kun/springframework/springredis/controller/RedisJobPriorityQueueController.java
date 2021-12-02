@@ -1,5 +1,6 @@
 package cn.com.kun.springframework.springredis.controller;
 
+import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.priorityQueue.JobRedisPriorityQueue;
@@ -99,10 +100,12 @@ public class RedisJobPriorityQueueController {
         //开10个线程，分别执行弹出，看是否会弹出相同的元素
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
-                //获取所有
-//                JobVO res = redisJobPriorityQueueService.pop();
-                JobVO res = jobRedisPriorityQueue.pop(JobVO.class);
-//                LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), JacksonUtils.toJSONString(res));
+                while (true){
+                    JobVO res = jobRedisPriorityQueue.pop(JobVO.class);
+                    if (res != null){
+                        LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), JacksonUtils.toJSONString(res));
+                    }
+                }
             }).start();
         }
         return ResultVo.valueOfSuccess(null);

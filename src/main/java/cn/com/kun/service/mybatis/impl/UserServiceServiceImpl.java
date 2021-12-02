@@ -58,6 +58,17 @@ public class UserServiceServiceImpl implements UserService {
         return 0;
     }
 
+    public void method(){
+
+        /*
+            扣钱场景
+            例如我需要扣100元
+            update tbl_money set 剩余的={剩余的 - 100}  where 剩余的 > 100 and userId = "张三";
+            返回1，说明扣成功了，返回0，说明不足扣取，失败！
+         */
+
+    }
+
     /**
      * 覆盖父类的方法（也不可以不覆盖，假如不覆盖就表示用父类的默认的排序规则）
      * @return

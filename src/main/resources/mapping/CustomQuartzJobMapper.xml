@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.com.kun.quartz.mapper.CustomQuartzJobMapper">
+<mapper namespace="cn.com.kun.framework.quartz.mapper.CustomQuartzJobMapper">
 
     <select id="query" parameterType="java.util.Map" resultType="CustomQuartzJob">
         SELECT * FROM tbl_custom_quartz_job a

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedissonDemoService {
 
-    private final static Logger logger = LoggerFactory.getLogger(RedissonDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedissonDemoService.class);
 
     /**
      * 基于注解自动注入Redisson对象
@@ -26,13 +26,13 @@ public class RedissonDemoService {
     @RedissonAutowired
     private RBucket<String> bucket;
 
-    public void testLock(){
-        for (int i = 0; i < 10; i++) {
+    public void testLock(int count){
+        for (int i = 0; i < count; i++) {
             new Thread(()->{
                 while (true){
                     rLock.lock();
                     try{
-                        System.out.println(Thread.currentThread().getName() + DateUtils.now());
+                        LOGGER.info(Thread.currentThread().getName() + DateUtils.now());
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -99,7 +99,7 @@ public class RedissonDemoService {
 
     public void testString(){
         bucket.set("testString-kunghsu");
-        logger.info(bucket.get());
+        LOGGER.info(bucket.get());
     }
 
 }

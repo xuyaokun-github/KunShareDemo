@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springcloud.feign.config;
 
-import cn.com.kun.quartz.common.AutoJobRegisterConfig;
+import cn.com.kun.framework.quartz.common.AutoJobRegisterConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
