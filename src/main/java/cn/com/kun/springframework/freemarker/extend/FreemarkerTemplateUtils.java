@@ -38,6 +38,11 @@ public class FreemarkerTemplateUtils {
             //htmlSource通常不会随便改变，name与sourceCode应该是一一对应
             Template template = fmkTemplateLocalCache.getTemplate(freemarkerTemplateReplace.getTemplateName(), freemarkerTemplateReplace.getTimeStamp(), freemarkerTemplateReplace.getHtmlSource());
 //            Template template = getTemplate(freemarkerTemplateReplace.getTemplateName(), freemarkerTemplateReplace.getTimeStamp(), freemarkerTemplateReplace.getHtmlSource());
+            //注意，这里假如html语法有误，模板对象拿到是空对象
+            if (template == null){
+                LOGGER.error(String.format("模板对象创建异常, html:%s param:%s", freemarkerTemplateReplace.getHtmlSource(), freemarkerTemplateReplace.getParamSource()));
+                return null;
+            }
             template.createProcessingEnvironment(freemarkerTemplateReplace.getParamSource(), out).process();
             result = out.toString();
         } catch (Exception e) {
@@ -96,7 +101,7 @@ public class FreemarkerTemplateUtils {
 
 
     /**
-     *
+     * org.springframework.ui.ConcurrentModel在低版本1.5.12是没有的
      * @param htmlSource 源html
      * @param paramSource 参数
      * @return

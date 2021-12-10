@@ -81,6 +81,8 @@ public class MoreKafkaSourceDemo4BySessionWindowAndJoinTask {
         stream.addSink(flinkKafkaProducer);
 
         System.out.println("调用execute方法");
+        //输出执行计划
+        System.out.println(env.getExecutionPlan());
         //注意：因为flink是懒加载的，所以必须调用execute方法，上面的代码才会执行
         env.execute();
         System.out.println("执行结束");

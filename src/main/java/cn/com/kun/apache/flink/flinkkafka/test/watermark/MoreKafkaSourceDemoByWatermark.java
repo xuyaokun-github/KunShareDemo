@@ -152,7 +152,7 @@ public class MoreKafkaSourceDemoByWatermark {
             FlinkTopicMsg flinkTopicMsg = JacksonUtils.toJavaObject(value, FlinkTopicMsg.class);
             return flinkTopicMsg.getTradeId();
         }
-    }
+    }//
 
 
 

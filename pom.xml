@@ -448,6 +448,14 @@
             <version>1.6.1</version>
         </dependency>
 
+        <!-- 邮件start -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <!-- 邮件end -->
+
     </dependencies>
 
 <!--    <repositories>

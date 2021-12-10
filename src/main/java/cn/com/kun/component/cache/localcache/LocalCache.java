@@ -31,7 +31,9 @@ public abstract class LocalCache<T> {
             timeStampMap.clear();
             //创建T
             target = supplier.get();
-            timeStampMap.put(timeStamp, target);
+            if (target != null){
+                timeStampMap.put(timeStamp, target);
+            }
         }
         return target;
     }

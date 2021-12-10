@@ -20,8 +20,17 @@
         <li>${book.price}</li>
     </ul>
     </#list>
+
 </div>
 </#list>
+
+<br>
+<hr>
+
+<!-- 反例 -->
+<#--<#users user>-->
+<#--<P> ${user.name}</P>-->
+<#--</#users>-->
 
 </body>
 </html>
