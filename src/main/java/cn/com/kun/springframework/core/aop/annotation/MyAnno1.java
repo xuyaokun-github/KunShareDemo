@@ -1,4 +1,4 @@
-package cn.com.kun.common.annotation;
+package cn.com.kun.springframework.core.aop.annotation;
 
 import java.lang.annotation.*;
 
@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface MyAnno2 {
+public @interface MyAnno1 {
 
-    
+
 }

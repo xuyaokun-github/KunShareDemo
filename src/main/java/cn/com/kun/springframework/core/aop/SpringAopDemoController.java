@@ -1,7 +1,7 @@
-package cn.com.kun.controller.spring;
+package cn.com.kun.springframework.core.aop;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.springframework.core.aop.SpringAopDemoService;
+import cn.com.kun.springframework.core.aop.service.SpringAopDemoService;
 import cn.com.kun.springframework.core.aop.abstractPointcutAdvisorDemo.SpringAopTimeLogDemoService;
 import cn.com.kun.springframework.core.aop.demo1.AopProxyUtilsDemo;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class SpringAopDemoController {
     @Autowired
     AopProxyUtilsDemo aopProxyUtilsDemo;
 
-    @Autowired
+//    @Autowired
     private SpringAopTimeLogDemoService springAopTimeLogDemoService;
 
     @GetMapping("/testAop")

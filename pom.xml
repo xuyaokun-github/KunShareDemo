@@ -25,8 +25,8 @@
         <!-- 这个值通常会由Jenkins生成 -->
         <build.number>1</build.number>
         <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
-        <flink.version>1.10.0</flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <flink.version>1.12.0</flink.version>
+        <scala.binary.version>2.12</scala.binary.version>
     </properties>
 
     <dependencies>
@@ -436,6 +436,30 @@
         </dependency>
         <!-- apache flink  end -->
 
+        <!-- Flink Dependency -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-hive_2.11</artifactId>
+            <version>1.13.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-java-bridge_2.11</artifactId>
+            <version>1.13.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Hive Dependency -->
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+            <version>2.3.9</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -455,6 +479,7 @@
             <version>1.4.7</version>
         </dependency>
         <!-- 邮件end -->
+
 
     </dependencies>
 

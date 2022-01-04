@@ -35,7 +35,7 @@ public class RedisBlackListCacheSyncService {
     @Autowired
     SqlSessionFactory sqlSessionFactory;
 
-    //30秒一次
+    //30秒一次(假如redis是双活双用架构再开启调度，假如是单用即只同时使用一套redis，无需同步)
 //    @Scheduled(fixedRate = 30000L)
 //    @Scheduled(fixedRate = 3000L)
     public void sync() {
