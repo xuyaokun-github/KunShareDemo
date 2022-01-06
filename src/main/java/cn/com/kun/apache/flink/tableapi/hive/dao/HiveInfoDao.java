@@ -1,4 +1,4 @@
-package cn.com.kun.apache.flink.tableapi.hive;
+package cn.com.kun.apache.flink.tableapi.hive.dao;
 
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
@@ -40,9 +40,13 @@ public class HiveInfoDao {
         tableEnv = TableEnvironment.create(environmentSettings);
 
         HiveCatalog hive = new HiveCatalog(catalogName, DEFAULT_DATABASE, hiveConfDir, version);
+        //java.io.IOException: No FileSystem for scheme: hdfs
+//        hive.getHiveConf().set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+
         tableEnv.registerCatalog(catalogName, hive);
         tableEnv.useCatalog(catalogName);
         tableEnv.useDatabase(database);
+
     }
 
     /**

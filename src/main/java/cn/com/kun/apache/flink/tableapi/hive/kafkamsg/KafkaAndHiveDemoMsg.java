@@ -1,4 +1,4 @@
-package cn.com.kun.apache.flink.tableapi.hive;
+package cn.com.kun.apache.flink.tableapi.hive.kafkamsg;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

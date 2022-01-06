@@ -39,3 +39,5 @@ mvn clean compile package -Dmaven.test.skip=true
 
 11.引入sentinel
 java -Dserver.port=8070 -Dcsp.sentinel.dashboard.server=localhost:8070 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar
+
+12.引入Hadoop + Hive
