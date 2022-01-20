@@ -2,7 +2,6 @@ package cn.com.kun.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -11,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * RestTemplate配置
@@ -56,24 +53,28 @@ public class RestTemplateConfig {
      */
     public static ClientHttpRequestFactory newClientHttpRequestFactory() {
 
+        //创建连接池管理器
+        PoolingHttpClientConnectionManager pollingConnectionManager = new PoolingHttpClientConnectionManager();
         // 长连接保持时长30秒
-        PoolingHttpClientConnectionManager pollingConnectionManager = new PoolingHttpClientConnectionManager(
-                30, TimeUnit.SECONDS);
+//        PoolingHttpClientConnectionManager pollingConnectionManager = new PoolingHttpClientConnectionManager(30, TimeUnit.SECONDS);
         // 最大连接数
         pollingConnectionManager.setMaxTotal(3000);
         // 单路由的并发数
         pollingConnectionManager.setDefaultMaxPerRoute(100);
+
         HttpClientBuilder httpClientBuilder = HttpClients.custom();
         httpClientBuilder.setConnectionManager(pollingConnectionManager);
+        //开启自动清理过期连接机制
+        httpClientBuilder.evictExpiredConnections();
         // 重试次数2次，并开启
-        httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(2, true));
+//        httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(2, true));
 
         // 保持长连接配置，需要在头添加Keep-Alive
         httpClientBuilder.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy());
         HttpClient httpClient = httpClientBuilder.build();
         // httpClient连接底层配置clientHttpRequestFactory
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient);
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        clientHttpRequestFactory.setConnectionRequestTimeout(5000);//ms
         clientHttpRequestFactory.setReadTimeout(5000);//ms
         clientHttpRequestFactory.setConnectTimeout(15000);//ms
         return clientHttpRequestFactory;

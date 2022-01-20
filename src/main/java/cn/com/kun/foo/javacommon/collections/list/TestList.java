@@ -1,4 +1,4 @@
-package cn.com.kun.foo.javacommon.collections;
+package cn.com.kun.foo.javacommon.collections.list;
 
 import java.util.ArrayList;
 import java.util.List;
