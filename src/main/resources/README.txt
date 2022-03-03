@@ -41,3 +41,9 @@ mvn clean compile package -Dmaven.test.skip=true
 java -Dserver.port=8070 -Dcsp.sentinel.dashboard.server=localhost:8070 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar
 
 12.引入Hadoop + Hive
+进入hadoop的sbin目录
+.\start-all.cmd
+进入hive的bin目录
+.\hive --service metastore
+.\hive --service hiveserver2
+(为了简化项目结构，单独起一个工程放flink相关demo)

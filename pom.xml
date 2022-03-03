@@ -470,9 +470,9 @@
 -->
             <version>2.3.6</version>
             <!-- 上生产时要用provided -->
-<!--
+            <!-- 本地测试时与canal的protobuf有冲突，
+                假如需要本地跑hive，再注释掉 -->
             <scope>provided</scope>
--->
         </dependency>
 
         <!-- hadoop start -->
@@ -480,27 +480,62 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-core</artifactId>
             <version>2.8.3</version>
+            <exclusions>
+                <!-- 与canal包冲突，排除低版本2.5.0 -->
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>2.8.3</version>
+            <exclusions>
+                <!-- 与canal包冲突，排除低版本2.5.0 -->
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-common</artifactId>
             <version>2.8.3</version>
+            <exclusions>
+                <!-- 与canal包冲突，排除低版本2.5.0 -->
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
             <version>2.8.3</version>
+            <exclusions>
+                <!-- 与canal包冲突，排除低版本2.5.0 -->
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>2.8.3</version>
+            <exclusions>
+                <!-- 与canal包冲突，排除低版本2.5.0 -->
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 <!--        <dependency>-->
@@ -535,6 +570,19 @@
         </dependency>
         <!-- 邮件end -->
 
+        <!-- alibaba canal start -->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.protocol</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <!-- alibaba canal end -->
 
     </dependencies>
 

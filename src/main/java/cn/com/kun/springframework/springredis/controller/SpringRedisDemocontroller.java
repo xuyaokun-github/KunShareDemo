@@ -3,7 +3,6 @@ package cn.com.kun.springframework.springredis.controller;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.counter.RedisCounterDemoService;
 import cn.com.kun.springframework.springredis.service.RedisListDemoService;
@@ -191,11 +190,21 @@ public class SpringRedisDemocontroller {
 //        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", time/1000, TimeUnit.SECONDS);
 //        redisTemplate.opsForValue().set("spring-redis-demo-testString", "123456", (time/1000)/60, TimeUnit.MINUTES);
 
-        MemoryCacheNoticeMsg noticeMsg = new MemoryCacheNoticeMsg();
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 字符串的双引号问题
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/testString2", method = RequestMethod.GET)
+    public ResultVo testString2(HttpServletRequest request){
+
         redisTemplateHelper.set("noticeMsg", "kunghsu");
         String res = (String) redisTemplateHelper.get("noticeMsg");
         LOGGER.info("===========res：{}", res);
-        return ResultVo.valueOfSuccess(res);
+        return ResultVo.valueOfSuccess();
     }
 
     @RequestMapping(value = "/testSetAdd", method = RequestMethod.GET)

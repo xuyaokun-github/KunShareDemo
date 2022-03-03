@@ -1,0 +1,34 @@
+DELETE canal-test
+
+
+PUT canal-test
+{
+    "settings": {
+        "number_of_shards" : 1,
+        "number_of_replicas" : 1
+    },
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "id": {
+                    "type": "long"
+                },
+                "name": {
+                    "type": "text"
+                },
+                "sex": {
+                    "type": "text"
+                },
+                "age": {
+                    "type": "text"
+                },
+                "email": {
+                    "type": "text"
+                },
+                "create_time": {
+                    "type": "date"
+                }
+            }
+        }
+    }
+}

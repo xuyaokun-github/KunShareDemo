@@ -1,0 +1,13 @@
+dataSourceKey: defaultDS   #指定数据源，这个值和adapter的application.yml文件中配置的srcDataSources值对应。
+destination: example       #指定canal-server中配置的某个实例的名字，注意：我们可能配置多个实例，你要清楚的知道每个实例收集的是那些数据，不要瞎搞。
+groupId: g1                #组ID，对应application.yml中的canalAdapters/groups/groupId中的值
+outerAdapterKey: db1Key    #对应application.yml中的canalAdapters/groups/outerAdapters/name/key中的值
+esMapping:                 #ES的mapping（映射）
+  _index: canal-test       #要同步到的ES的索引名称（自定义），需要自己在ES上创建哦！
+  _type: _doc              #ES索引的类型名称（自定义）
+  _id: _id                 #ES标示文档的唯一标示，通常对应数据表中的主键ID字段，注意我这里写成的是"_id"，有个下划线哦！
+  #pk: id                  #如果不需要_id, 则需要指定一个属性为主键属性
+  #这里就是数据表中的每个字段到ES索引中叫什么名字的sql映射，注意映射到es中的每个字段都要是唯一的，不能重复。
+  sql: "select t.id as _id, t.name, t.sex, t.age, t.email, t.create_time from tbl_canal_test t"
+  #etlCondition: "where t.occur_time>='{0}'"
+  commitBatch: 3000

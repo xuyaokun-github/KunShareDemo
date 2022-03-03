@@ -75,12 +75,14 @@ public class SentinelRuleLoader {
         //------------------熔断降级规则---------------------------
         List<DegradeRule> degradeRuleList = new ArrayList<>();
         addDegradeRuleFromConfig(degradeRuleList);
+        //测试方法
+        addTestDegradeRules(degradeRuleList);
         //加载
         DegradeRuleManager.loadRules(degradeRuleList);
 
     }
 
-    private void addDegradeRuleFromConfig(List<DegradeRule> degradeRuleList) {
+    private void addTestDegradeRules(List<DegradeRule> degradeRuleList) {
 
         //测试例子
         //给资源RESOURCE_NAME，指定一个降级规则
@@ -97,6 +99,19 @@ public class SentinelRuleLoader {
 //                .setStatIntervalMs(20000);
         degradeRuleList.add(degradeRule);
 
+        DegradeRule degradeRule2 = new DegradeRule(RESOURCE_NAME_4)
+                .setGrade(RuleConstant.DEGRADE_GRADE_RT)
+                // Max allowed response time
+                //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
+                .setCount(1000)
+                // Retry timeout (in second)
+                .setTimeWindow(60);
+        degradeRuleList.add(degradeRule2);
+
+    }
+
+    private void addDegradeRuleFromConfig(List<DegradeRule> degradeRuleList) {
+
         Map<String, DegradeRule> degradeRuleMap = sentinelRuleProperties.getDegradeRule();
         Iterator iterator = degradeRuleMap.entrySet().iterator();
         while (iterator.hasNext()){
@@ -107,6 +122,11 @@ public class SentinelRuleLoader {
         }
     }
 
+    /**
+     * 测试方法
+     * 验证规则的使用
+     * @param rules
+     */
     private void addTestRules(List<FlowRule> rules) {
 
         FlowRule rule = new FlowRule();
@@ -131,7 +151,6 @@ public class SentinelRuleLoader {
 //        rules.add(buildFlowRule(RESOURCE_SCENE_DX, 5, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
         rules.add(buildFlowRule(RESOURCE_NAME_3, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
         rules.add(buildFlowRule(RESOURCE_NAME_TESTLIMITANDDEGRADE2, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
-
     }
 
     private void addFlowRuleFromConfig(List<FlowRule> rules) {

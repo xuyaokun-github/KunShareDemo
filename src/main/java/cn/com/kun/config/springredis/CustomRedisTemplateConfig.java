@@ -17,7 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class CustomRedisTemplateConfig {
 
 
-    @Bean
+//    @Bean
     public RedisSerializer<String> redisKeySerializer() {
         return new StringRedisSerializer();
     }
@@ -34,13 +34,13 @@ public class CustomRedisTemplateConfig {
      * RedisTemplate配置
      */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, RedisSerializer<String> redisKeySerializer, RedisSerializer<Object> redisValueSerializer) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, RedisSerializer<Object> redisValueSerializer) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         //设置Key的序列化采用StringRedisSerializer
-        redisTemplate.setKeySerializer(redisKeySerializer);
-        redisTemplate.setHashKeySerializer(redisKeySerializer);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
         //设置值的序列化
         redisTemplate.setValueSerializer(redisValueSerializer);

@@ -9,8 +9,11 @@ public class TestJackson {
 
     public static void main(String[] args) {
 
-//        testMethod1();
+        String source = JacksonUtils.toJSONString("kunghsu");
+        System.out.println(source);//"kunghsu"
+        System.out.println(JacksonUtils.parseObject(source, String.class));//kunghsu
 
+//        testMethod1();
         testMethod2();
     }
 

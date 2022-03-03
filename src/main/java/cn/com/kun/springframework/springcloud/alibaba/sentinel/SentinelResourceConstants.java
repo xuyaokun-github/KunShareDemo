@@ -16,4 +16,6 @@ public class SentinelResourceConstants {
 
     public static final String CONTEXT_MSG_PUSH = "MSG_PUSH";
 
+    public static final String RESOURCE_NAME_4 = "testDegrade";
+
 }
