@@ -1,6 +1,10 @@
 package cn.com.kun.foo.algorithm.paxos.demo1;
 
+import java.util.UUID;
+
 public class PerpareResponse implements Comparable{
+
+    private String uuid = UUID.randomUUID().toString();
 
     private String status;
 
@@ -22,8 +26,18 @@ public class PerpareResponse implements Comparable{
         this.number = number;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public int compareTo(Object o) {
-        return 0;
+
+        //如何比较PerpareResponse
+        return uuid.compareTo(((PerpareResponse)o).getUuid());
     }
 }
