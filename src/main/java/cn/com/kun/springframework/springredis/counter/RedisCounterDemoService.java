@@ -5,6 +5,7 @@ import cn.com.kun.springframework.springredis.controller.RedisJobPriorityQueueCo
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,6 +23,8 @@ public class RedisCounterDemoService {
     @Autowired
     private RedisCounter redisCounter;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     public void addRequest() {
 
@@ -34,5 +37,11 @@ public class RedisCounterDemoService {
         LOGGER.info("加一后：{}", res);
     }
 
+
+    public Long count(String key) {
+
+        Long res = redisTemplate.opsForValue().increment(key, 1);
+        return res;
+    }
 
 }

@@ -1,4 +1,4 @@
-package cn.com.kun.foo.algorithm;
+package cn.com.kun.foo.algorithm.paxos;
 
 
 import com.google.common.base.Charsets;

@@ -8,8 +8,10 @@ import java.util.Date;
 
 public class DateUtils {
 
+    public static String PATTERN_YYYYMMDD = "yyyyMMdd";
     public static String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
     public static String PATTERN_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static String PATTERN_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
     public static String PATTERN_yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
@@ -69,10 +71,51 @@ public class DateUtils {
         return daysDiff;
     }
 
+    public static long betweenHours(String startDate, String endDate) {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+        LocalDate oldDate = LocalDate.parse(startDate, dateTimeFormatter);
+        LocalDate today = LocalDate.parse(endDate, dateTimeFormatter);
+        Period p = Period.between(oldDate, today);
+        long daysDiff = ChronoUnit.HOURS.between(oldDate, today);
+        return daysDiff;
+    }
+
+    public static long betweenMinutes(String startDate, String endDate) {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        LocalDate oldDate = LocalDate.parse(startDate, dateTimeFormatter);
+        LocalDate today = LocalDate.parse(endDate, dateTimeFormatter);
+        long daysDiff = ChronoUnit.MINUTES.between(oldDate, today);
+        return daysDiff;
+    }
+
+    public static long betweenSeconds(String startDate, String endDate) {
+
+        Instant inst1 = toDate(startDate, PATTERN_YYYYMMDDHHMMSS).toInstant();
+        Instant inst2 = toDate(endDate, PATTERN_YYYYMMDDHHMMSS).toInstant();
+        return Duration.between(inst1, inst2).getSeconds();
+    }
+
+
+    public static Date addDays(Date currentTime, long number) {
+
+        LocalDate localDate = currentTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate newDate = localDate.plus(number, ChronoUnit.DAYS);
+        return Date.from(newDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date addSeconds(Date currentTime, long number) {
+
+        Instant inst2 = currentTime.toInstant().plus(Duration.ofSeconds(number));
+        return Date.from(inst2.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     public static void main(String[] args) {
 //        System.out.println(toDate("2021-06-01 14:07:02.100", "yyyy-MM-dd HH:mm:ss.SSS"));
 //        calculateTimeDifferenceByPeriod(2022, Month.JANUARY, 17);
         System.out.println(betweenDays("20210601", "20230601"));
+        System.out.println();
     }
 
 }

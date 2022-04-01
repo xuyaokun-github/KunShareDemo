@@ -313,4 +313,26 @@ public class SpringRedisDemocontroller {
         return ResultVo.valueOfSuccess("");
     }
 
+
+    @GetMapping(value = "/testCountInit")
+    public ResultVo testCountInit(HttpServletRequest request){
+
+//        String key = "" + System.currentTimeMillis();
+        String key = "kunghsu-count";
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                //假如计数器的key不存在，默认就是从0开始
+                redisCounterDemoService.count(key);
+            }).start();
+        }
+
+        Integer res2 = (Integer) redisTemplate.opsForValue().get(key);
+        LOGGER.info(JacksonUtils.toJSONString(res2));
+//        Long res2 = Long.parseLong(JedisUtils.get(key));
+
+        return ResultVo.valueOfSuccess(res2);
+    }
+
+
 }

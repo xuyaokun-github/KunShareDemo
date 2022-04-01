@@ -32,5 +32,17 @@ public class TestQueue {
         System.out.println(linkedList.pollFirst());//22
         System.out.println(linkedList.pollFirst());//11
         System.out.println(linkedList.size());//0
+
+
+        linkedList.clear();
+        System.out.println(linkedList.size());
+        System.out.println("---------------------------------");
+        linkedList.add("kunghsu");
+        System.out.println(linkedList.peek());
+        System.out.println(linkedList.peek());
+        System.out.println(linkedList.peek());
+        System.out.println(linkedList.peek());
+
+
     }
 }
