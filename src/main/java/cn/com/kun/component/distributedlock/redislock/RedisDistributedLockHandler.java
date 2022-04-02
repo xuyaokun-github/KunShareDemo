@@ -59,12 +59,12 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
                 startLockRenewWatchDog(resourceName, requestId);
                 break;
             }else {
-                //没抢到锁，先自旋
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //没抢到锁，先自旋(注意这里的自旋，对于集群环境来说没什么问题，但是假如是单节点，有可能会造成线程饥饿)
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
         return false;
@@ -73,7 +73,7 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
     private void startLockRenewWatchDog(String resourceName, String requestId) {
 
         if (LOGGER.isDebugEnabled()){
-            LOGGER.debug("启动续约锁task：{}， requestId:{}", resourceName, requestId);
+//            LOGGER.debug("启动续约锁task：{}， requestId:{}", resourceName, requestId);
         }
         hashedWheelTimer.newTimeout(new LockRenewTimeTask(resourceName, requestId), 30, TimeUnit.SECONDS);
     }
@@ -101,7 +101,7 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
                         connection.get(resourceName.getBytes()));
                 if (value != null && requestId.equals(new String((byte[]) value,"UTF-8"))){
                     if (LOGGER.isDebugEnabled()){
-                        LOGGER.debug("开始续约锁：{}， requestId:{}", resourceName, requestId);
+//                        LOGGER.debug("开始续约锁：{}， requestId:{}", resourceName, requestId);
                     }
                     //假如锁的值仍等于当前线程设置的值，说明持有锁的线程未发生变化，则续约锁
                     redisTemplate.expire(resourceName, 35, TimeUnit.SECONDS);
@@ -111,7 +111,7 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
                 }else {
                     //否则退出
                     if (LOGGER.isDebugEnabled()){
-                        LOGGER.debug("锁已失效或被正常释放，无需续约,锁名：{}", resourceName);
+//                        LOGGER.debug("锁已失效或被正常释放，无需续约,锁名：{}", resourceName);
                     }
                 }
             }catch (Exception e){
@@ -121,6 +121,11 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
         }
     }
 
+    /**
+     * 解锁的时候，如何释放时间轮任务 TODO
+     * @param resourceName
+     * @return
+     */
     @Override
     public boolean unlock(String resourceName) {
         /*

@@ -279,8 +279,38 @@ public class SpringRedisDemocontroller {
     @GetMapping(value = "/testListPopMoreAndDelete")
     public ResultVo testListPopMoreAndDelete(HttpServletRequest request){
 
-        List<JobVO> jobVOList = redisListDemoService.popMore(3);
-        LOGGER.info(JacksonUtils.toJSONString(jobVOList));
+//        List<JobVO> jobVOList = redisListDemoService.popMore(3);
+//        LOGGER.info(JacksonUtils.toJSONString(jobVOList));
+
+        //启动一个线程，不断塞任务
+        new Thread(()->{
+            int count = 0;
+            while (true){
+                    JobVO jobVO = new JobVO();
+                    jobVO.setName("job" + count++);
+                    redisListDemoService.add(jobVO);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        
+        //启动三个线程，抢任务
+        for (int i = 0; i < 3; i++) {
+            new Thread(()->{
+                while (true){
+                    List<JobVO> jobVOList = redisListDemoService.popMore(3);
+                    if (jobVOList != null && !jobVOList.isEmpty()){
+                        LOGGER.info("{}弹到的内容：{}", Thread.currentThread().getName(), JacksonUtils.toJSONString(jobVOList));
+                    }
+
+                }
+            },"get-thread-" + i).start();
+        }
+        
+        
         return ResultVo.valueOfSuccess("");
     }
 
