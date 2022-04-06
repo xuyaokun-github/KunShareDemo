@@ -14,7 +14,7 @@ package cn.com.kun.springframework.actuator.customMetrics.enums;
 public enum CustomMetricsEnum {
 
     /**
-     * 每次新增一个服务层需要用redis缓存，就需要加一项枚举定义
+     * 定义不同的业务监控场景
      */
     MYCUSTOMMETRICS_ONE("MYCUSTOMMETRICS_ONE", "successFlag,type,oper"),
     MYTWO("MYTWO", "successFlag,type,oper,time");

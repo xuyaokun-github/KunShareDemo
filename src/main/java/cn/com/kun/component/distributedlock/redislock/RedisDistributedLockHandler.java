@@ -13,6 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +43,8 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
     private ThreadLocal<String> requestIdThreadLocal = new ThreadLocal<String>();
 
     private HashedWheelTimer hashedWheelTimer = new HashedWheelTimer(100, TimeUnit.MILLISECONDS);
+
+    private static final ConcurrentMap<String, Timeout> TIMEOUT_MAP = new ConcurrentHashMap<>();
 
     @Override
     public boolean lock(String resourceName) {
@@ -75,7 +79,11 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
         if (LOGGER.isDebugEnabled()){
 //            LOGGER.debug("启动续约锁task：{}， requestId:{}", resourceName, requestId);
         }
-        hashedWheelTimer.newTimeout(new LockRenewTimeTask(resourceName, requestId), 30, TimeUnit.SECONDS);
+        //这里创建出来的Timeout必须保存起来,后续可以在提前解锁时释放该任务，这样可以避免内存泄漏
+        Timeout timeout = hashedWheelTimer.newTimeout(new LockRenewTimeTask(resourceName, requestId), 30, TimeUnit.SECONDS);
+        // 存放的逻辑（参考Redisson）
+        TIMEOUT_MAP.put(requestId, timeout);
+
     }
 
     class LockRenewTimeTask implements TimerTask{
@@ -122,16 +130,27 @@ public class RedisDistributedLockHandler implements DistributedLockHandler {
     }
 
     /**
-     * 解锁的时候，如何释放时间轮任务 TODO
+     * 解锁的时候，必须释放时间轮任务
      * @param resourceName
      * @return
      */
     @Override
     public boolean unlock(String resourceName) {
-        /*
-            从ThreadLocal中拿requestId
-         */
-        return redisLockUtil.releaseLock(resourceName, requestIdThreadLocal.get());
+
+        //从ThreadLocal中拿requestId
+        String requestId = requestIdThreadLocal.get();
+        //释放时间轮任务
+        Timeout timeout = TIMEOUT_MAP.get(requestId);
+        if (timeout != null){
+            if (!timeout.isExpired() && !timeout.isCancelled()){
+                if (LOGGER.isDebugEnabled()){
+//                    LOGGER.debug("释放时间轮任务：{}", requestId);
+                }
+                timeout.cancel();
+            }
+        }
+        //解锁
+        return redisLockUtil.releaseLock(resourceName, requestId);
     }
 
 }

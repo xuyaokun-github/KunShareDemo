@@ -9,11 +9,13 @@ import cn.com.kun.springframework.springredis.vo.JobVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequestMapping("/spring-redis-zset")
 @RestController
@@ -107,6 +109,45 @@ public class RedisJobPriorityQueueController {
                     }
                 }
             }).start();
+        }
+        return ResultVo.valueOfSuccess(null);
+    }
+
+    /**
+     * 测试多线程读写（入队和弹出同时并发）
+     * 实践成果，cn.com.kun.springframework.springredis.priorityQueue.RedisPriorityQueue确实是线程安全的
+     *
+     * @return
+     */
+    @GetMapping(value = "/muitlThreadPopAndPush")
+    public ResultVo muitlThreadPopAndPush(){
+
+        AtomicInteger count = new AtomicInteger(0);
+        for (int i = 0; i < 1; i++) {
+            new Thread(()->{
+                while (true){
+                    JobVO jobVO = new JobVO();
+                    jobVO.setName("job" + count.incrementAndGet());
+                    jobRedisPriorityQueue.push(jobVO, jobVO.getPriority());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "Put-Thread-" + i).start();
+        }
+
+        //开10个线程，分别执行弹出，看是否会弹出相同的元素
+        for (int i = 0; i < 3; i++) {
+            new Thread(()->{
+                while (true){
+                    JobVO res = jobRedisPriorityQueue.pop(JobVO.class);
+                    if (res != null){
+                        LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), JacksonUtils.toJSONString(res));
+                    }
+                }
+            }, "Get-Thread-" + i).start();
         }
         return ResultVo.valueOfSuccess(null);
     }

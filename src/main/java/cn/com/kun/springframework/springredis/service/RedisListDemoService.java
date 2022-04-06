@@ -36,12 +36,38 @@ public class RedisListDemoService {
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;
 
+    /**
+     * 用List实现线程安全的一次性弹出多个元素
+     * 在入队时必须要上锁，因为多线程并发读写，不把它用锁互斥开，会导致新元素被误删的情况
+     * 上锁是为了保证读写的线程安全
+     *
+     * @param jobVO
+     */
     public void add(JobVO jobVO){
-        redisTemplateHelper.lSet(LIST_NAME, jobVO);
+        //上锁
+        redisClusterLockHandler.lock(LOCK_NAME);
+        try {
+            redisTemplateHelper.lSet(LIST_NAME, jobVO);
+        }catch (Exception e){
+            LOGGER.error("入队失败", e);
+        }finally {
+            //解锁
+            redisClusterLockHandler.unlock(LOCK_NAME);
+        }
     }
 
     public JobVO popOne(){
-        return redisTemplateHelper.lLeftPop(LIST_NAME);
+        //上锁
+        redisClusterLockHandler.lock(LOCK_NAME);
+        try {
+            return redisTemplateHelper.lLeftPop(LIST_NAME);
+        }catch (Exception e){
+            LOGGER.error("popOne失败", e);
+        }finally {
+            //解锁
+            redisClusterLockHandler.unlock(LOCK_NAME);
+        }
+        return null;
     }
 
     /**
@@ -55,15 +81,15 @@ public class RedisListDemoService {
             //上锁
             redisClusterLockHandler.lock(LOCK_NAME);
             //假如list为空，num超出最大长度，执行不会报错，会返回空
-//            List<JobVO> jobVOList = redisTemplateHelper.lGet(LIST_NAME, 0, num);
+            List<JobVO> jobVOList = redisTemplateHelper.lGet(LIST_NAME, 0, num);
             //trim是保留的意思，假如下标超出最大长度，也不会报错，相当于do nothing
-//            redisTemplateHelper.lTrim(LIST_NAME, num + 1, -1);
-            LOGGER.info("{}执行弹出", Thread.currentThread().getName());
-            Thread.sleep(1000);
-            LOGGER.info("{}结束弹出", Thread.currentThread().getName());
+            redisTemplateHelper.lTrim(LIST_NAME, num + 1, -1);
+            return jobVOList;
+//            LOGGER.info("{}执行弹出", Thread.currentThread().getName());
+//            Thread.sleep(1000);
+//            LOGGER.info("{}结束弹出", Thread.currentThread().getName());
 
-//            return jobVOList;
-            return null;
+//            return null;
         }catch (Exception e){
             LOGGER.error("popMore异常", e);
         }finally {
