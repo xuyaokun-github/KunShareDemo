@@ -9,7 +9,50 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static cn.com.kun.common.utils.DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS;
+
+/**
+ * Cron表达式工具类
+ * author:xuyaokun_kzx
+ * desc:
+*/
 public class SpringCronUtils {
+
+    public static void main(String[] args) {
+
+        //获取十个后续的执行时间点
+        List<Date> dateList = SpringCronUtils.calNextPoint("0 0 10,16 * * ? ", 10);
+        dateList.forEach(date -> {
+            System.out.println(DateUtils.toStr(date, PATTERN_yyyy_MM_dd_HH_mm_ss_SSS));
+        });
+
+        //假如是获取前面十个时间点呢？该怎么做？
+        Date lastRunDate = SpringCronUtils.getLastRunDate("0 0 10,16 * * ? ", new Date());
+        System.out.println(DateUtils.toStr(lastRunDate, PATTERN_yyyy_MM_dd_HH_mm_ss_SSS));
+    }
+
+    /**
+     * 获取上次执行的时间
+     * @param cron
+     * @param date
+     * @return
+     */
+    private static Date getLastRunDate(String cron, Date date) {
+        Date nextDate = null;
+        try {
+            CronExpression cronExpression = new CronExpression(cron);
+            //源码里这里返回是null,作者还没实现
+//            nextDate = cronExpression.getFinalFireTime();
+            Date time1 = cronExpression.getNextValidTimeAfter(date);//下次执行时间
+            Date time2 = cronExpression.getNextValidTimeAfter(time1);
+            Date time3 = cronExpression.getNextValidTimeAfter(time2);
+            long l = time1.getTime() -(time3.getTime() -time2.getTime());
+            nextDate = new Date(l);//上一次任务执行时间
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nextDate;
+    }
 
     /**
      * 获取下次时间点列表
