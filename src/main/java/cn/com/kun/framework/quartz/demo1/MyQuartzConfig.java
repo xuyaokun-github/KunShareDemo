@@ -2,7 +2,6 @@ package cn.com.kun.framework.quartz.demo1;
 
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Quartz的定义
@@ -10,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by xuyaokun On 2020/6/2 23:14
  * @desc:
  */
-@Configuration
+//@Configuration
 public class MyQuartzConfig {
 
     /**

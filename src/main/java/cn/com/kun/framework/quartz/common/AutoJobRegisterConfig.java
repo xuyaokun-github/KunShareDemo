@@ -15,6 +15,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -50,17 +51,25 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
 
         Scheduler scheduler = null;
         if (schedulerFactoryBean != null){
-            logger.info("获取到quartz调度工厂" + schedulerFactoryBean.getScheduler().getSchedulerName());
+            logger.info("获取到quartz调度工厂：{}", schedulerFactoryBean.getScheduler().getSchedulerName());
             scheduler = schedulerFactoryBean.getScheduler();
-            logger.info("Scheduler-getTypeName:" + scheduler.getClass().getTypeName());
+            logger.info("Scheduler-getTypeName:{}", scheduler.getClass().getTypeName());
             //  schedulerFactoryBean.stop();
 //            schedulerFactoryBean.getScheduler().unscheduleJob();
         }
         //加载任务表
-        List<CustomQuartzJob> customQuartzJobList = customQuartzJobMapper.query(null);
-        if (customQuartzJobList == null){
+        List<CustomQuartzJob> customQuartzJobList = null;
+        try {
+            customQuartzJobList = customQuartzJobMapper.query(null);
+        }catch (Exception e){
+            //假如自定义任务表被改动，这里可能会出问题，防止影响启动，将这里try住，其实可以选择抛异常将问题暴露出来
+            logger.error("查询Quartz自定义表失败！！！！！！！");
             return;
         }
+        if (CollectionUtils.isEmpty(customQuartzJobList)){
+            return;
+        }
+
         //封装成Job,放入容器
         Scheduler finalScheduler = scheduler;
         customQuartzJobList.forEach(customQuartzJob -> {

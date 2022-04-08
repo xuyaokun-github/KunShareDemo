@@ -2,8 +2,6 @@ package cn.com.kun.springframework.actuator.endpoint;
 
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
-import org.springframework.boot.actuate.endpoint.web.annotation.WebEndpoint;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -17,8 +15,8 @@ import org.springframework.stereotype.Component;
 */
 //主要需要@Endpoint、@Component、@ReadOperation、@Selector四个注解即可搞定，代码示例如下：
 //@Endpoint(id = "customPoint")
-@WebEndpoint(id = "customPoint")
-@Component
+//@WebEndpoint(id = "customPoint")
+//@Component
 public class CustomEndPoint {
 
     /**

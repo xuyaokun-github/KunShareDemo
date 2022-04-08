@@ -1,0 +1,33 @@
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          instance: prometheus
+
+  - job_name: windows
+    static_configs:
+      - targets: ['10.100.169.94:9100']   # 注意192.168.10.4是作者的宿主主机windows的ip，需要修改成自己的
+        labels:
+          instance: 10.100.169.94
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
+  - job_name: 'kunsharedemo'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+    metrics_path: /kunsharedemo/actuator/prometheus
+    static_configs:
+      #这里用127.0.0.1会访问失败
+      - targets: [ '10.100.169.94:10001' ] #此处填写 Spring Boot 应用的 IP + 端口号

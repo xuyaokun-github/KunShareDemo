@@ -65,7 +65,7 @@ public class FeignClientsLocalInvokeBeanPostProcessor implements BeanPostProcess
         }
 
 
-        return null;
+        return bean;
     }
 
     /**
