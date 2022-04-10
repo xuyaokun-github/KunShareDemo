@@ -1,4 +1,4 @@
-package cn.com.kun.config;
+package cn.com.kun.config.spring;
 
 import cn.com.kun.common.format.MyDateFormat;
 import com.alibaba.fastjson.serializer.SerializerFeature;
