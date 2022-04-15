@@ -16,6 +16,7 @@ public enum CustomMetricsEnum {
     /**
      * 定义不同的业务监控场景
      */
+    ACTIVITY_REJECT_STAT("ACTIVITY_REJECT_STAT", "activityId"),
     MYCUSTOMMETRICS_ONE("MYCUSTOMMETRICS_ONE", "successFlag,type,oper"),
     MYTWO("MYTWO", "successFlag,type,oper,time");
 

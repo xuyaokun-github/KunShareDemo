@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +30,7 @@ public class CustomMetricsServiceImpl implements CustomMetricsService {
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomMetricsServiceImpl.class);
 
     @Autowired
-    MeterRegistry meterRegistry;
+    private MeterRegistry meterRegistry;
 
     /**
      * counterName -> tagList
@@ -90,21 +89,6 @@ public class CustomMetricsServiceImpl implements CustomMetricsService {
     }
 
     /**
-     * 优化前
-     */
-    @Override
-    public void gather() {
-
-        Counter.builder("myCounter")
-                .tag("successFlag", ThreadLocalRandom.current().nextInt(10) % 2 == 0 ? "Y" : "N")
-                .tag("type", "order")
-                .tag("oper", "xyk")
-                .register(meterRegistry)
-                .increment();
-    }
-
-    /**
-     * 优化后
      * 所有需要监控的地方只需要调这个方法即可,好处就是不需要额外写监控方法
      * 这样优化后，开发需要开发一个新的业务监控只需要两步：
      * 1.在枚举类里加一个项

@@ -8,7 +8,5 @@ package cn.com.kun.springframework.actuator.customMetrics;
 */
 public interface CustomMetricsService {
 
-    void gather();
-
     void gather(String counterName, String... values);
 }
