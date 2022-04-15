@@ -1,6 +1,5 @@
 package cn.com.kun.springframework.springcloud.feign.config;
 
-import cn.com.kun.framework.quartz.common.AutoJobRegisterConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 */
 public class FeignClientsLocalInvokeBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware, EnvironmentAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AutoJobRegisterConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeignClientsLocalInvokeBeanPostProcessor.class);
 
     private ApplicationContext applicationContext;
 

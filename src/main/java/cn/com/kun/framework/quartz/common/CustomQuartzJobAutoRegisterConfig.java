@@ -3,6 +3,7 @@ package cn.com.kun.framework.quartz.common;
 import cn.com.kun.framework.quartz.mapper.CustomQuartzJobMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -19,8 +20,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 自动任务注册配置
@@ -31,9 +34,9 @@ import java.util.Set;
  */
 @ConditionalOnProperty(prefix = "kunsharedemo.quartz", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Component
-public class AutoJobRegisterConfig implements BeanFactoryAware {
+public class CustomQuartzJobAutoRegisterConfig implements BeanFactoryAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(AutoJobRegisterConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomQuartzJobAutoRegisterConfig.class);
 
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
@@ -54,8 +57,6 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
             logger.info("获取到quartz调度工厂：{}", schedulerFactoryBean.getScheduler().getSchedulerName());
             scheduler = schedulerFactoryBean.getScheduler();
             logger.info("Scheduler-getTypeName:{}", scheduler.getClass().getTypeName());
-            //  schedulerFactoryBean.stop();
-//            schedulerFactoryBean.getScheduler().unscheduleJob();
         }
         //加载任务表
         List<CustomQuartzJob> customQuartzJobList = null;
@@ -66,6 +67,11 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
             logger.error("查询Quartz自定义表失败！！！！！！！");
             return;
         }
+
+        //假如是人为删除，自定义任务表记录没了，但是quartz内置表里的触发器还在，所以定时任务仍会继续调度
+        // 应该避免发生此类情况，相当于定时任务不可控了，所以得找出这类“隐藏”的定时任务
+        disabledHiddenJob(customQuartzJobList, scheduler);
+
         if (CollectionUtils.isEmpty(customQuartzJobList)){
             return;
         }
@@ -91,11 +97,16 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
                     TriggerKey triggerKey = new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName());
 
                     boolean checkExistsTrigger = finalScheduler.checkExists(triggerKey);
-                    logger.info("触发器{},存在状态：{}", triggerKey.toString(), checkExistsTrigger);
+                    logger.info("触发器：{},存在状态：{}", triggerKey.toString(), checkExistsTrigger);
 
                     if (!checkExistsTrigger){
+                        if (!finalScheduler.checkExists(jobDetail.getKey())){
+                            finalScheduler.addJob(jobDetail, false);
+                        }
                         //假如不存在,要进行手动调度
                         finalScheduler.scheduleJob(trigger);
+//                        finalScheduler.addJob(jobDetail, true);
+//                        finalScheduler.rescheduleJob(triggerKey, trigger);
                     }else {
                         //开启调度
                         /**
@@ -117,9 +128,10 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
             }else {
                 logger.info(String.format("任务【%s】未启用，不加载！", customQuartzJob.getJobName()));
                 try {
-                    //假如未启用，禁用调度
+                    //假如自定义任务未启用，禁用调度
                     //假如不主动禁止调度，quartz会根据之前数据库表的状态来进行调度
                     //所以为了让任务不执行，必须主动设置一下不进行调度
+                    //调用了unscheduleJob，数据库里的触发器记录会消失，qrtz_cron_triggers表的记录也会消失，但是job_detail的记录还在
                     finalScheduler.unscheduleJob(new TriggerKey(customQuartzJob.getTriggerName(), customQuartzJob.getTriggerGroupName()));
                 } catch (SchedulerException e) {
                     logger.error("禁用调度异常", e);
@@ -128,6 +140,49 @@ public class AutoJobRegisterConfig implements BeanFactoryAware {
 
         });
 
+    }
+
+    private void disabledHiddenJob(List<CustomQuartzJob> customQuartzJobList, Scheduler scheduler) throws SchedulerException {
+
+        Set<String> jobNameSet = customQuartzJobList.stream().map(CustomQuartzJob::getTriggerName).collect(Collectors.toSet());
+        //所有触发器组
+        List<TriggerKey> triggerKeyList = new ArrayList<>();
+        List<String> triggerGroupNames = scheduler.getTriggerGroupNames();
+        triggerGroupNames.forEach(triggerGroupName->{
+            try {
+                Set<TriggerKey> triggerKeySet = scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(triggerGroupName));
+                triggerKeyList.addAll(triggerKeySet);
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        });
+
+        triggerKeyList.forEach(triggerKey -> {
+            if (!jobNameSet.contains(triggerKey.getName())){
+                try {
+                    Trigger trigger = scheduler.getTrigger(triggerKey);
+                    JobKey jobKey = null;
+                    if (trigger != null){
+                        //在注销触发器必须先通过API拿到jobKey,不然在注销后再拿，拿到的就是null
+                        jobKey = trigger.getJobKey();
+                    }
+                    //暂停触发器
+                    scheduler.pauseTrigger(triggerKey);
+                    //注销触发器
+                    scheduler.unscheduleJob(triggerKey);
+                    if (jobKey != null){
+                        //暂停job
+                        scheduler.pauseJob(jobKey);
+                        //删除job
+                        scheduler.deleteJob(jobKey);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     //记录下BeanFactory的引用，为了后续将bean放进容器
