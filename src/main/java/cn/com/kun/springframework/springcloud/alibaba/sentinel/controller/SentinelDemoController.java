@@ -2,9 +2,10 @@ package cn.com.kun.springframework.springcloud.alibaba.sentinel.controller;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.scenelimit.SceneLimitDemoService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelExtendService;
 import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelDemoService;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.SentinelFlowControlDemoService;
+import cn.com.kun.springframework.springcloud.alibaba.sentinel.service.scenelimit.SceneLimitDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class SentinelDemoController {
 
     @Autowired
     private SceneLimitDemoService sceneLimitDemoService;
+
+    @Autowired
+    private SentinelFlowControlDemoService sentinelFlowControlDemoService;
+
 
     @GetMapping("/testSimpleLimit")
     public String testSimpleLimit() throws FileNotFoundException {
@@ -153,6 +158,29 @@ public class SentinelDemoController {
 //                }
 //            }).start();
 //        }
+        return "OK";
+    }
+
+
+
+    @GetMapping("/testSentinelFlowControl")
+    public String testSentinelFlowControl() throws Exception {
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+
+                for (int j = 0; j < 500; j++) {
+                    String res = sentinelFlowControlDemoService.test();
+                }
+            }).start();
+        }
+        return "OK";
+    }
+
+    @GetMapping("/testSentinelFlowControl-make-exception")
+    public String testSentinelFlowControlMakeException() throws Exception {
+
+        sentinelFlowControlDemoService.makeException();
         return "OK";
     }
 }

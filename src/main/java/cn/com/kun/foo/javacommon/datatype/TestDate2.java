@@ -5,7 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class TestDate {
+public class TestDate2 {
 
     public static void main(String[] args) {
 

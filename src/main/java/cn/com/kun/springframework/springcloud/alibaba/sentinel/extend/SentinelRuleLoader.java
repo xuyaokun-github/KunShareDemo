@@ -54,7 +54,9 @@ public class SentinelRuleLoader {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
             CustomFlowRule flowRule = (CustomFlowRule) entry.getValue();
-            sentinelFlowMonitor.registYellowLineThreshold(key, flowRule.getYellowLineThreshold());
+            if (flowRule.getYellowLineThreshold() != null){
+                sentinelFlowMonitor.registYellowLineThreshold(key, flowRule.getYellowLineThreshold());
+            }
         }
 
     }
