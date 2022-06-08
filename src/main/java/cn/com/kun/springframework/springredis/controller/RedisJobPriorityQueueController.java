@@ -176,4 +176,33 @@ public class RedisJobPriorityQueueController {
         return ResultVo.valueOfSuccess(res);
     }
 
+    /**
+     * 注意，不能存放属性完全一样的元素，会自动去重
+     * @return
+     */
+    @GetMapping(value = "/testAddSameItem")
+    public ResultVo testAddSameItem(){
+
+        while (true){
+            JobVO res = jobRedisPriorityQueue.pop(JobVO.class);
+            if (res != null){
+                LOGGER.info("线程：{} 弹出内容：{}", Thread.currentThread().getName(), JacksonUtils.toJSONString(res));
+            }else {
+                //单线程弹，假如没弹到，说明没抢到或者弹完了
+                break;
+            }
+        }
+
+        JobVO jobVO = new JobVO();
+        jobVO.setName("job1");
+        jobVO.setPriority(1);
+        jobRedisPriorityQueue.push(jobVO, jobVO.getPriority());
+        jobRedisPriorityQueue.push(jobVO, jobVO.getPriority());
+
+        long count = jobRedisPriorityQueue.count();
+
+        return ResultVo.valueOfSuccess(count);
+    }
+
+
 }
