@@ -15,7 +15,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 /**
  * batch demo1
@@ -76,7 +76,10 @@ public class BatchDemo1JobConfig {
 
         //创建FlatFileItemReader
         FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
+        //读取文件系统下的文件，通常用绝对路径
+        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt"));
+        //读取classpath下的文件
+//        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
         reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
             setLineTokenizer(new DelimitedLineTokenizer("|") {{
                 setNames(new String[]{"uid", "tag", "type"});
@@ -107,7 +110,7 @@ public class BatchDemo1JobConfig {
         //使用Mybatis提供的写操作类
         MyBatisBatchItemWriter<User> writer = new MyBatisBatchItemWriter<>();
         //这个在xml文件里定义的插入语句的id,必须全局唯一
-        writer.setStatementId("cn.com.kun.mapper.UserFileItemper.insert");
+        writer.setStatementId("cn.com.kun.mapper.UserMapper.insert");
         writer.setSqlSessionFactory(sqlSessionFactory);
         return writer;
     }

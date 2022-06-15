@@ -8,7 +8,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -43,21 +43,22 @@ public class BatchDemoController {
      * 测试job1
      * @return
      */
-    @RequestMapping("/testBatchJob1")
+    @GetMapping("/testBatchJob1")
     public String testBatch() throws Exception {
 
         /*
             可以用手动的方式，触发Job运行
          */
         //组织自定义参数，参数可以给读写操作去使用
-        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
         System.out.println(execution.toString());
         return "success";
     }
 
-    @RequestMapping("/testBatchJob2")
+    @GetMapping("/testBatchJob2")
     public String testBatchJob2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         /*
@@ -72,7 +73,7 @@ public class BatchDemoController {
     }
 
 
-    @RequestMapping("/testBatch3")
+    @GetMapping("/testBatch3")
     public String testBatch3() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         /*
@@ -119,7 +120,7 @@ public class BatchDemoController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/testBatchJob4")
+    @GetMapping("/testBatchJob4")
     public String testBatchJob4() throws Exception {
 
         /*
@@ -137,7 +138,7 @@ public class BatchDemoController {
         return "success";
     }
 
-    @RequestMapping("/testBatchJob5")
+    @GetMapping("/testBatchJob5")
     public String testBatchJob5() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         /*

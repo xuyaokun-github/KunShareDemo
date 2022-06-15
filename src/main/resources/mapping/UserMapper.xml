@@ -27,8 +27,8 @@
     </select>
 
     <insert id="insert" parameterType="User" >
-        INSERT INTO tbl_user(firstname,lastname,phone,email)
-        VALUES(#{firstname},#{lastname},#{phone},#{email})
+        INSERT INTO tbl_user(firstname,lastname,phone,email,create_time)
+        VALUES(#{firstname},#{lastname},#{phone},#{email},#{createTime})
     </insert>
 
     <update id="update" parameterType="User">

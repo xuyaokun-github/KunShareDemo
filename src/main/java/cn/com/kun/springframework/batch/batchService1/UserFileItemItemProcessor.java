@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -33,7 +34,7 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
         user.setLastname("kunghsu" + i);
         user.setEmail(i + "@qq.com");
         user.setPhone("135-" +System.currentTimeMillis());
-
+        user.setCreateTime(new Date());
         //后面的写操作，可以使用一些spring自带提供的，注意这里假如返回的是null，spring不会对它做处理
         /*
         源码org.springframework.batch.core.step.item.SimpleChunkProcessor.transform，这里会对返回的对象进行判断，假如不空才会放入outputs中
