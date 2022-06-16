@@ -1,6 +1,8 @@
 package cn.com.kun.springframework.batch;
 
 import cn.com.kun.common.utils.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 批处理测试控制器
  * author:xuyaokun_kzx
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 */
 @RestController
 public class BatchDemoController {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(BatchDemoController.class);
 
     @Autowired
     @Qualifier("myFirstJob")
@@ -69,6 +75,14 @@ public class BatchDemoController {
                 .toJobParameters();
         JobExecution execution = jobLauncher.run(mySecondJob, jobParameters);
         System.out.println(execution.toString());
+
+        //输出具体的错误信息
+        List<Throwable> throwables = execution.getFailureExceptions();
+        if (throwables != null && !throwables.isEmpty()){
+            for (Throwable throwable : throwables){
+                LOGGER.info("Job执行过程出现的异常", throwable);
+            }
+        }
         return "success";
     }
 

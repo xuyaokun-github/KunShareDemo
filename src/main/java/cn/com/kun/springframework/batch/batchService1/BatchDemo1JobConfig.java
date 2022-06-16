@@ -7,7 +7,9 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -63,10 +65,11 @@ public class BatchDemo1JobConfig {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("importStep")
-                .<UserFileItem, User>chunk(100)
+                .<UserFileItem, User>chunk(1000)
                 .reader(reader())
                 .processor(processor())
-                .writer(myBatisBatchItemWriter())
+//                .writer(myBatisBatchItemWriter()) //写DB
+                .writer(customSendItemWriter()) //自定义写操作
                 .build();
     }
 
@@ -76,7 +79,7 @@ public class BatchDemo1JobConfig {
 
         //创建FlatFileItemReader
         FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
-        //读取文件系统下的文件，通常用绝对路径
+        //读取文件系统下的文件，通常用绝对路径(测试大文件OOM问题)
         reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt"));
         //读取classpath下的文件
 //        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
@@ -103,7 +106,7 @@ public class BatchDemo1JobConfig {
     }
 
 
-    //定义一个写操作
+    //定义一个写操作(写DB)
     @Bean
     public MyBatisBatchItemWriter<User> myBatisBatchItemWriter(){
 
@@ -115,6 +118,12 @@ public class BatchDemo1JobConfig {
         return writer;
     }
 
+    @Bean
+    @StepScope
+    public ItemWriter<User> customSendItemWriter(){
+
+        return new CustomSendItemWriter();
+    }
 
 
 }

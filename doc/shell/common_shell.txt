@@ -1,0 +1,2 @@
+window
+.\jmap -dump:format=b,file=xxx1.bin pid

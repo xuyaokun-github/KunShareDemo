@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by xuyaokun On 2020/5/19 22:41
@@ -18,7 +17,7 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
     private static final Logger logger = LoggerFactory.getLogger(UserFileItemItemProcessor.class);
 
     @Override
-    public User process(UserFileItem UserFileItem) throws Exception {
+    public User process(UserFileItem userFileItem) throws Exception {
 
         //中间处理器
         /*
@@ -28,7 +27,7 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
         写操作主要负责保存数据，数据该落地保存在哪里
          */
         logger.debug("进入处理器");
-        int i = ThreadLocalRandom.current().nextInt(100);
+        int i = userFileItem.getType();
         User user  = new User();
         user.setFirstname("fisrt" + i);
         user.setLastname("kunghsu" + i);
