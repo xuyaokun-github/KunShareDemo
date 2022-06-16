@@ -1,4 +1,4 @@
-package cn.com.kun.component.distributedlock.dblock;
+package cn.com.kun.component.distributedlock.dblock.version1;
 
 import java.lang.annotation.*;
 

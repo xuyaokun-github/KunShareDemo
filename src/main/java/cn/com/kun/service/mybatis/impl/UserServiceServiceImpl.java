@@ -4,6 +4,9 @@ import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.vo.user.UserQueryParam;
 import cn.com.kun.mapper.UserMapper;
 import cn.com.kun.service.mybatis.UserService;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ public class UserServiceServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
     /**
      * 非分页查询
      * @param userQueryParam
@@ -79,4 +84,27 @@ public class UserServiceServiceImpl implements UserService {
 //        //可以自由选择，用什么排序
 //        return "create_time desc";
 //    }
+
+    /**
+     * 批量方式插入
+     * @param userList
+     * @return
+     */
+    @Override
+    public boolean saveBatch(List<User> userList) {
+
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH,false);
+        UserMapper mapper = session.getMapper(UserMapper.class);
+        for (int i = 0; i < userList.size(); i++) {
+            mapper.insert(userList.get(i));
+            if(i%1000==999){
+                //每1000条提交一次防止内存溢出
+                session.commit();
+                session.clearCache();
+            }
+        }
+        session.commit();
+        session.clearCache();
+        return false;
+    }
 }

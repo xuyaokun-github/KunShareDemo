@@ -1,9 +1,9 @@
-package cn.com.kun.controller.clusterlock;
+package cn.com.kun.controller.distributedlock;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.service.clusterlock.DBClusterLockDemoService;
-import cn.com.kun.service.clusterlock.DBClusterLockDemoService2;
-import cn.com.kun.service.clusterlock.DBClusterLockDemoService3;
+import cn.com.kun.service.distributedlock.DBClusterLockDemoService;
+import cn.com.kun.service.distributedlock.DBClusterLockDemoService2;
+import cn.com.kun.service.distributedlock.DBClusterLockDemoService3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +22,24 @@ public class ClusterlockDemoController {
     @Autowired
     DBClusterLockDemoService3 dbClusterLockDemoService3;
 
-    @GetMapping("/test")
-    public ResultVo<String> test(){
+    @GetMapping("/testRunFastJob")
+    public ResultVo<String> testRunFastJob(){
 
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
                 dbClusterLockDemoService.test();
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping("/testRunLongTimeJob")
+    public ResultVo<String> testRunLongTimeJob(){
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                dbClusterLockDemoService.testRunLongTimeJob();
             }).start();
         }
 

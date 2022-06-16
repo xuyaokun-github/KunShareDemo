@@ -1,6 +1,6 @@
 package cn.com.kun.component.redo.lock;
 
-import cn.com.kun.component.distributedlock.dblock.DBDistributedLockHandler;
+import cn.com.kun.component.distributedlock.dblock.version1.DBDistributedLockHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

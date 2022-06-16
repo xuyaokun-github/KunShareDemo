@@ -1,4 +1,4 @@
-package cn.com.kun.controller.clusterlock;
+package cn.com.kun.controller.distributedlock;
 
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.component.distributedlock.redislock.RedisDistributedLockHandler;

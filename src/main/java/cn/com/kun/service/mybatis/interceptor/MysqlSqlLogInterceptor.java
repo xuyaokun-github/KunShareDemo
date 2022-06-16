@@ -41,7 +41,8 @@ public class MysqlSqlLogInterceptor implements Interceptor {
             String sql = boundSql.getSql();
             sql = simpleFormat(sql);
             Object parameterObject = boundSql.getParameterObject();
-            LOGGER.info("Execute done, sql:{} params:{} cost:{}", sql, JacksonUtils.toJSONString(parameterObject), sqlCost);
+            //生产建议输出info级别，方便查看执行SQL
+            LOGGER.debug("Execute done, sql:{} params:{} cost:{}", sql, JacksonUtils.toJSONString(parameterObject), sqlCost);
         }
     }
 

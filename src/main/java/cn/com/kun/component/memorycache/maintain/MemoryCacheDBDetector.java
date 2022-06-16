@@ -1,7 +1,7 @@
 package cn.com.kun.component.memorycache.maintain;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.component.distributedlock.dblock.DBClusterLock;
+import cn.com.kun.component.distributedlock.dblock.version1.DBClusterLock;
 import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
 import cn.com.kun.component.memorycache.MemoryCacheProperties;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
