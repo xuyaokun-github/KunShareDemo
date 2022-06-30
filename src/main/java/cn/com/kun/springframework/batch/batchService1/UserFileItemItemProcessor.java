@@ -1,6 +1,7 @@
 package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.springframework.batch.common.SimpleStopHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,10 +15,23 @@ import java.util.Date;
 public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, User> {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(UserFileItemItemProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserFileItemItemProcessor.class);
+
+    private String jobName;
+
+    public UserFileItemItemProcessor(String jobName) {
+        this.jobName = jobName;
+    }
 
     @Override
     public User process(UserFileItem userFileItem) throws Exception {
+
+        //检查是否需要停止(测试并发问题时使用)
+        //根据jobName来获取标志，假如识别到停止标志，就退出
+        if (SimpleStopHelper.isNeedStop(jobName)){
+            LOGGER.info("识别到停止标志，主动结束Job[{}]", jobName);
+            throw new RuntimeException("Job主动停止");
+        }
 
         //中间处理器
         /*
@@ -26,7 +40,7 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
         中间处理器重在一些信息的封装
         写操作主要负责保存数据，数据该落地保存在哪里
          */
-        logger.debug("进入处理器");
+//        logger.debug("进入处理器");
         int i = userFileItem.getType();
         User user  = new User();
         user.setFirstname("fisrt" + i);

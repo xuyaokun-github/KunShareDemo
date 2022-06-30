@@ -12,9 +12,9 @@ public class SplitTools {
         // "E:\\eutranrelation.csv";
         String bigFilePath = "D:\\home\\kunghsu\\big-file-test\\big-file.txt";
         // "E:\\eutranrelation-%s.csv";
-        String splitFileParttern = "D:\\home\\kunghsu\\big-file-test\\big-file-%s.txt";
+        String splitFileParttern = "D:\\home\\kunghsu\\big-file-test\\split\\big-file-%s.txt";
         // 32
-        int splitFileCount = 50 * 10000;
+        int splitFileCount = 10;
 
         /*
         Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
@@ -45,7 +45,7 @@ public class SplitTools {
         }
 
         reader.close();
-
+        System.out.println("文件总行数：" + totalLine);
         int splitFileTotalLines = totalLine / splitFileCount;
         int generateFileIdx = 0;
 

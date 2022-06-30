@@ -15,13 +15,14 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 /**
  * batch demo1
- * 例子：读取普通文件，处理完后写入数据库
+ * 例子：读取普通文件，处理完后写入数据库或者调接口发送
  *
  * author:xuyaokun_kzx
  * date:2021/5/21
@@ -65,9 +66,10 @@ public class BatchDemo1JobConfig {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("importStep")
-                .<UserFileItem, User>chunk(1000)
-                .reader(reader())
-                .processor(processor())
+//                .<UserFileItem, User>chunk(5000)
+                .<UserFileItem, User>chunk(10000)
+                .reader(reader(null)) //这里为了避免编译报错，需要传个null
+                .processor(processor(null)) //这里为了避免编译报错，需要传个null
 //                .writer(myBatisBatchItemWriter()) //写DB
                 .writer(customSendItemWriter()) //自定义写操作
                 .build();
@@ -75,12 +77,18 @@ public class BatchDemo1JobConfig {
 
     //定义一个读操作
     @Bean
-    public FlatFileItemReader<UserFileItem> reader() {
+    @StepScope
+    public FlatFileItemReader<UserFileItem> reader(@Value("#{jobParameters[sourceFilePath]}") String sourceFilePath) {
 
         //创建FlatFileItemReader
         FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
+//        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-middle-file.txt"));
         //读取文件系统下的文件，通常用绝对路径(测试大文件OOM问题)
-        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt"));
+        //大文件，每行5M
+//        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt"));
+        //大文件，每行1M
+//        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-oneline-1m.txt"));
+        reader.setResource(new FileSystemResource(sourceFilePath));
         //读取classpath下的文件
 //        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
         reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
@@ -101,13 +109,15 @@ public class BatchDemo1JobConfig {
      * @return
      */
     @Bean
-    public UserFileItemItemProcessor processor() {
-        return new UserFileItemItemProcessor();
+    @StepScope
+    public UserFileItemItemProcessor processor(@Value("#{jobParameters[jobName]}") String jobName) {
+        return new UserFileItemItemProcessor(jobName);
     }
 
 
     //定义一个写操作(写DB)
     @Bean
+    @StepScope
     public MyBatisBatchItemWriter<User> myBatisBatchItemWriter(){
 
         //使用Mybatis提供的写操作类

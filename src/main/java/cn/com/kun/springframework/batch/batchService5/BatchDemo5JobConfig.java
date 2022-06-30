@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.batch.batchService5;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.springframework.batch.BatchCommonCountListener;
+import cn.com.kun.springframework.batch.common.BatchCommonCountListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.session.SqlSessionFactory;

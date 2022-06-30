@@ -3,7 +3,7 @@ package cn.com.kun.springframework.batch.batchService4;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.exception.MyBatchBussinessException;
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.springframework.batch.BatchCommonCountListener;
+import cn.com.kun.springframework.batch.common.BatchCommonCountListener;
 import cn.com.kun.springframework.batch.batchService1.UserFileItem;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;

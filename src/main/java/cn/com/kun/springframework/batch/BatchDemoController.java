@@ -1,6 +1,7 @@
 package cn.com.kun.springframework.batch;
 
 import cn.com.kun.common.utils.SpringContextUtil;
+import cn.com.kun.springframework.batch.common.SimpleStopHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DeadlockLoserDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,15 +54,82 @@ public class BatchDemoController {
     @GetMapping("/testBatchJob1")
     public String testBatch() throws Exception {
 
+        SimpleStopHelper.removeStopFlag("importUserJob");
         /*
             可以用手动的方式，触发Job运行
          */
         //组织自定义参数，参数可以给读写操作去使用
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
+                .addString("jobName", "importUserJob")
+                .addString("sourceFilePath", "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt")
                 .toJobParameters();
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
         System.out.println(execution.toString());
+        return "success";
+    }
+
+    /**
+     * 测试job1（同时启动多个）
+     * @return
+     */
+    @GetMapping("/testBatchJob1-more")
+    public String testBatchJob1More() throws Exception {
+
+        SimpleStopHelper.removeStopFlag("importUserJob");
+
+        for (int i = 0; i < 10; i++) {
+            int finalI = i;
+            new Thread(()->{
+                //组织自定义参数，参数可以给读写操作去使用
+                JobParameters jobParameters = new JobParametersBuilder()
+                        .addLong("time", System.currentTimeMillis())
+                        .addString("jobName", "importUserJob")
+                        .addString("sourceFilePath", "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-" + finalI + ".txt")
+                        .toJobParameters();
+                JobExecution execution = null;
+
+                while (true){
+                    try {
+                        execution = jobLauncher.run(myFirstJob, jobParameters);
+                        if (execution != null){
+                            LOGGER.info("任务执行结果：{}", execution.toString());
+                        }
+                        break;
+                    } catch (Exception e) {
+                        //这里是否能识别到死锁异常?
+                        /*
+                            org.springframework.dao.DeadlockLoserDataAccessException: PreparedStatementCallback; SQL [INSERT into BATCH_JOB_INSTANCE(JOB_INSTANCE_ID, JOB_NAME, JOB_KEY, VERSION) values (?, ?, ?, ?)]; Deadlock found when trying to get lock; try restarting transaction; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException: Deadlock found when trying to get lock; try restarting transaction
+                        */
+                        if(e instanceof DeadlockLoserDataAccessException){
+                            //
+                            if(e.getMessage().contains("Deadlock found when trying to get lock")){
+                                LOGGER.info("任务[{}]出现死锁异常,准备重试!", "importUserJob");
+                                try {
+                                    Thread.sleep(100);
+                                } catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                }
+                                continue;
+                            }
+                        }else{
+                            LOGGER.error("任务执行异常", e);
+                        }
+                        break;
+                    }
+                }
+
+            }, "BatchJob1-Thread-" + finalI).start();
+        }
+
+
+        return "success";
+    }
+
+    @GetMapping("/testStopBatchJob1")
+    public String testStopBatchJob1() throws Exception{
+
+        SimpleStopHelper.markStop("importUserJob");
         return "success";
     }
 

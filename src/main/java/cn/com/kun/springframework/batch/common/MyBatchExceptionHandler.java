@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.batch;
+package cn.com.kun.springframework.batch.common;
 
 import cn.com.kun.common.exception.MyBatchBussinessException;
 import org.springframework.batch.repeat.RepeatContext;
