@@ -41,7 +41,7 @@ public class DBClusterLockAspect {
 
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         Method method = methodSignature.getMethod();
-        // 获取方法上的EvictCacheNotice注解对象
+        // 获取方法上的DBClusterLock注解对象
         DBClusterLock dbClusterLock = method.getAnnotation(DBClusterLock.class);
         //锁资源
         String resourceName = dbClusterLock.resourceName();
