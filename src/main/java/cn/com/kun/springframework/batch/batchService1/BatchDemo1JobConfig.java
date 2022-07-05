@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * batch demo1
@@ -51,27 +54,29 @@ public class BatchDemo1JobConfig {
      * @return
      */
     @Bean
-    public Job myFirstJob(MyFirstBatchJobListener listener) {
+    public Job myFirstJob(MyFirstBatchJobListener listener, MyStepExecutionListener myStepExecutionListener) {
         return jobBuilderFactory.get("importUserJob")
                 .incrementer(new RunIdIncrementer()) //每次运行的ID生成器
                 .listener(listener) //指定使用的监听器
-                .flow(myFirstStep()) //指定使用的步骤
+                .flow(myFirstStep(myStepExecutionListener)) //指定使用的步骤
                 .end()
                 .build();
     }
 
     @Bean
-    public Step myFirstStep() {
+    public Step myFirstStep(MyStepExecutionListener myStepExecutionListener) {
         /*
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("importStep")
 //                .<UserFileItem, User>chunk(5000)
-                .<UserFileItem, User>chunk(10000)
+                .<UserFileItem, User>chunk(100)
                 .reader(reader(null)) //这里为了避免编译报错，需要传个null
                 .processor(processor(null)) //这里为了避免编译报错，需要传个null
 //                .writer(myBatisBatchItemWriter()) //写DB
-                .writer(customSendItemWriter()) //自定义写操作
+                .writer(customSendItemWriter(null)) //自定义写操作
+                .taskExecutor(myFirstBatchJobExecutor()) //用线程池
+                .listener(myStepExecutionListener)
                 .build();
     }
 
@@ -130,10 +135,20 @@ public class BatchDemo1JobConfig {
 
     @Bean
     @StepScope
-    public ItemWriter<User> customSendItemWriter(){
+    public ItemWriter<User> customSendItemWriter(@Value("#{stepExecution}") StepExecution stepExecution){
 
-        return new CustomSendItemWriter();
+        return new CustomSendItemWriter(stepExecution);
     }
 
+    @Bean
+    public TaskExecutor myFirstBatchJobExecutor() {
 
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(10);
+        executor.setThreadNamePrefix("myFirstBatchJobExecutor-Thread-");
+        //默认是LinkedBlockingQueue
+        executor.setQueueCapacity(20);
+        return executor;
+    }
 }

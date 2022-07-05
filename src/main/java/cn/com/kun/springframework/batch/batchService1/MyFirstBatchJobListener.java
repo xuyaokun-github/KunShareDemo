@@ -18,7 +18,7 @@ public class MyFirstBatchJobListener extends JobExecutionListenerSupport {
         //不需要，可以不重写
         super.beforeJob(jobExecution);
         //放入一个统一计数器，记录处理的行数
-        BatchProgressRateCounter.initCounter();
+        BatchProgressRateCounter.initCounter(String.valueOf(jobExecution.getJobInstance().getInstanceId()));
     }
 
 
@@ -28,7 +28,7 @@ public class MyFirstBatchJobListener extends JobExecutionListenerSupport {
         logger.info("进入监听器end .....");
         //一般会在这里做一些记录，用一个自定义表保存该次批处理执行的结果信息
         //移除计数器
-        BatchProgressRateCounter.removeCounter();
+        BatchProgressRateCounter.removeCounter(String.valueOf(jobExecution.getJobInstance().getInstanceId()));
     }
 
 }

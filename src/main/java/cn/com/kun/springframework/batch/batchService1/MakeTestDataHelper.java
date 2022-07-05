@@ -63,8 +63,8 @@ public class MakeTestDataHelper {
 
     private static void buildBigFile() throws IOException {
 
-//        String inputName = "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt";
-        String inputName = "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-oneline-1m.txt";
+        String inputName = "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt";
+//        String inputName = "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-oneline-1m.txt";
         File inputFile = new File(inputName);
 //        FileUtils.write(inputFile, "kunghsu");
 
