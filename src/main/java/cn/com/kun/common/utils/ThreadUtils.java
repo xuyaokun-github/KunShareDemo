@@ -43,4 +43,12 @@ public class ThreadUtils {
     public static void runAsyncByRunnable(Runnable runnable) {
         new Thread(runnable).start();
     }
+
+    public static void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
