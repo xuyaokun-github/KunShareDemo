@@ -1,4 +1,4 @@
-package cn.com.kun.component.memorycache;
+package cn.com.kun.component.memorycache.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

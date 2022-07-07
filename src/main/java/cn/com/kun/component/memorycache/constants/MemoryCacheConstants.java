@@ -1,4 +1,4 @@
-package cn.com.kun.component.memorycache;
+package cn.com.kun.component.memorycache.constants;
 
 public class MemoryCacheConstants {
 

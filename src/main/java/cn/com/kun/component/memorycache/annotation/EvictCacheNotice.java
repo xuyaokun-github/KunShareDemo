@@ -1,10 +1,10 @@
-package cn.com.kun.component.memorycache;
+package cn.com.kun.component.memorycache.annotation;
 
 import java.lang.annotation.*;
 
 /**
  * 清除内存缓存通知
- * 用了该注解的方法执行前要发出清除内存缓存的通知
+ * 加了该注解的方法执行后要发出清除内存缓存的通知
  *
  * author:xuyaokun_kzx
  * date:2021/6/29

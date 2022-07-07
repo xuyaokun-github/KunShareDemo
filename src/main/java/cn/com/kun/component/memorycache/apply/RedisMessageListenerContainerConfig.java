@@ -6,7 +6,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TOPIC;
+import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TOPIC;
 
 @Configuration
 public class RedisMessageListenerContainerConfig {

@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.cache.demo;
 
 import cn.com.kun.bean.model.StudentReqVO;
-import cn.com.kun.component.memorycache.EvictCacheNotice;
+import cn.com.kun.component.memorycache.annotation.EvictCacheNotice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

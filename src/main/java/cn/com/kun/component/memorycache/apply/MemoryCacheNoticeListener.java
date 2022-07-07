@@ -1,7 +1,7 @@
 package cn.com.kun.component.memorycache.apply;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
+import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

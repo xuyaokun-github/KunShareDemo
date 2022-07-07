@@ -1,6 +1,6 @@
 package cn.com.kun.component.memorycache.apply;
 
-import cn.com.kun.component.memorycache.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
+import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
 
 /**
  * 内存缓存检测处理器

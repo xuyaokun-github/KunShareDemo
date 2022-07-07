@@ -2,7 +2,7 @@ package cn.com.kun.springframework.cache.demo;
 
 import cn.com.kun.bean.entity.Student;
 import cn.com.kun.bean.model.StudentReqVO;
-import cn.com.kun.component.memorycache.EvictCacheNotice;
+import cn.com.kun.component.memorycache.annotation.EvictCacheNotice;
 import cn.com.kun.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

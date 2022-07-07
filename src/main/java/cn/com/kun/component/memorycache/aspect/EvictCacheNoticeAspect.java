@@ -1,9 +1,10 @@
-package cn.com.kun.component.memorycache;
+package cn.com.kun.component.memorycache.aspect;
 
+import cn.com.kun.component.memorycache.annotation.EvictCacheNotice;
 import cn.com.kun.component.memorycache.maintain.MemoryCacheNoticeProcessor;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -43,13 +44,14 @@ public class EvictCacheNoticeAspect {
     @Autowired
     private MemoryCacheNoticeProcessor memoryCacheNoticeProcessor;
 
-    @Pointcut("@annotation(cn.com.kun.component.memorycache.EvictCacheNotice)")
+    @Pointcut("@annotation(cn.com.kun.component.memorycache.annotation.EvictCacheNotice)")
     public void pointCut(){
 
     }
 
-    @Before(value = "pointCut()")
-    public void before(JoinPoint joinPoint) throws NoSuchMethodException {
+
+    @After(value = "pointCut()")
+    public void after(JoinPoint joinPoint) throws NoSuchMethodException {
 
         // 通过joinPoint获取被注解方法
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();

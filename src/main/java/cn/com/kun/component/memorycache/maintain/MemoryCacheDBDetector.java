@@ -2,8 +2,8 @@ package cn.com.kun.component.memorycache.maintain;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.component.distributedlock.dblock.version1.DBClusterLock;
-import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
-import cn.com.kun.component.memorycache.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
+import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class MemoryCacheDBDetector {
 
     /**
      * 检查数据库是否有待通知的记录
-     * TODO 上注解，数据库锁
+     * TODO 上注解，数据库锁 （这里的数据库锁要换成version2的数据库锁）
      */
     @DBClusterLock(resourceName = "cn.com.kun.component.memorycache.maintain.MemoryCacheDBDetector.checkDb")
     public void checkDb(){

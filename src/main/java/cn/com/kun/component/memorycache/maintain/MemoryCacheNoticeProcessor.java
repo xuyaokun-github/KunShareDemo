@@ -1,8 +1,8 @@
 package cn.com.kun.component.memorycache.maintain;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.component.memorycache.MemoryCacheNoticeMsg;
-import cn.com.kun.component.memorycache.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
+import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
 import cn.com.kun.springframework.springredis.RedisTemplateHelper;
 import org.slf4j.Logger;
@@ -11,8 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
-import static cn.com.kun.component.memorycache.MemoryCacheConstants.NOTICE_TOPIC;
+import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
+import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TOPIC;
 
 /**
  * 内存缓存通知处理器
