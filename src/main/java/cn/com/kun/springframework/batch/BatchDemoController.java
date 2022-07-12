@@ -40,6 +40,9 @@ public class BatchDemoController {
     JobLauncher jobLauncher;
 
     @Autowired
+    JobLauncher customJobLauncher;
+
+    @Autowired
     @Qualifier("myJob3")
     Job demoJob3;
 
@@ -91,9 +94,18 @@ public class BatchDemoController {
 
                 while (true){
                     try {
+                        //customJobLauncher
                         execution = jobLauncher.run(myFirstJob, jobParameters);
+                        //可以使用自定义的JobLauncher控制同时执行任务数。假如到达了上限，会返回一个Fail的execution，而不会抛异常
+//                        execution = customJobLauncher.run(myFirstJob, jobParameters);
                         if (execution != null){
-                            LOGGER.info("任务执行结果：{}", execution.toString());
+                            if (execution.getStatus().equals(BatchStatus.FAILED)){
+                                LOGGER.info("任务执行失败");
+                            }else {
+                                //假如用了线程池，任务执行成功，返回的状态是 BatchStatus.STARTING
+                                //假如没用线程池，执行成功，返回的状态是COMPLETED，因为是单线程执行，即本线程完成执行
+                                LOGGER.info("任务执行结果：{}", execution.toString());
+                            }
                         }
                         break;
                     } catch (Exception e) {

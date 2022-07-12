@@ -30,11 +30,12 @@ public class RedisCounterDemoService {
 
         /**
          *  每天生成一个key，格式："redisCounter-msg-send" + 20211020
-         *  过期时间设置为一天，让他自动过期，数据不会一直增多，这个也不会占太多数据量，是否过期不是重点
+         *  过期时间设置为一天，让他自动过期，数据不会一直增多。
+         *  即使一直增多，这个也不会占太多数据量，是否过期不是重点
          */
         String key = KEY_PREFIX + DateUtils.toStr(new Date(), PATTERN_YYYY_MM_DD);
-        long res = redisCounter.add(KEY_PREFIX, 1, 1, TimeUnit.DAYS);
-        LOGGER.info("加一后：{}", res);
+        long res = redisCounter.add(key, 1, 1, TimeUnit.DAYS);
+        LOGGER.info("redisCounter加一后：{}", res);
     }
 
 
@@ -43,5 +44,6 @@ public class RedisCounterDemoService {
         Long res = redisTemplate.opsForValue().increment(key, 1);
         return res;
     }
+
 
 }

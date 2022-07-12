@@ -331,7 +331,6 @@ public class SpringRedisDemocontroller {
     @GetMapping(value = "/testRedisCounter")
     public ResultVo testRedisCounter(HttpServletRequest request){
 
-
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
                 redisCounterDemoService.addRequest();
