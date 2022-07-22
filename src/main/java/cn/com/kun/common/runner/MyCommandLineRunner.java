@@ -36,7 +36,7 @@ public class MyCommandLineRunner implements CommandLineRunner, ApplicationContex
         new Thread(()->{
             while (true){
                 try {
-                    Thread.sleep(15000);
+                    Thread.sleep(60000 * 10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

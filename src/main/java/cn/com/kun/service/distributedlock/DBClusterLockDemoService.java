@@ -1,6 +1,6 @@
 package cn.com.kun.service.distributedlock;
 
-import cn.com.kun.component.distributedlock.dblock.version1.DBDistributedLockHandler;
+import cn.com.kun.component.distributedlock.dblockVersion1.DBDistributedLockHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

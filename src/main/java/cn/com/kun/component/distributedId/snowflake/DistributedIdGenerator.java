@@ -2,7 +2,7 @@ package cn.com.kun.component.distributedId.snowflake;
 
 import cn.com.kun.common.utils.InetAddressUtils;
 import cn.com.kun.component.distributedlock.redislock.RedisDistributedLockHandler;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

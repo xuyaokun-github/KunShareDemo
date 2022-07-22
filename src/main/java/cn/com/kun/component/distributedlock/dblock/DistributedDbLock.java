@@ -1,6 +1,6 @@
-package cn.com.kun.component.distributedlock.dblock.version2;
+package cn.com.kun.component.distributedlock.dblock;
 
-import cn.com.kun.component.distributedlock.DistributedLockHandler;
+import cn.com.kun.component.distributedlock.DistributedLock;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,18 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * 分布式数据库数据库
  * author:xuyaokun_kzx
  * date:2022/4/9
  * desc:
 */
 @Component
-public class DBLockHandler implements DistributedLockHandler {
+public class DistributedDbLock implements DistributedLock {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DBLockHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DistributedDbLock.class);
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private DbLockMapper dbLockMapper;
@@ -39,9 +43,14 @@ public class DBLockHandler implements DistributedLockHandler {
 
     private static final ConcurrentMap<String, Timeout> TIMEOUT_MAP = new ConcurrentHashMap<>();
 
+    @Override
+    public void lockInterruptibly(String resourceName) throws InterruptedException {
+
+    }
+
     @Transactional
     @Override
-    public boolean lock(String resourceName) {
+    public boolean tryLock(String resourceName) {
 
         //查询锁的参数
         Map<String, String> paramMap = new HashMap<>();
@@ -68,6 +77,7 @@ public class DBLockHandler implements DistributedLockHandler {
             if (requestId.equals(dbLockDO.getRequestId()) || StringUtils.isEmpty(dbLockDO.getRequestId())){
                 //假如为空说明已经被抢占
                 getLockFlag = true;
+//                LOGGER.info("锁未被抢占，抢锁成功。resource：{}, 当前线程{}", resourceName, currentThreadName);
             }else {
                 //假如没命中，则判断时间是否已经超过了1分钟，假如超过了，则强制抢锁
                 Date requestTime = dbLockDO.getRequestTime();
@@ -85,7 +95,7 @@ public class DBLockHandler implements DistributedLockHandler {
                 if (res > 0){
                     //抢锁成功，启动时间轮续锁 TODO
                     startLockRenewWatchDog(resourceName, requestId);
-
+//                    LOGGER.info("抢锁成功启动时间轮。resource：{}, 当前线程{}", resourceName, currentThreadName);
                 }else {
                     //更新数据库失败
                     return false;
@@ -97,6 +107,53 @@ public class DBLockHandler implements DistributedLockHandler {
         return false;
     }
 
+    @Override
+    public boolean tryLock(String resourceName, long time, TimeUnit unit) throws InterruptedException {
+
+        //TODO
+        long millis = unit.toMillis(time);
+        long start = System.currentTimeMillis();
+        while (true){
+            if (tryLock(resourceName)){
+                return true;
+            }
+            if (System.currentTimeMillis() - start > millis){
+                return false;
+            }
+        }
+    }
+
+    /**
+     * 上锁（阻塞性）
+     * 这里加事务，有可能事务会超时，抛出等锁超时异常使主流程结束
+     * 没有加事务的注解的必要，若选择了加则必须try住等锁超时异常
+     */
+//    @Transactional
+    @Override
+    public void lock(String resourceName) {
+
+        while (true){
+            //这里相当于this调用，等于没有开启事务，所以必须拿到代理对象进行调用
+            boolean getLock = getProxy().tryLock(resourceName);
+            if (getLock){
+                //一直抢，直到抢到为止
+                break;
+            }else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    //
+                    LOGGER.error("DBLockHandler lock InterruptedException");
+                }
+            }
+        }
+    }
+
+    private DistributedLock getProxy() {
+
+        return applicationContext.getBean(DistributedDbLock.class);
+    }
+
 
     private void startLockRenewWatchDog(String resourceName, String requestId) {
 
@@ -104,7 +161,7 @@ public class DBLockHandler implements DistributedLockHandler {
 //            LOGGER.debug("启动续约锁task：{}， requestId:{}", resourceName, requestId);
         }
         //这里创建出来的Timeout必须保存起来,后续可以在提前解锁时释放该任务，这样可以避免内存泄漏
-        Timeout timeout = hashedWheelTimer.newTimeout(new DBLockHandler.LockRenewTimeTask(resourceName, requestId), 30, TimeUnit.SECONDS);
+        Timeout timeout = hashedWheelTimer.newTimeout(new DistributedDbLock.LockRenewTimeTask(resourceName, requestId), 30, TimeUnit.SECONDS);
         // 存放的逻辑（参考Redisson）
         TIMEOUT_MAP.put(requestId, timeout);
 
@@ -162,11 +219,10 @@ public class DBLockHandler implements DistributedLockHandler {
     }
 
     @Override
-    public boolean unlock(String resourceName) {
+    public void unlock(String resourceName) {
 
         //将requestId重新置成空，表示未被抢占
         String requestId = requestIdThreadLocal.get();
-
 
         //释放时间轮任务
         Timeout timeout = TIMEOUT_MAP.get(requestId);
@@ -183,7 +239,9 @@ public class DBLockHandler implements DistributedLockHandler {
         dbLockDO.setRequestId(requestId);
         dbLockDO.setResource(resourceName);
         int res = dbLockMapper.resetRequestInfo(dbLockDO);
-        return res > 0;
+        if (res == 0){
+            LOGGER.info("解锁失败");
+        }
     }
 
 

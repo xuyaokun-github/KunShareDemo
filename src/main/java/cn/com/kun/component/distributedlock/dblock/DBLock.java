@@ -1,20 +1,18 @@
-package cn.com.kun.component.distributedlock.dblock.version1;
+package cn.com.kun.component.distributedlock.dblock;
 
 import java.lang.annotation.*;
 
 /**
- * 数据库分布式锁
+ * 数据库分布式锁注解
  * author:xuyaokun_kzx
  * date:2021/7/7
  * desc:
- *
- * TODO:实现悲观乐观模式切换
 */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface DBClusterLock {
+public @interface DBLock {
 
     /**
      * 锁资源名称：
@@ -27,9 +25,8 @@ public @interface DBClusterLock {
 
     /**
      * 锁资源名称是否加上集群代码进一步区分，通常一个机房算作一个集群
-     * 假如为true，锁资源名称上会拼上集群名称，同一个集群内竞争同一把锁
-     * 不同集群间不互斥。
-     * 假如为false,则不拼接集群名称，不同集群间竞争同一个锁
+     * 假如为true，锁资源名称上会拼上集群名称，同一个集群内竞争同一把锁，不同集群间不互斥。
+     * 假如为false，则不拼接集群名称，多个集群间竞争同一个锁
      * @return
      */
     boolean withClusterCode() default false;

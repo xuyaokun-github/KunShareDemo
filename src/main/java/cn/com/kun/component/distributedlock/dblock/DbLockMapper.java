@@ -1,4 +1,4 @@
-package cn.com.kun.component.distributedlock.dblock.version2;
+package cn.com.kun.component.distributedlock.dblock;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -7,8 +7,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.Map;
 
 /**
- * 和version1共用同一张表
- * tbl_pessimistic_lock
+ * tbl_database_lock
  */
 @Mapper
 public interface DbLockMapper {

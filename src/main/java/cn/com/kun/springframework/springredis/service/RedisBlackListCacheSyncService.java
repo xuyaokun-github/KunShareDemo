@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springredis.service;
 
 import cn.com.kun.common.utils.DateUtils;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

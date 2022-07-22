@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.cache.demo;
+package cn.com.kun.service.memorycache;
 
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.component.memorycache.annotation.EvictCacheNotice;

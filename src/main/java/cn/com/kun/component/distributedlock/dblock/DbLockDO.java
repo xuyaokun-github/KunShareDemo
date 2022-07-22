@@ -1,4 +1,4 @@
-package cn.com.kun.component.distributedlock.dblock.version2;
+package cn.com.kun.component.distributedlock.dblock;
 
 import java.util.Date;
 

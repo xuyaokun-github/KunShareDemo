@@ -1,13 +1,15 @@
 package cn.com.kun.component.memorycache.apply;
 
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -29,12 +31,13 @@ public class MemoryCacheRedisDetector {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheRedisDetector.class);
 
-    @Autowired
-    @Qualifier("caffeineCacheManager")
     private CacheManager cacheManager;
 
     @Autowired
     private RedisTemplateHelper redisTemplateHelper;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private long sleepTime = 1000L;
 
@@ -47,10 +50,22 @@ public class MemoryCacheRedisDetector {
 
     @PostConstruct
     public void init(){
+
+        //org.springframework.cache.caffeine.CaffeineCacheManager
+        initCacheManager();
         sleepTime = memoryCacheProperties.getDetectThreadSleepTime();
         new Thread(()->{
             doCheck();
-        }, "").start();
+        }, "MemoryCacheRedisDetector-Thread").start();
+    }
+
+    private void initCacheManager() {
+
+        if (StringUtils.isEmpty(memoryCacheProperties.getCaffeineCacheManagerName())){
+            cacheManager = applicationContext.getBean(SimpleCacheManager.class);
+        }else {
+            cacheManager = (CacheManager) applicationContext.getBean(memoryCacheProperties.getCaffeineCacheManagerName());
+        }
     }
 
     private void doCheck() {
@@ -61,7 +76,7 @@ public class MemoryCacheRedisDetector {
                 Thread.sleep(sleepTime);
                 logHeartBeat();
             } catch (Exception e) {
-                LOGGER.error("doCheck方法出现异常", e);
+                LOGGER.error("MemoryCacheRedisDetector doCheck方法出现异常", e);
             }
         }
 
@@ -73,7 +88,7 @@ public class MemoryCacheRedisDetector {
     private void logHeartBeat() {
         heartBeatCount++;
         if (heartBeatCount == 5){
-            LOGGER.info("MemoryCacheDetectProcessor working...");
+            LOGGER.info("MemoryCacheRedisDetector working...");
             heartBeatCount = 0;
         }
     }
@@ -95,14 +110,21 @@ public class MemoryCacheRedisDetector {
                 if (!oldUpdateTime.equals(lastUpdateTime)){
                     //redis中的时间戳和timeMillisMap中的时间不等，说明发生变更
                     //清缓存
-                    cacheManager.getCache(configName).clear();
-                    timeMillisMap.put(configName, lastUpdateTime);
-                    LOGGER.info("本次清空缓存管理器{},更新时间戳为：{}", configName, lastUpdateTime);
+                    clearCache(configName, lastUpdateTime);
                 } else {
                     //未发生变更
 //                    LOGGER.debug("缓存管理器{}未发生变更", configName);
                 }
             }
+        }
+    }
+
+    private void clearCache(String configName, String lastUpdateTime) {
+
+        if(cacheManager != null){
+            cacheManager.getCache(configName).clear();
+            updateTimemillis(configName, lastUpdateTime);
+            LOGGER.info("本次清空缓存管理器{},更新时间戳为：{}", configName, lastUpdateTime);
         }
     }
 

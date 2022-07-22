@@ -1,18 +1,17 @@
-package cn.com.kun.springframework.cache.demo;
+package cn.com.kun.controller.memorycache;
 
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.bean.model.StudentResVO;
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.service.memorycache.MemoryCacheApplyAppStudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/memory-cache")
+@RequestMapping("/memory-cache-apply")
 @RestController
 public class MemoryCacheApplyAppController {
 
@@ -34,7 +33,7 @@ public class MemoryCacheApplyAppController {
      * @param id
      * @return
      */
-    @RequestMapping("/query")
+    @GetMapping("/query")
     public ResultVo<StudentResVO> query(Long id){
 
         StudentReqVO reqVO = new StudentReqVO();
@@ -47,7 +46,7 @@ public class MemoryCacheApplyAppController {
      * http://localhost:8080/kunsharedemo/memory-cache/update?id=10
      * @return
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public ResultVo<Integer> update(@RequestBody StudentReqVO reqVO){
 
         Integer res = memoryCacheDemoStudentService.updateStudent(reqVO);

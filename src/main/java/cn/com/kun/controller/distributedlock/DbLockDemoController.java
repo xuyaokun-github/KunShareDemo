@@ -45,4 +45,60 @@ public class DbLockDemoController {
 
         return ResultVo.valueOfSuccess("");
     }
+
+    @GetMapping("/testRunFastJobByLockMethod")
+    public ResultVo<String> testRunFastJobByLockMethod(){
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                    dbLockDemoService.testByLockMethod();
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping("/testRunLongTimeJobByLockMethod")
+    public ResultVo<String> testRunLongTimeJobByLockMethod(){
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                try {
+                    dbLockDemoService.testRunLongTimeJobByLockMethod();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping("/testRunFastJobByAnnotation")
+    public ResultVo<String> testRunFastJobByAnnotation(){
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                dbLockDemoService.testRunFastJobByAnnotation();
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess("");
+    }
+
+    @GetMapping("/testRunLongTimeJobByAnnotation")
+    public ResultVo<String> testRunLongTimeJobByAnnotation(){
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                try {
+                    dbLockDemoService.testRunLongTimeJobByAnnotation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        return ResultVo.valueOfSuccess("");
+    }
 }

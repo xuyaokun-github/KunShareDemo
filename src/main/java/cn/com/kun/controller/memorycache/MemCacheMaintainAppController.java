@@ -1,7 +1,9 @@
-package cn.com.kun.springframework.cache.demo;
+package cn.com.kun.controller.memorycache;
 
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.service.memorycache.IMemCacheDemoService;
+import cn.com.kun.service.memorycache.MemCacheMaintainAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * date:2021/6/29
  * desc:
 */
-@RequestMapping("/memory-other")
+@RequestMapping("/memory-cache-maintain")
 @RestController
 public class MemCacheMaintainAppController {
 

@@ -1,4 +1,4 @@
-package cn.com.kun.component.distributedlock.dblock.version1;
+package cn.com.kun.component.distributedlock.dblockVersion1;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

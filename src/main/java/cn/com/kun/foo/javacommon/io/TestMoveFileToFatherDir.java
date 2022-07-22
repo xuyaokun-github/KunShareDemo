@@ -12,7 +12,7 @@ public class TestMoveFileToFatherDir {
     public static void main(String[] args) {
 
 
-        File sourceFile = new File("E:\\Download\\xxxxx");
+        File sourceFile = new File("D:\\Downloads\\others\\jixiaohua");
         System.out.println(sourceFile.getAbsolutePath());
 
         File[] files = sourceFile.listFiles();

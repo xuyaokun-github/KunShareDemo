@@ -4,7 +4,7 @@ import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -74,7 +74,7 @@ public class MemoryCacheNoticeProcessor {
     public void sendNoticeToRedis(MemoryCacheNoticeMsg noticeMsg){
         //这里发送消息，由使用内存缓存的服务负责接收，收到就立刻清缓存
         String msg = JacksonUtils.toJSONString(noticeMsg);
-        LOGGER.info("通知报文：{}", msg);
+        LOGGER.info("内存缓存刷新通知报文：{}", msg);
         //注意：假如不是用字符串序列化方式的value序列化器，就不要传字符串进去，会拼多两个双引号
 //        redisTemplateHelper.sendChannelTopicMsg(NOTICE_TOPIC, msg);
         redisTemplateHelper.sendChannelTopicMsg(NOTICE_TOPIC, noticeMsg);

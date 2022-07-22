@@ -1,10 +1,11 @@
 package cn.com.kun.component.memorycache.maintain;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.component.distributedlock.dblock.version1.DBClusterLock;
-import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
-import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
+import cn.com.kun.component.distributedlock.dblock.DBLock;
+import cn.com.kun.component.distributedlock.dblockVersion1.DBClusterLock;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
+import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -34,12 +35,16 @@ public class MemoryCacheDBDetector {
     @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
+    private final static String DBLOCK_RESOURCE_NAME = "MemoryCacheDBDetector_LOCK";
+
     /**
      * 检查数据库是否有待通知的记录
-     * TODO 上注解，数据库锁 （这里的数据库锁要换成version2的数据库锁）
+     * 使用数据库锁
      */
-    @DBClusterLock(resourceName = "cn.com.kun.component.memorycache.maintain.MemoryCacheDBDetector.checkDb")
+    @DBLock(resourceName = DBLOCK_RESOURCE_NAME)
     public void checkDb(){
+
+        LOGGER.info("MemoryCacheDBDetector开始检测数据库是否有待通知数据");
         //用注解上锁，保证只有一个节点进行判断后通知，可以是数据库锁（也可以是redis分布式锁，同一个集群内的分布式锁）
         String clusterName = memoryCacheProperties.getClusterName();
         List<MemoryCacheNoticeDO> memoryCacheNoticeDOList = memoryCacheNoticeMapper.query(clusterName);

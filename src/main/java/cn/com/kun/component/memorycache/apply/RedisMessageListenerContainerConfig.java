@@ -12,9 +12,9 @@ import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NO
 public class RedisMessageListenerContainerConfig {
 
 
-    //创建一个监听器
+    //创建接收通知监听器
     @Bean
-    public MemoryCacheNoticeListener consumerRedis() {
+    public MemoryCacheNoticeListener memoryCacheNoticeListener() {
         return new MemoryCacheNoticeListener();
     }
 
@@ -26,11 +26,11 @@ public class RedisMessageListenerContainerConfig {
 
     //创建一个监听器容器
     @Bean
-    public RedisMessageListenerContainer customRedisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer memoryCacheRedisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(consumerRedis(), topic());
+        container.addMessageListener(memoryCacheNoticeListener(), topic());
         return container;
     }
 

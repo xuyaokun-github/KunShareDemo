@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.springredis.datecountControl;
 
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

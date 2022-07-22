@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springredis.service;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.bloomFilter.BloomFilterHelper;
 import cn.com.kun.springframework.springredis.bloomFilter.RedisBloomFilter;
 import cn.com.kun.springframework.springredis.controller.RedisBlackListDemocontroller;

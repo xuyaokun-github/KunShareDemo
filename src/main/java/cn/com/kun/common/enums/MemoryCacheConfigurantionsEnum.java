@@ -15,7 +15,7 @@ public enum MemoryCacheConfigurantionsEnum {
     /**
      * 每次新增一个服务层需要用redis缓存，就需要加一项枚举定义
      */
-    STUDENT(6000, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT),
+    STUDENT(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT),
     USER(12000, 2000, "memory-cache-user-service");
 
     public long ttl;

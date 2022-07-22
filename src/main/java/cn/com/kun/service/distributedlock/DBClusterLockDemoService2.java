@@ -1,8 +1,8 @@
 package cn.com.kun.service.distributedlock;
 
 import cn.com.kun.bean.entity.Student;
-import cn.com.kun.component.distributedlock.dblock.version1.DBClusterLock;
-import cn.com.kun.component.distributedlock.dblock.version1.DBDistributedLockHandler;
+import cn.com.kun.component.distributedlock.dblockVersion1.DBClusterLock;
+import cn.com.kun.component.distributedlock.dblockVersion1.DBDistributedLockHandler;
 import cn.com.kun.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

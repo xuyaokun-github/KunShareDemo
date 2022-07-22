@@ -10,6 +10,11 @@ import java.util.List;
 @ConfigurationProperties(prefix = "memorycache")
 public class MemoryCacheProperties {
 
+    private String caffeineCacheManagerName;
+
+    /**
+     * 检测线程睡眠时间
+     */
     private long detectThreadSleepTime;
 
     /**
@@ -40,6 +45,14 @@ public class MemoryCacheProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getCaffeineCacheManagerName() {
+        return caffeineCacheManagerName;
+    }
+
+    public void setCaffeineCacheManagerName(String caffeineCacheManagerName) {
+        this.caffeineCacheManagerName = caffeineCacheManagerName;
     }
 
     public long getDetectThreadSleepTime() {

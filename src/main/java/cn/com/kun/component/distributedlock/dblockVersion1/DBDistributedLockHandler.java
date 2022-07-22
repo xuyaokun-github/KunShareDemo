@@ -1,4 +1,4 @@
-package cn.com.kun.component.distributedlock.dblock.version1;
+package cn.com.kun.component.distributedlock.dblockVersion1;
 
 import cn.com.kun.component.distributedlock.DistributedLockHandler;
 //import com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException;

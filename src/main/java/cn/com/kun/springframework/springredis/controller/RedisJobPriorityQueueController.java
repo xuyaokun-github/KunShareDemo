@@ -2,7 +2,7 @@ package cn.com.kun.springframework.springredis.controller;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.springframework.springredis.RedisTemplateHelper;
+import cn.com.kun.component.redis.RedisTemplateHelper;
 import cn.com.kun.springframework.springredis.priorityQueue.JobRedisPriorityQueue;
 import cn.com.kun.springframework.springredis.service.RedisJobPriorityQueueService;
 import cn.com.kun.springframework.springredis.vo.JobVO;

@@ -4,7 +4,6 @@ import cn.com.kun.common.enums.MemoryCacheConfigurantionsEnum;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Lists;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +29,7 @@ public class CaffeineCacheConfig {
     @Bean
 //    @Primary
     // Primary不是必须的，可用可不用，不用的时候就要用@Qualifier
-    public CacheManager caffeineCacheManager() {
+    public SimpleCacheManager caffeineCacheManager() {
 
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         //缓存管理器集合
