@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.service;
 
 import cn.com.kun.common.utils.ThreadUtils;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.sentinelCompensate.SentinelFlowControl;
+import cn.com.kun.component.sentinel.sentinelCompensate.SentinelFlowControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

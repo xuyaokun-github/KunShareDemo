@@ -1,7 +1,7 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor;
 
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.properties.CustomFlowRule;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.properties.SentinelRuleProperties;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.properties.SentinelRuleProperties;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.vo.CustomFlowRule;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
@@ -16,16 +16,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static cn.com.kun.springframework.springcloud.alibaba.sentinel.SentinelResourceConstants.*;
-
 @Component
 public class SentinelRuleLoader {
 
     @Autowired
-    SentinelFlowMonitor sentinelFlowMonitor;
+    private SentinelFlowMonitor sentinelFlowMonitor;
 
     @Autowired
-    SentinelRuleProperties sentinelRuleProperties;
+    private SentinelRuleProperties sentinelRuleProperties;
 
     @PostConstruct
     public void init(){
@@ -39,14 +37,6 @@ public class SentinelRuleLoader {
      * 各个资源的黄色预警线
      */
     private void initFlowMonitorInfo() {
-
-        sentinelFlowMonitor.registContextName("sentinel_default_context");
-        sentinelFlowMonitor.registContextName(CONTEXT_MSG_PUSH);
-
-        //注册监控的黄色预警线（每个资源对应的黄色预警线不一致）
-        //假如没配，默认取85%？
-        //例如当QPS超过20就触发黄色预警
-        sentinelFlowMonitor.registYellowLineThreshold(RESOURCE_NAME, 20L);
 
         Map<String, CustomFlowRule> flowRuleMap = sentinelRuleProperties.getFlowRule();
         Iterator iterator = flowRuleMap.entrySet().iterator();
@@ -66,9 +56,6 @@ public class SentinelRuleLoader {
         //------------------限流规则---------------------------
         List<FlowRule> rules = new ArrayList<>();
 
-        //测试方法
-        addTestRules(rules);
-
         //添加通过配置文件定义的规则
         addFlowRuleFromConfig(rules);
         //加载
@@ -77,38 +64,8 @@ public class SentinelRuleLoader {
         //------------------熔断降级规则---------------------------
         List<DegradeRule> degradeRuleList = new ArrayList<>();
         addDegradeRuleFromConfig(degradeRuleList);
-        //测试方法
-        addTestDegradeRules(degradeRuleList);
         //加载
         DegradeRuleManager.loadRules(degradeRuleList);
-
-    }
-
-    private void addTestDegradeRules(List<DegradeRule> degradeRuleList) {
-
-        //测试例子
-        //给资源RESOURCE_NAME，指定一个降级规则
-        DegradeRule degradeRule = new DegradeRule(RESOURCE_NAME_3)
-                .setGrade(RuleConstant.DEGRADE_GRADE_RT)
-                // Max allowed response time
-                //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
-                .setCount(1000)
-                // Retry timeout (in second)
-                .setTimeWindow(60);
-        // Circuit breaker opens when slow request ratio > 60% (下面三个都是后面版本才有的)
-//                .setSlowRatioThreshold(0.6)
-//                .setMinRequestAmount(100)
-//                .setStatIntervalMs(20000);
-        degradeRuleList.add(degradeRule);
-
-        DegradeRule degradeRule2 = new DegradeRule(RESOURCE_NAME_4)
-                .setGrade(RuleConstant.DEGRADE_GRADE_RT)
-                // Max allowed response time
-                //假如grade策略指定了为DEGRADE_GRADE_RT，count表示超时时长
-                .setCount(1000)
-                // Retry timeout (in second)
-                .setTimeWindow(60);
-        degradeRuleList.add(degradeRule2);
 
     }
 
@@ -124,35 +81,16 @@ public class SentinelRuleLoader {
         }
     }
 
-    /**
-     * 测试方法
-     * 验证规则的使用
-     * @param rules
-     */
-    private void addTestRules(List<FlowRule> rules) {
 
-        FlowRule rule = new FlowRule();
-        rule.setResource(RESOURCE_NAME);
-//        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        //每个线程的qps最多是2
-        rule.setCount(2);
+    public void addFlowRules(List<FlowRule> rules) {
 
-        FlowRule rule2 = new FlowRule();
-        rule2.setResource(RESOURCE_NAME2);
-//        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule2.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        // Set limit QPS to 20.
-        rule2.setCount(2);
+        FlowRuleManager.getRules().addAll(rules);
+    }
 
-        rules.add(rule);
-        rules.add(rule2);
 
-        //通过加载配置类，逐一添加
-//        rules.add(buildFlowRule(RESOURCE_SCENE_WX, 10, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
-//        rules.add(buildFlowRule(RESOURCE_SCENE_DX, 5, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
-        rules.add(buildFlowRule(RESOURCE_NAME_3, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
-        rules.add(buildFlowRule(RESOURCE_NAME_TESTLIMITANDDEGRADE2, 200, RuleConstant.CONTROL_BEHAVIOR_DEFAULT));
+    public void addDegradeRules(List<DegradeRule> degradeRules) {
+
+        DegradeRuleManager.getRules().addAll(degradeRules);
     }
 
     private void addFlowRuleFromConfig(List<FlowRule> rules) {
@@ -203,8 +141,6 @@ public class SentinelRuleLoader {
         rule2.setCount(count);
         return rule2;
     }
-
-
 
 
 }

@@ -1,5 +1,6 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.properties;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor.properties;
 
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.vo.CustomFlowRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

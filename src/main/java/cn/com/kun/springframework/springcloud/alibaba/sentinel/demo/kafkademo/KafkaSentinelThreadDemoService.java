@@ -1,10 +1,15 @@
 package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.kafkademo;
 
 import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.component.kafkaConsumerSpeed.KafkaConsumerThreadConstants;
+import cn.com.kun.component.kafkaConsumerSpeed.KafkaConsumerThreadManager;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.SentinelFlowMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 /**
  * 这个类模拟一个消费者线程
@@ -20,6 +25,10 @@ public class KafkaSentinelThreadDemoService {
 
     @Autowired
     KafkaConsumerThreadManager kafkaConsumerThreadManager;
+
+    @Autowired
+    private SentinelFlowMonitor sentinelFlowMonitor;
+
 
 //    @PostConstruct
     public void init(){

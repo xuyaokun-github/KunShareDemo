@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
+package cn.com.kun.springframework.springcloud.alibaba.sentinel.service.flowMonitor;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import com.alibaba.csp.sentinel.datasource.WritableDataSource;

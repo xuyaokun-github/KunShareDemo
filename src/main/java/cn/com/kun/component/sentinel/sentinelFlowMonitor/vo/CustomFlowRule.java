@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.properties;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor.vo;
 
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 

@@ -1,12 +1,13 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor;
 
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.vo.FlowMonitorRes;
 import com.alibaba.csp.sentinel.command.vo.NodeVo;
 import com.alibaba.csp.sentinel.concurrent.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,14 @@ import java.util.concurrent.Executors;
  * date:2021/9/30
  * desc:
 */
-@Service
+@Component
 public class SentinelFlowMonitor {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SentinelFlowMonitor.class);
 
+    /**
+     * 单线程
+     */
     private static ExecutorService pool = Executors.newFixedThreadPool(
             1, new NamedThreadFactory("sentinel-flowMonitor", true));
 
@@ -52,14 +56,14 @@ public class SentinelFlowMonitor {
     private Map<String, FlowMonitorCallback> callbackMap = new ConcurrentHashMap<>();
 
 
-//    @PostConstruct
+    @PostConstruct
     public void init(){
 
         //每隔一定的时间，就要进行判断
-        //单线程监控
         //假如出现 拒绝QPS大于0，说明已经有某个线程开始出现限流了，这时候就可以将标识置为 红
         //假如 通过QPS大于某个值，但未到限流阶段，设置为黄
         //假如 低于某个值，设置为绿！
+        //单线程监控
 //        new Thread(new FlowMonitorTask()).start();
 
         pool.execute(new FlowMonitorTask());
@@ -159,6 +163,11 @@ public class SentinelFlowMonitor {
 
             while (true){
                 try {
+
+                    if(contextNameList.isEmpty()){
+                        continue;
+                    }
+
                     for (String contextName : contextNameList){
                         List<NodeVo> results = CustomFetchJsonTreeHandler.getJsonTreeForFixedContext(contextName);
                         if (results == null){

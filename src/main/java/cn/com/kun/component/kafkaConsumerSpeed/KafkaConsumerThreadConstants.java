@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.kafkademo;
+package cn.com.kun.component.kafkaConsumerSpeed;
 
 public class KafkaConsumerThreadConstants {
 

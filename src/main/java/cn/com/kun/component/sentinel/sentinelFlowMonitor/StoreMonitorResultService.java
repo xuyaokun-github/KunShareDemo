@@ -1,6 +1,6 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor;
 
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.vo.FlowMonitorRes;
 
 public interface StoreMonitorResultService {
 

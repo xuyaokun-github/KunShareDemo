@@ -1,8 +1,8 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.demo.kafkademo;
+package cn.com.kun.component.kafkaConsumerSpeed;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.SentinelFlowMonitor;
-import cn.com.kun.springframework.springcloud.alibaba.sentinel.vo.FlowMonitorRes;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.SentinelFlowMonitor;
+import cn.com.kun.component.sentinel.sentinelFlowMonitor.vo.FlowMonitorRes;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,15 @@ public class KafkaConsumerThreadManager {
     @PostConstruct
     public void init(){
         LOGGER.info("kafkaConsumerSpeedProperties：{}", JacksonUtils.toJSONString(kafkaConsumerSpeedProperties));
+
+        //注册需要关注的资源信息
+        sentinelFlowMonitor.registContextName("sentinel_default_context");
+        sentinelFlowMonitor.registContextName(CONTEXT_MSG_PUSH);
+
+        //注册监控的黄色预警线（每个资源对应的黄色预警线不一致）
+        //假如没配，默认取85%？
+        //例如当QPS超过20就触发黄色预警
+        sentinelFlowMonitor.registYellowLineThreshold(RESOURCE_NAME, 20L);
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor;
 
 import com.alibaba.csp.sentinel.Constants;
 import com.alibaba.csp.sentinel.command.vo.NodeVo;

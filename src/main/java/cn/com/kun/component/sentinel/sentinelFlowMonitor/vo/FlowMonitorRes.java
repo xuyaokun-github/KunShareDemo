@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.vo;
+package cn.com.kun.component.sentinel.sentinelFlowMonitor.vo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

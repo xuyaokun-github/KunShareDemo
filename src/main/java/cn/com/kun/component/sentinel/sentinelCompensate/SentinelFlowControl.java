@@ -1,4 +1,4 @@
-package cn.com.kun.springframework.springcloud.alibaba.sentinel.extend.sentinelCompensate;
+package cn.com.kun.component.sentinel.sentinelCompensate;
 
 import java.lang.annotation.*;
 
