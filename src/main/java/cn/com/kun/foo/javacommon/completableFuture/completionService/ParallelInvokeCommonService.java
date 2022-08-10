@@ -45,6 +45,7 @@ public class ParallelInvokeCommonService {
         try {
             //遍历获取结果
             for (int i = 0; i < taskList.size(); i++) {
+                //使用ExecutorCompletionService，必须要调用take或者poll方法释放内存
                 Future<BaseRspDTO<Object>> baseRspDTOFuture = baseDTOCompletionService.poll(timeOut, TimeUnit.SECONDS);
                 resultList.add(baseRspDTOFuture.get());
             }
