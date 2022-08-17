@@ -1,6 +1,6 @@
 package cn.com.kun.apache.flink;
 
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.People;
 
 import java.util.ArrayList;
 import java.util.List;

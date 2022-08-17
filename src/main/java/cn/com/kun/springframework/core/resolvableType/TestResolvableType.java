@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.core.resolvableType;
 
-import cn.com.kun.common.vo.people.Dog;
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.Dog;
+import cn.com.kun.bean.model.people.People;
 import org.springframework.core.ResolvableType;
 
 import java.lang.reflect.ParameterizedType;

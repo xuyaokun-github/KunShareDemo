@@ -1,7 +1,7 @@
 package cn.com.kun.mapper;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.common.vo.user.UserQueryParam;
+import cn.com.kun.bean.model.user.UserQueryParam;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.cursor.Cursor;

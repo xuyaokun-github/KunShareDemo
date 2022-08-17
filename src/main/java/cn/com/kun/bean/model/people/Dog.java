@@ -1,4 +1,4 @@
-package cn.com.kun.common.vo.people;
+package cn.com.kun.bean.model.people;
 
 /**
  * 狗

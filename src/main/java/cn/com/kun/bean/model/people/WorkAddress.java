@@ -1,16 +1,17 @@
-package cn.com.kun.common.vo.people;
+package cn.com.kun.bean.model.people;
 
 import cn.com.kun.common.annotation.DesensitizationField;
 
-import static cn.com.kun.common.constants.DesensitizationConstants.*;
+import static cn.com.kun.common.constants.DesensitizationConstants.STREETNAME_EXPRESSION;
+import static cn.com.kun.common.constants.DesensitizationConstants.STREETNAME_REPLACE;
 
 /**
- * 一个人只能有一个家乡地址
+ * 一个人可能拥有多个工作城市地址
  * author:xuyaokun_kzx
  * date:2021/5/25
  * desc:
 */
-public class HomeTownAddress {
+public class WorkAddress {
 
     /**
      * 城市名

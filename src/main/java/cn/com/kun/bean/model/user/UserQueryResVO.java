@@ -1,4 +1,4 @@
-package cn.com.kun.common.vo.user;
+package cn.com.kun.bean.model.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

@@ -1,4 +1,4 @@
-package cn.com.kun.common.vo.people;
+package cn.com.kun.bean.model.people;
 
 import cn.com.kun.common.annotation.DesensitizationField;
 import cn.com.kun.common.annotation.SecretField;

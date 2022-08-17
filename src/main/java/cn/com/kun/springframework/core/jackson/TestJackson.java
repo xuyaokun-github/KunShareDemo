@@ -2,7 +2,7 @@ package cn.com.kun.springframework.core.jackson;
 
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.People;
 
 import java.util.Date;
 

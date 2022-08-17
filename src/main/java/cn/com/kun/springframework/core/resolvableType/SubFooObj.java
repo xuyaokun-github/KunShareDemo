@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.core.resolvableType;
 
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.People;
 
 /**
  * 展示如何获取类头上的具体泛型参数

@@ -2,8 +2,8 @@ package cn.com.kun.controller.mybatis;
 
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.vo.PageParam;
-import cn.com.kun.common.vo.user.UserQueryParam;
-import cn.com.kun.common.vo.user.UserQueryResVO;
+import cn.com.kun.bean.model.user.UserQueryParam;
+import cn.com.kun.bean.model.user.UserQueryResVO;
 import cn.com.kun.service.mybatis.UserErrorService;
 import cn.com.kun.service.mybatis.UserService;
 import com.github.pagehelper.PageInfo;

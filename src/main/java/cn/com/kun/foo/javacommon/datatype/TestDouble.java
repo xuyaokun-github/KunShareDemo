@@ -1,6 +1,6 @@
 package cn.com.kun.foo.javacommon.datatype;
 
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.People;
 
 public class TestDouble {
 

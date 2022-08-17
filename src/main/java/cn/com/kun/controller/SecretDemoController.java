@@ -1,10 +1,10 @@
 package cn.com.kun.controller;
 
+import cn.com.kun.bean.model.people.*;
 import cn.com.kun.common.annotation.DesensitizationAnnotation;
 import cn.com.kun.common.annotation.SecretAnnotation;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.common.vo.people.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

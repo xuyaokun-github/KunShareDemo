@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springcloud.feign.service;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.common.vo.people.People;
+import cn.com.kun.bean.model.people.People;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

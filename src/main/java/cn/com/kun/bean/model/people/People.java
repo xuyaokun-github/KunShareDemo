@@ -1,12 +1,22 @@
-package cn.com.kun.common.vo.people;
+package cn.com.kun.bean.model.people;
 
-import cn.com.kun.common.annotation.SecretField;
+import cn.com.kun.common.annotation.DesensitizationField;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class PeopleReq {
+/**
+ * 人
+ *
+ * author:xuyaokun_kzx
+ * date:2021/5/25
+ * desc:
+*/
+public class People {
 
-    @SecretField(decode = true) //表示需要解密
+    @JSONField(serialize=false)
     private String firstname;
 
+    @JsonIgnore
     private String lastname;
 
     private String phone;
@@ -15,6 +25,11 @@ public class PeopleReq {
 
     private String company;
 
+    /**
+     * 一个人只能有一个家乡地址
+     */
+    @DesensitizationField
+    private HomeTownAddress homeTownAddress;
 
     public String getFirstname() {
         return firstname;
@@ -54,5 +69,13 @@ public class PeopleReq {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public HomeTownAddress getHomeTownAddress() {
+        return homeTownAddress;
+    }
+
+    public void setHomeTownAddress(HomeTownAddress homeTownAddress) {
+        this.homeTownAddress = homeTownAddress;
     }
 }
