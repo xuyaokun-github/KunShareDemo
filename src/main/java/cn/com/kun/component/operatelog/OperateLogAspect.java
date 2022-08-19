@@ -41,46 +41,86 @@ public class OperateLogAspect {
 
     }
 
-    @Around(value = "pointCut()")
+    /**
+     * 根据方法调用定义切点
+     */
+    @Pointcut("execution(* cn.com.kun.service.operatelog.OperatelogDemoService2.update(..)) || " +
+            " execution(* cn.com.kun.service.operatelog.OperatelogDemoService3.update(..)) || " +
+            " execution(* cn.com.kun.service.operatelog.OperatelogDemoService4.update4(..))")
+    public void pointCut2(){
+
+    }
+
+    /**
+     * 同时切两个入口
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
+    @Around(value = "pointCut() || pointCut2()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
 
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         Method method = methodSignature.getMethod();
 
         Object obj = pjp.proceed();
-        //这里可以解析返回，假如判断是成功，再做记录，否则不做记录
-        if (obj instanceof ResultVo){
-            ResultVo resultVo = (ResultVo) obj;
-            if (resultVo.isSuccess()){
 
-                //入参
-                Object[] args = pjp.getArgs();
-                // 获取方法上的OperateLog注解对象
-                OperateLog operateLog = method.getAnnotation(OperateLog.class);
-                //锁资源
-                String moduleName = operateLog.moduleName();
-                OperateTypeEnum operateTypeEnum = operateLog.operateType();
+        try {
+            //这里可以解析返回，假如判断是成功，再做记录，否则不做记录
+            if (obj instanceof ResultVo){
+                ResultVo resultVo = (ResultVo) obj;
+                if (resultVo.isSuccess()){
+                    //入参
+                    Object[] args = pjp.getArgs();
+                    OperateLogDO operateLogDO = new OperateLogDO();
 
-                OperateLogDO operateLogDO = new OperateLogDO();
-                if (operateTypeEnum.equals(OperateTypeEnum.UPDATE)){
-                    //获取更新前的内容(一般都是根据ID来查)
-                    String oldContent = queryOldContent(operateLog, pjp);
-                    LOGGER.info("内管操作成功，开始记录操作日志！当前模块：{} ", moduleName);
-                    //save db
-                    operateLogDO.setModuleName(moduleName);
-                    //粗暴点，就全部记录，但是不够精简，假如希望精简，就用el表达式
-                    String newContent = " 修改后内容：" + JacksonUtils.toJSONString(args);
-                    operateLogDO.setOperDetail("修改前内容：" + oldContent + newContent);
+                    // 获取方法上的OperateLog注解对象
+                    OperateLog operateLog = method.getAnnotation(OperateLog.class);
+                    if (operateLog != null){
+                        //假如是用注解方式
+                        String moduleName = operateLog.moduleName();
+                        OperateTypeEnum operateTypeEnum = operateLog.operateType();
+                        if (operateTypeEnum.equals(OperateTypeEnum.UPDATE)){
+                            //获取更新前的内容(一般都是根据ID来查)
+                            String oldContent = queryOldContent(operateLog, pjp);
+                            LOGGER.info("内管操作成功，开始记录操作日志！当前模块：{} ", moduleName);
+                            //save db
+                            operateLogDO.setModuleName(moduleName);
+                            //粗暴点，就全部记录，但是不够精简，假如希望精简，就用el表达式
+                            String newContent = " 修改后内容：" + JacksonUtils.toJSONString(args);
+                            operateLogDO.setOperDetail("修改前内容：" + oldContent + newContent);
+                        }
+                    }else {
+                        //假如不用注解方式
+                        LOGGER.info("记录操作日志，未使用注解方式，不做处理！");
+
+                        //方法名，例如update
+                        //通常来说，增删查改，一个方法就够了，不需要重载（可以按照规范，将它改成不是重载的方法）
+                        String methodName = method.getName();
+                        String declaringClassName = method.getDeclaringClass().getName();
+                        //通过方法名和类名找到对应的 查询方法名和要调用的bean名 TODO
+                        operateLogDO.setOperDetail("修改内容：" + JacksonUtils.toJSONString(args));
+
+                    }
+                    saveOperateLog(operateLogDO);
+
+                }else {
+                    //操作不成功，不做记录
                 }
-                LOGGER.info("记录操作日志入库！内容：{} ", operateLogDO);
 
-            }else {
-                //操作不成功，不做记录
             }
-
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
+
         return obj;
+    }
+
+    private void saveOperateLog(OperateLogDO operateLogDO) {
+
+        LOGGER.info("记录操作日志入库！内容：{} ", operateLogDO);
     }
 
     private String queryOldContent(OperateLog operateLog, JoinPoint joinPoint) {

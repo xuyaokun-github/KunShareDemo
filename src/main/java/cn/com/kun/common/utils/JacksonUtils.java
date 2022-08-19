@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,6 +219,84 @@ public class JacksonUtils {
     public static Map<String, Object> toMap(String value) {
         return StringUtils.isNotBlank(value) ? toMap(value, () -> null) : null;
     }
+
+    /**
+     * 支持value中有多余的未转义的双引号（简而言之，支持非法的json串）
+     * @param value
+     * @return
+     */
+    public static Map<String, Object> toMapSupportSpecialChar(String value) {
+
+        Map<String, Object> res = null;
+        String source = value;
+        while (true){
+            try {
+                //字符串转为Java对象
+                return mapper.readValue(source, LinkedHashMap.class);
+            } catch (Throwable e) {
+                if (e instanceof com.fasterxml.jackson.core.JsonParseException){
+                    String errorMsg = e.getMessage();
+                    boolean isDoubleQuotesParseException = errorMsg.contains("(code 34)): was expecting comma to separate Object entries");
+                    if (isDoubleQuotesParseException && errorMsg.contains("line: 1")){
+                        //假如是出现在第一行，才做处理，有时候双引号可能会出现在第二行，这样的处理就会比较复杂，先不考虑这种情况
+                        log.warn("出现双引号解析异常，进行替换处理");
+                        //替换有问题的双引号（多余的双引号，改成单引号）
+                        source = replaceForDoubleQuotes(source);
+                        continue;
+                    }
+
+                }
+
+            }
+            break;
+        }
+
+        return res;
+    }
+
+    private static String replaceForDoubleQuotes(String source) {
+
+        char[] charArr = source.toCharArray();
+        List<Integer> extraDoubleQuotesIndexList = new ArrayList<>();
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < charArr.length; i++) {
+            if (Integer.valueOf(charArr[i]) == Integer.valueOf((":".charAt(0)))){
+                //识别到:
+                //只识别value部分（默认key部分是合法的，所以不处理key部分）
+                indexList = new ArrayList<>();
+            }
+
+            if (Integer.valueOf(charArr[i]) == 34){
+                //识别到双引号
+                indexList.add(i);
+            }
+
+            if (Integer.valueOf(charArr[i]) == Integer.valueOf(",".charAt(0))
+                || Integer.valueOf(charArr[i]) == Integer.valueOf("}".charAt(0))){
+                //开始校验indexList，是不是大于2
+                //大于2的，都是问题字符
+                if (indexList.size() > 2){
+                    //保留第一个和最后一个，其他的多余的双引号
+                    indexList.remove(0);
+                    indexList.remove(indexList.size()-1);
+                    extraDoubleQuotesIndexList.addAll(indexList);
+                }
+            }
+
+        }
+
+        //替换双引号字符，改成单引号
+        if (extraDoubleQuotesIndexList.size() > 0){
+            StringBuilder builder = new StringBuilder(source);
+            for (Integer index : extraDoubleQuotesIndexList){
+                builder.setCharAt(index, "'".charAt(0));
+            }
+            return builder.toString();
+        }
+
+        return source;
+    }
+
 
     public static Map<String, Object> toMap(Object value) {
         return value != null ? toMap(value, () -> null) : null;
