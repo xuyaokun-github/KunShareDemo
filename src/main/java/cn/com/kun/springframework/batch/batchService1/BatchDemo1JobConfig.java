@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -55,7 +55,7 @@ public class BatchDemo1JobConfig {
      */
     @Bean
     public Job myFirstJob(MyFirstBatchJobListener listener, MyStepExecutionListener myStepExecutionListener) {
-        return jobBuilderFactory.get("importUserJob")
+        return jobBuilderFactory.get("myFirstJob")
                 .incrementer(new RunIdIncrementer()) //每次运行的ID生成器
                 .listener(listener) //指定使用的监听器
                 .flow(myFirstStep(myStepExecutionListener)) //指定使用的步骤
@@ -70,7 +70,7 @@ public class BatchDemo1JobConfig {
          */
         return stepBuilderFactory.get("importStep")
 //                .<UserFileItem, User>chunk(5000)
-                .<UserFileItem, User>chunk(100)
+                .<UserFileItem, User>chunk(3)
                 .reader(reader(null)) //这里为了避免编译报错，需要传个null
                 .processor(processor(null)) //这里为了避免编译报错，需要传个null
 //                .writer(myBatisBatchItemWriter()) //写DB
@@ -93,9 +93,9 @@ public class BatchDemo1JobConfig {
 //        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt"));
         //大文件，每行1M
 //        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-oneline-1m.txt"));
-        reader.setResource(new FileSystemResource(sourceFilePath));
+//        reader.setResource(new FileSystemResource(sourceFilePath));
         //读取classpath下的文件
-//        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
+        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
         reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
             setLineTokenizer(new DelimitedLineTokenizer("|") {{
                 setNames(new String[]{"uid", "tag", "type"});

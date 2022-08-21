@@ -1,7 +1,9 @@
 package cn.com.kun.springframework.batch.config;
 
 
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
@@ -18,6 +20,9 @@ public class EnableBatchConfig {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    JobRegistry jobRegistry;
 
     //自定义JobLauncher
     @Bean
@@ -36,6 +41,13 @@ public class EnableBatchConfig {
         taskExecutor.setQueueCapacity(0);
         taskExecutor.setThreadNamePrefix("jobLauncherTaskExecutor-Thread-");
         return taskExecutor;
+    }
+
+    @Bean
+    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
+        JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
+        postProcessor.setJobRegistry(jobRegistry);
+        return postProcessor;
     }
 
 

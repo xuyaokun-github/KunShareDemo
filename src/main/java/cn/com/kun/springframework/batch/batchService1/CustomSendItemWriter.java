@@ -1,6 +1,7 @@
 package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.springframework.batch.common.BatchProgressRateCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +24,14 @@ public class CustomSendItemWriter implements ItemWriter<User> {
     public void write(List<? extends User> items) throws Exception {
 
         String jobInstanceId = String.valueOf(stepExecution.getJobExecution().getJobInstance().getInstanceId());
-//        for(User user : items){
-//            LOGGER.info("写操作阶段处理：{}", JacksonUtils.toJSONString(user));
-//        }
+        for(User user : items){
+            LOGGER.info("写操作阶段处理：{}", JacksonUtils.toJSONString(user));
+        }
 
         //并行流
-        items.stream().parallel().forEach(item->{
+//        items.stream().parallel().forEach(item->{
 //            LOGGER.info("写操作阶段处理：{}", JacksonUtils.toJSONString(item));
-        });
+//        });
 
         //这里拿到的一个chunk的总条数
         //如何输出总条数呢？

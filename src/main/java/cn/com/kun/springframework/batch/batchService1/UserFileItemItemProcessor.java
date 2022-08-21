@@ -54,6 +54,17 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
          */
 //        return null;
 
+        if(userFileItem.getUid() == 6){
+            //模拟一个停止异常（主动停止任务）
+            return null;
+        }
+
+        if(userFileItem.getUid() == 11){
+            //模拟一个停止异常（主动停止任务）
+            throw new RuntimeException("任务主动停止");
+        }
+
+
         return user;
     }
 
