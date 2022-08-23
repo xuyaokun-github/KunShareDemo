@@ -5,7 +5,9 @@ import cn.com.kun.springframework.batch.common.SimpleStopHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
@@ -13,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DeadlockLoserDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 批处理测试控制器
@@ -27,6 +31,13 @@ import java.util.List;
 public class BatchDemoController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BatchDemoController.class);
+
+    @Autowired
+    private JobOperator jobOperator;
+
+    @Autowired
+    private JobExplorer jobExplorer;
+
 
     @Autowired
     @Qualifier("myFirstJob")
@@ -57,14 +68,14 @@ public class BatchDemoController {
     @GetMapping("/testBatchJob1")
     public String testBatch() throws Exception {
 
-        SimpleStopHelper.removeStopFlag("importUserJob");
+        SimpleStopHelper.removeStopFlag("myFirstJob");
         /*
             可以用手动的方式，触发Job运行
          */
         //组织自定义参数，参数可以给读写操作去使用
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
-                .addString("jobName", "importUserJob")
+                .addString("jobName", "myFirstJob")
                 .addString("sourceFilePath", "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt")
                 .toJobParameters();
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
@@ -79,7 +90,7 @@ public class BatchDemoController {
     @GetMapping("/testBatchJob1-more")
     public String testBatchJob1More() throws Exception {
 
-        SimpleStopHelper.removeStopFlag("importUserJob");
+        SimpleStopHelper.removeStopFlag("myFirstJob");
 
         for (int i = 0; i < 10; i++) {
             int finalI = i;
@@ -87,7 +98,7 @@ public class BatchDemoController {
                 //组织自定义参数，参数可以给读写操作去使用
                 JobParameters jobParameters = new JobParametersBuilder()
                         .addLong("time", System.currentTimeMillis())
-                        .addString("jobName", "importUserJob")
+                        .addString("jobName", "myFirstJob")
                         .addString("sourceFilePath", "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-" + finalI + ".txt")
                         .toJobParameters();
                 JobExecution execution = null;
@@ -116,7 +127,7 @@ public class BatchDemoController {
                         if(e instanceof DeadlockLoserDataAccessException){
                             //
                             if(e.getMessage().contains("Deadlock found when trying to get lock")){
-                                LOGGER.info("任务[{}]出现死锁异常,准备重试!", "importUserJob");
+                                LOGGER.info("任务[{}]出现死锁异常,准备重试!", "myFirstJob");
                                 try {
                                     Thread.sleep(100);
                                 } catch (InterruptedException e1) {
@@ -141,7 +152,7 @@ public class BatchDemoController {
     @GetMapping("/testStopBatchJob1")
     public String testStopBatchJob1() throws Exception{
 
-        SimpleStopHelper.markStop("importUserJob");
+        SimpleStopHelper.markStop("myFirstJob");
         return "success";
     }
 
@@ -247,5 +258,34 @@ public class BatchDemoController {
         System.out.println(execution.toString());
         return "success";
     }
+
+    @GetMapping("/testRestartJob")
+    public String testRestartJob() throws Exception {
+
+
+        Set<JobExecution> executionSet = jobExplorer.findRunningJobExecutions("myFirstJob");
+
+        //job instanceId
+//        jobExplorer.getJobInstance((long) 888);
+
+        //执行ID
+//        jobOperator.restart(999);
+        return "success";
+    }
+
+    @GetMapping("/testRestartJobByExecutionId")
+    public String testRestartJobByExecutionId(@RequestParam long executionId) throws Exception {
+
+
+        Set<JobExecution> executionSet = jobExplorer.findRunningJobExecutions("myFirstJob");
+
+        //job instanceId
+//        jobExplorer.getJobInstance((long) 888);
+
+        //执行ID
+        jobOperator.restart(executionId);
+        return "success";
+    }
+
 
 }
