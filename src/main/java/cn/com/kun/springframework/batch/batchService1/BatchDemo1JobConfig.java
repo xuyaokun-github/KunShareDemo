@@ -1,6 +1,8 @@
 package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.bean.entity.User;
+import cn.com.kun.springframework.batch.common.BatchRateLimitDynamicCheckScheduler;
+import cn.com.kun.springframework.batch.common.JobRateLimitQueryFunction;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.batch.core.Job;
@@ -10,8 +12,8 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -83,10 +85,11 @@ public class BatchDemo1JobConfig {
     //定义一个读操作
     @Bean
     @StepScope
-    public FlatFileItemReader<UserFileItem> reader(@Value("#{jobParameters[sourceFilePath]}") String sourceFilePath) {
+    public ItemStreamReader<UserFileItem> reader(@Value("#{jobParameters[sourceFilePath]}") String sourceFilePath) {
 
         //创建FlatFileItemReader
-        FlatFileItemReader<UserFileItem> reader = new FlatFileItemReader<>();
+        UserFileItemReader reader = new UserFileItemReader();
+        reader.setJobName("myFirstJob");
 //        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-middle-file.txt"));
         //读取文件系统下的文件，通常用绝对路径(测试大文件OOM问题)
         //大文件，每行5M
@@ -95,7 +98,8 @@ public class BatchDemo1JobConfig {
 //        reader.setResource(new FileSystemResource("D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file-oneline-1m.txt"));
 //        reader.setResource(new FileSystemResource(sourceFilePath));
         //读取classpath下的文件
-        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
+//        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne.txt"));
+        reader.setResource(new ClassPathResource("demoData/batch/batchDemoOne2.txt"));
         reader.setLineMapper(new DefaultLineMapper<UserFileItem>() {{
             setLineTokenizer(new DelimitedLineTokenizer("|") {{
                 setNames(new String[]{"uid", "tag", "type"});
@@ -151,4 +155,15 @@ public class BatchDemo1JobConfig {
         executor.setQueueCapacity(20);
         return executor;
     }
+
+
+    //开启批处理动态限流功能
+    @Bean
+    public BatchRateLimitDynamicCheckScheduler batchRateLimitDynamicCheckScheduler(JobRateLimitQueryFunction jobRateLimitQueryFunction) {
+
+        BatchRateLimitDynamicCheckScheduler scheduler = new BatchRateLimitDynamicCheckScheduler(jobRateLimitQueryFunction);
+        return scheduler;
+    }
+
+
 }

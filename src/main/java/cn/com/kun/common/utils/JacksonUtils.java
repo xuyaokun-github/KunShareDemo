@@ -229,6 +229,7 @@ public class JacksonUtils {
 
         Map<String, Object> res = null;
         String source = value;
+        int loopCount = 100;//非法字符出现的次数，默认支持最多100次，超过100次不做处理
         while (true){
             try {
                 //字符串转为Java对象
@@ -236,17 +237,20 @@ public class JacksonUtils {
             } catch (Throwable e) {
                 if (e instanceof com.fasterxml.jackson.core.JsonParseException){
                     String errorMsg = e.getMessage();
-                    boolean isDoubleQuotesParseException = errorMsg.contains("(code 34)): was expecting comma to separate Object entries");
+                    //有些时候，堆栈不一定含有关键字code 34
+//                    boolean isDoubleQuotesParseException = errorMsg.contains("(code 34)): was expecting comma to separate Object entries");
+                    boolean isDoubleQuotesParseException = errorMsg.contains("was expecting comma to separate Object entries");
                     if (isDoubleQuotesParseException && errorMsg.contains("line: 1")){
                         //假如是出现在第一行，才做处理，有时候双引号可能会出现在第二行，这样的处理就会比较复杂，先不考虑这种情况
-                        log.warn("出现双引号解析异常，进行替换处理");
+                        log.warn("出现双引号解析异常，进行替换处理,源串：{}", value);
                         //替换有问题的双引号（多余的双引号，改成单引号）
                         source = replaceForDoubleQuotes(source);
-                        continue;
+                        //这里有可能陷入死循环，设置一个固定的循环次数，到次数不再continue
+                        if (loopCount-- > 0){
+                            continue;
+                        }
                     }
-
                 }
-
             }
             break;
         }
@@ -260,19 +264,17 @@ public class JacksonUtils {
         List<Integer> extraDoubleQuotesIndexList = new ArrayList<>();
         List<Integer> indexList = new ArrayList<>();
         for (int i = 0; i < charArr.length; i++) {
-            if (Integer.valueOf(charArr[i]) == Integer.valueOf((":".charAt(0)))){
+            if (Integer.valueOf(charArr[i]).equals(Integer.valueOf((":".charAt(0))))){
                 //识别到:
                 //只识别value部分（默认key部分是合法的，所以不处理key部分）
                 indexList = new ArrayList<>();
             }
-
             if (Integer.valueOf(charArr[i]) == 34){
                 //识别到双引号
                 indexList.add(i);
             }
-
-            if (Integer.valueOf(charArr[i]) == Integer.valueOf(",".charAt(0))
-                || Integer.valueOf(charArr[i]) == Integer.valueOf("}".charAt(0))){
+            if (Integer.valueOf(charArr[i]).equals(Integer.valueOf(",".charAt(0)))
+                || Integer.valueOf(charArr[i]).equals(Integer.valueOf("}".charAt(0)))){
                 //开始校验indexList，是不是大于2
                 //大于2的，都是问题字符
                 if (indexList.size() > 2){

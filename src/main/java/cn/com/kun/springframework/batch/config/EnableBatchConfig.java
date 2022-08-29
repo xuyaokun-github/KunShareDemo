@@ -22,7 +22,7 @@ public class EnableBatchConfig {
     private JobRepository jobRepository;
 
     @Autowired
-    JobRegistry jobRegistry;
+    private JobRegistry jobRegistry;
 
     //自定义JobLauncher
     @Bean
@@ -43,6 +43,10 @@ public class EnableBatchConfig {
         return taskExecutor;
     }
 
+    /**
+     * 任务续跑依赖该定义（spring-batch框架依赖，需要手动添加进来）
+     * @return
+     */
     @Bean
     public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
         JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();

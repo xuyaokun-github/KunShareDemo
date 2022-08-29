@@ -1,7 +1,6 @@
 package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.springframework.batch.common.SimpleStopHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -28,10 +27,11 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
 
         //检查是否需要停止(测试并发问题时使用)
         //根据jobName来获取标志，假如识别到停止标志，就退出
-        if (SimpleStopHelper.isNeedStop(jobName)){
-            LOGGER.info("识别到停止标志，主动结束Job[{}]", jobName);
-            throw new RuntimeException("Job主动停止");
-        }
+//        if (SimpleStopHelper.isNeedStop(jobName)){
+//            LOGGER.info("识别到停止标志，主动结束Job[{}]", jobName);
+//            LOGGER.info("当前process阶段userFileItem：{}", userFileItem.getUid());
+//            throw new RuntimeException("Job主动停止");
+//        }
 
         //中间处理器
         /*
@@ -54,15 +54,14 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
          */
 //        return null;
 
-        if(userFileItem.getUid() == 6){
-            //模拟一个停止异常（主动停止任务）
-            return null;
-        }
+//        if(userFileItem.getUid() == 6){
+//            return null;
+//        }
 
-        if(userFileItem.getUid() == 11){
-            //模拟一个停止异常（主动停止任务）
-            throw new RuntimeException("任务主动停止");
-        }
+//        if(userFileItem.getUid() == 11){
+//            //模拟一个停止异常（主动停止任务）
+//            throw new RuntimeException("任务主动停止");
+//        }
 
 
         return user;

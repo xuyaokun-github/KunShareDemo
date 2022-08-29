@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 public class MakeTestDataHelper {
 
@@ -24,7 +25,22 @@ public class MakeTestDataHelper {
 //        buildMiddleFile();
 
         //生成一个大文件
-        buildBigFile();
+//        buildBigFile();
+
+        buildFileForMyFirstJob();
+    }
+
+    private static void buildFileForMyFirstJob() {
+
+        //生成一个小文件
+        //111|aaa|11
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 200; i++) {
+
+            builder.append(i + "|" + UUID.randomUUID().toString() + "|" + i);
+            builder.append("\n");
+        }
+        System.out.println(builder.toString());
     }
 
     private static void buildMiddleFile() throws IOException {

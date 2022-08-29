@@ -1,13 +1,14 @@
 package cn.com.kun.springframework.batch;
 
 import cn.com.kun.common.utils.SpringContextUtil;
+import cn.com.kun.springframework.batch.common.BatchJobOperator;
+import cn.com.kun.springframework.batch.common.BatchRateLimitDynamicCheckScheduler;
+import cn.com.kun.springframework.batch.common.BatchRateLimiterHolder;
 import cn.com.kun.springframework.batch.common.SimpleStopHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 /**
  * 批处理测试控制器
@@ -32,12 +33,9 @@ public class BatchDemoController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BatchDemoController.class);
 
-    @Autowired
-    private JobOperator jobOperator;
 
     @Autowired
-    private JobExplorer jobExplorer;
-
+    BatchJobOperator batchJobOperator;
 
     @Autowired
     @Qualifier("myFirstJob")
@@ -61,23 +59,32 @@ public class BatchDemoController {
     @Qualifier("myJob5")
     Job myJob5;
 
+    @Autowired
+    BatchRateLimitDynamicCheckScheduler batchRateLimitDynamicCheckScheduler;
+
     /**
      * 测试job1
      * @return
      */
     @GetMapping("/testBatchJob1")
-    public String testBatch() throws Exception {
+    public String testBatchJob1() throws Exception {
 
         SimpleStopHelper.removeStopFlag("myFirstJob");
         /*
             可以用手动的方式，触发Job运行
          */
+        String jobId = UUID.randomUUID().toString();
         //组织自定义参数，参数可以给读写操作去使用
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .addString("jobName", "myFirstJob")
                 .addString("sourceFilePath", "D:\\home\\kunghsu\\big-file-test\\batchDemoOne-big-file.txt")
+                .addString("jobId", jobId)
                 .toJobParameters();
+
+        //注册限流器
+        BatchRateLimiterHolder.registerRateLimiter(jobId, 1);
+
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
         System.out.println(execution.toString());
         return "success";
@@ -153,6 +160,13 @@ public class BatchDemoController {
     public String testStopBatchJob1() throws Exception{
 
         SimpleStopHelper.markStop("myFirstJob");
+        return "success";
+    }
+
+    @GetMapping("/testRemoveBatchJob1StopFlag")
+    public String testRemoveBatchJob1StopFlag() throws Exception{
+
+        SimpleStopHelper.removeStopFlag("myFirstJob");
         return "success";
     }
 
@@ -263,7 +277,7 @@ public class BatchDemoController {
     public String testRestartJob() throws Exception {
 
 
-        Set<JobExecution> executionSet = jobExplorer.findRunningJobExecutions("myFirstJob");
+//        Set<JobExecution> executionSet = jobExplorer.findRunningJobExecutions("myFirstJob");
 
         //job instanceId
 //        jobExplorer.getJobInstance((long) 888);
@@ -276,14 +290,10 @@ public class BatchDemoController {
     @GetMapping("/testRestartJobByExecutionId")
     public String testRestartJobByExecutionId(@RequestParam long executionId) throws Exception {
 
+        //续跑前，先清除停止标记
+        SimpleStopHelper.removeStopFlag("myFirstJob");
+        batchJobOperator.restart(executionId);
 
-        Set<JobExecution> executionSet = jobExplorer.findRunningJobExecutions("myFirstJob");
-
-        //job instanceId
-//        jobExplorer.getJobInstance((long) 888);
-
-        //执行ID
-        jobOperator.restart(executionId);
         return "success";
     }
 

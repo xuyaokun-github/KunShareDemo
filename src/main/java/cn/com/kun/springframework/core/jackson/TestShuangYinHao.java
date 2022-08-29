@@ -17,7 +17,9 @@ public class TestShuangYinHao {
     public static void main(String[] args) {
 
         //假如value中有双引号，会报错 需要用上 JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS
-        String source = "{\"a1\":\"v1\",\"a3\":\"v3kkkk\"\"\",\"a2\":\"v2\"}";
+//        String source = "{\"a1\":\"v1\",\"a3\":\"v3kkkk\"\"\",\"a2\":\"v2\"}";
+        String source = "{\"a1\":\"v1\",\"a3\":\"v3kkkk\"888888\"\",\"a2\":\"v2\"}";
+
         //假如要传双引号，这种是正确的
 //        String source = "{\"a1\":\"v1\",\"a3\":\"v3kkkk\\\"\\\"\",\"a2\":\"v2\"}";
 
