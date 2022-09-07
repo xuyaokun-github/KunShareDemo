@@ -34,10 +34,13 @@ public class RedoDemoService {
         RedoTaskRegisterFactory.registerRedoTaskCallback(redoTask.getRedoTaskId(), new RedoTaskCallback() {
             @Override
             public RedoResult redo(RedoReqParam redoReqParam) {
+                //将参数反序列化，转成业务方法期待的形式
                 Map<String, Object> map = redoReqParam.getParams();
                 String name = (String) map.get("name");
                 String desc = (String) map.get("desc");
+                //具体的业务方法
                 doService(name, desc);
+                //返回一个状态，告诉补偿组件，由补偿组件判断，继续重试还是标记为Done
                 return RedoResult.BIZ_ERROR;
 //                return RedoResult.SUCCESS;
             }
@@ -45,6 +48,9 @@ public class RedoDemoService {
 
     }
 
+    /**
+     * 这是一个普通的业务方法
+     */
     public void test1(){
 
         RedoReqParam redoReqParam = new RedoReqParam();
@@ -53,6 +59,7 @@ public class RedoDemoService {
         map.put("desc", "kunghsu");
         redoReqParam.setParams(map);
 
+        //出现需要补偿的场景，例如超时、限流等
         //调用组件提供出来的工具类方法
         redoManager.addRedoTask(redoTaskIdOne, JacksonUtils.toJSONString(redoReqParam));
     }
