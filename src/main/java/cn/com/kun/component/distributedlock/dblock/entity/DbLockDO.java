@@ -1,6 +1,9 @@
-package cn.com.kun.component.distributedlock.dblock;
+package cn.com.kun.component.distributedlock.dblock.entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+//import java.sql.Date;
 
 public class DbLockDO {
 
@@ -12,6 +15,7 @@ public class DbLockDO {
 
     private String requestId;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date requestTime;
 
     public Long getId() {

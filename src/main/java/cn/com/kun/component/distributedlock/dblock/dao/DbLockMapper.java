@@ -1,5 +1,6 @@
-package cn.com.kun.component.distributedlock.dblock;
+package cn.com.kun.component.distributedlock.dblock.dao;
 
+import cn.com.kun.component.distributedlock.dblock.entity.DbLockDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -7,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.Map;
 
 /**
+ * 不建议用Mybatis作为组件包里的Dao层实现
  * tbl_database_lock
  */
 @Mapper

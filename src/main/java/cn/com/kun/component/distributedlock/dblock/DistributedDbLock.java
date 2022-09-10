@@ -1,6 +1,8 @@
 package cn.com.kun.component.distributedlock.dblock;
 
 import cn.com.kun.component.distributedlock.DistributedLock;
+import cn.com.kun.component.distributedlock.dblock.dao.DbLockDaoDelagate;
+import cn.com.kun.component.distributedlock.dblock.entity.DbLockDO;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
@@ -20,8 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+//import java.sql.Date;
+
 /**
- * 分布式数据库数据库
+ * 分布式数据库锁
+ *
  * author:xuyaokun_kzx
  * date:2022/4/9
  * desc:
@@ -34,17 +39,25 @@ public class DistributedDbLock implements DistributedLock {
     @Autowired
     private ApplicationContext applicationContext;
 
+//    @Autowired
+//    private DbLockMapper dbLockMapper;
+
     @Autowired
-    private DbLockMapper dbLockMapper;
+    private DbLockDaoDelagate dbLockMapper;
 
     private ThreadLocal<String> requestIdThreadLocal = new ThreadLocal<String>();
 
+    /**
+     * 时间轮
+     */
     private HashedWheelTimer hashedWheelTimer = new HashedWheelTimer(100, TimeUnit.MILLISECONDS);
 
     private static final ConcurrentMap<String, Timeout> TIMEOUT_MAP = new ConcurrentHashMap<>();
 
     @Override
     public void lockInterruptibly(String resourceName) throws InterruptedException {
+
+        //TODO 支持中断
 
     }
 
@@ -90,10 +103,11 @@ public class DistributedDbLock implements DistributedLock {
             if (getLockFlag){
                 //更新DB
                 dbLockDO.setRequestId(requestId);
-                dbLockDO.setRequestTime(new Date());
+                dbLockDO.setRequestTime(new java.util.Date());
+//                dbLockDO.setRequestTime(new Date(new java.util.Date().getTime()));
                 int res = dbLockMapper.updateRequestInfo(dbLockDO);
                 if (res > 0){
-                    //抢锁成功，启动时间轮续锁 TODO
+                    //抢锁成功，启动时间轮续锁
                     startLockRenewWatchDog(resourceName, requestId);
 //                    LOGGER.info("抢锁成功启动时间轮。resource：{}, 当前线程{}", resourceName, currentThreadName);
                 }else {
@@ -110,7 +124,6 @@ public class DistributedDbLock implements DistributedLock {
     @Override
     public boolean tryLock(String resourceName, long time, TimeUnit unit) throws InterruptedException {
 
-        //TODO
         long millis = unit.toMillis(time);
         long start = System.currentTimeMillis();
         while (true){
@@ -125,8 +138,8 @@ public class DistributedDbLock implements DistributedLock {
 
     /**
      * 上锁（阻塞性）
-     * 这里加事务，有可能事务会超时，抛出等锁超时异常使主流程结束
-     * 没有加事务的注解的必要，若选择了加则必须try住等锁超时异常
+     * 这里加事务注解，有可能事务会超时，抛出“等锁超时”异常使主流程结束
+     * 这里为了保证阻塞性，无加事务注解的必要，若选择了加事务注解则必须try住“等锁超时”异常
      */
 //    @Transactional
     @Override
@@ -195,7 +208,8 @@ public class DistributedDbLock implements DistributedLock {
                     }
                     //假如锁的值仍等于当前线程设置的值，说明持有锁的线程未发生变化，则续约锁
                     //更新DB
-                    dbLockDO.setRequestTime(new Date());
+                    dbLockDO.setRequestTime(new java.util.Date());
+//                    dbLockDO.setRequestTime(new Date(new java.util.Date().getTime()));
                     int res = dbLockMapper.updateRequestInfo(dbLockDO);
                     if(res > 0){
                         //然后启动一个新的TimeTask
@@ -240,7 +254,7 @@ public class DistributedDbLock implements DistributedLock {
         dbLockDO.setResource(resourceName);
         int res = dbLockMapper.resetRequestInfo(dbLockDO);
         if (res == 0){
-            LOGGER.info("解锁失败");
+            LOGGER.info("解锁失败，resourceName：{} requestId:{}", resourceName, requestId);
         }
     }
 
