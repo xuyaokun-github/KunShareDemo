@@ -9,4 +9,4 @@ CREATE TABLE `tbl_database_lock` (
   UNIQUE KEY `uiq_idx_resource` (`resource`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='数据库分布式悲观锁表';
 
-INSERT INTO `test`.`tbl_database_lock` (`id`, `resource`, `description`, `request_id`, `request_time`) VALUES ('1', 'cn.com.kun.service.distributedlock.DBLockDemoService.test', '', '', NULL);
+INSERT INTO `test`.`tbl_database_lock` (`id`, `resource`, `description`, `request_id`, `request_time`) VALUES ('1', 'cn.com.kun.service.distributedlock.dblock.DBLockDemoService.test', '', '', NULL);

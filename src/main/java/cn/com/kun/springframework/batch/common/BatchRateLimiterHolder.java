@@ -86,7 +86,7 @@ public class BatchRateLimiterHolder {
     public static void adjust(String jobId, double newQps) {
 
         RateLimiter rateLimiter = jobRateLimiterMap.get(jobId);
-        if (rateLimiter != null && rateLimiter.getRate() != newQps && newQps > 0){
+        if (rateLimiter != null && !Double.valueOf(rateLimiter.getRate()).equals(Double.valueOf(newQps)) && newQps > 0){
             //调整限流值
             rateLimiter.setRate(newQps);
         }else {

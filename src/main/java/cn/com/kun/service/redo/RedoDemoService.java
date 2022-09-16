@@ -16,6 +16,12 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 模拟补偿组件 使用方
+ *
+ * author:xuyaokun_kzx
+ * desc:
+*/
 @Service
 public class RedoDemoService {
 
