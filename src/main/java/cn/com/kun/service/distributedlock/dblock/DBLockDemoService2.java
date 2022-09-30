@@ -40,7 +40,7 @@ public class DBLockDemoService2 {
             while (true){
                 try {
                     //
-                    Thread.sleep(15000);
+                    Thread.sleep(3000);
 //                    redisTemplate.opsForList().leftPush("dblock-demo-redis-key-list", UUID.randomUUID().toString());
                     redisTemplate.opsForValue().set("dblock-demo-redis-key-string", UUID.randomUUID().toString());
                     //生产，计数器加一
@@ -57,7 +57,7 @@ public class DBLockDemoService2 {
                 while (true){
                     try {
                         //
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
 
 //                        doConsume();
                         doConsumeByLock();

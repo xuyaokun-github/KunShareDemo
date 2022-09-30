@@ -247,6 +247,8 @@ public class DistributedDbLock implements DistributedLock {
                 }
                 timeout.cancel();
             }
+            //必须移除时间轮任务对象
+            TIMEOUT_MAP.remove(requestId);
         }
 
         DbLockDO dbLockDO = new DbLockDO();
@@ -256,6 +258,7 @@ public class DistributedDbLock implements DistributedLock {
         if (res == 0){
             LOGGER.info("解锁失败，resourceName：{} requestId:{}", resourceName, requestId);
         }
+        requestIdThreadLocal.remove();
     }
 
 
