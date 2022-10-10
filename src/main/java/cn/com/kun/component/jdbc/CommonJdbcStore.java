@@ -153,6 +153,7 @@ public class CommonJdbcStore {
             if (isExitColumn(resultSet, fieldName)) {
                 //假如结果集中存在该列，则获取具体的值
                 if (fieldclazz.isAssignableFrom(java.util.Date.class)){
+                    //注意 1.1.13的DruidPooledResultSet不支持getObject方法
                     java.sql.Timestamp timestamp = (java.sql.Timestamp) resultSet.getObject(fieldName, java.sql.Timestamp.class);
                     if (timestamp != null){
                         object = (A) new java.util.Date(timestamp.getTime());

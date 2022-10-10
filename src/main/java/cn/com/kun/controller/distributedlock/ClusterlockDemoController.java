@@ -1,9 +1,9 @@
 package cn.com.kun.controller.distributedlock;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.service.distributedlock.DBClusterLockDemoService;
-import cn.com.kun.service.distributedlock.DBClusterLockDemoService2;
-import cn.com.kun.service.distributedlock.DBClusterLockDemoService3;
+import cn.com.kun.service.distributedlock.dblockVersion1.DBClusterLockDemoService;
+import cn.com.kun.service.distributedlock.dblockVersion1.DBClusterLockDemoService2;
+import cn.com.kun.service.distributedlock.dblockVersion1.DBClusterLockDemoService3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

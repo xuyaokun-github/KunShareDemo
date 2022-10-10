@@ -34,5 +34,8 @@ public class RedisCounter {
         return redisTemplate.opsForValue().increment(key, num);
     }
 
+    public Long get(String key){
 
+        return (Long) redisTemplate.opsForValue().get(key);
+    }
 }

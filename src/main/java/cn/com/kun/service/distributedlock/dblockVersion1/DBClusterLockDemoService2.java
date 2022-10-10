@@ -1,4 +1,4 @@
-package cn.com.kun.service.distributedlock;
+package cn.com.kun.service.distributedlock.dblockVersion1;
 
 import cn.com.kun.bean.entity.Student;
 import cn.com.kun.component.distributedlock.dblockVersion1.DBClusterLock;

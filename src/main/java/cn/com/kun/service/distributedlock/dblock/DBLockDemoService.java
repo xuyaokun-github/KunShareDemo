@@ -1,4 +1,4 @@
-package cn.com.kun.service.distributedlock;
+package cn.com.kun.service.distributedlock.dblock;
 
 import cn.com.kun.component.distributedlock.dblock.DBLock;
 import cn.com.kun.component.distributedlock.dblock.DistributedDbLock;
@@ -12,7 +12,7 @@ public class DBLockDemoService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DBLockDemoService.class);
 
-    String resourceName = "cn.com.kun.service.distributedlock.DBLockDemoService.test";
+    String resourceName = "cn.com.kun.service.distributedlock.dblock.DBLockDemoService.test";
 
     @Autowired
     DistributedDbLock dbClusterLockHandler;
@@ -46,7 +46,7 @@ public class DBLockDemoService {
      */
     public void testRunLongTimeJob() throws InterruptedException {
 
-        String resourceName = "cn.com.kun.service.distributedlock.DBLockDemoService.test";
+        String resourceName = "cn.com.kun.service.distributedlock.dblock.DBLockDemoService.test";
         //上锁
         while (true){
             if (dbClusterLockHandler.tryLock(resourceName)){
@@ -99,7 +99,7 @@ public class DBLockDemoService {
     /**
      * 注解方式
      */
-    @DBLock(resourceName = "cn.com.kun.service.distributedlock.DBLockDemoService.test")
+    @DBLock(resourceName = "cn.com.kun.service.distributedlock.dblock.DBLockDemoService.test")
     public void testRunFastJobByAnnotation() {
         LOGGER.info("i am DBLockDemoService 开始执行任务,当前线程：{}", Thread.currentThread().getName());
         try {
@@ -110,7 +110,7 @@ public class DBLockDemoService {
         LOGGER.info("i am DBLockDemoService 任务结束,当前线程：{}", Thread.currentThread().getName());
     }
 
-    @DBLock(resourceName = "cn.com.kun.service.distributedlock.DBLockDemoService.test")
+    @DBLock(resourceName = "cn.com.kun.service.distributedlock.dblock.DBLockDemoService.test")
     public void testRunLongTimeJobByAnnotation() {
         LOGGER.info("i am DBLockDemoService 开始执行任务,当前线程：{}", Thread.currentThread().getName());
         try {

@@ -1,4 +1,4 @@
-package cn.com.kun.service.distributedlock;
+package cn.com.kun.service.distributedlock.dblockVersion1;
 
 import cn.com.kun.component.distributedlock.dblockVersion1.DBDistributedLockHandler;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class DBClusterLockDemoService {
 
     public void testRunLongTimeJob() {
 
-        String resourceName = "cn.com.kun.service.distributedlock.DBClusterLockDemoService.testRunLongTimeJob";
+        String resourceName = "cn.com.kun.service.distributedlock.dblockVersion1.DBClusterLockDemoService.testRunLongTimeJob";
         //上锁
         dbClusterLockHandler.lock(resourceName);
         LOGGER.info("i am DBClusterLockDemoService 开始执行任务,当前线程：{}", Thread.currentThread().getName());
