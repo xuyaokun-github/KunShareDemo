@@ -8,8 +8,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 
-
-public class TestExcelForP5 {
+/**
+ * Excel试题改卷工具
+ * 试题模板文件见doc目录
+ *
+ * author:xuyaokun_kzx
+ * date:2022/10/11
+ * desc:
+*/
+public class ExcelExamScoreUtils {
 
     /**
      * POI解析Excel文件内容
