@@ -203,10 +203,12 @@ public class TestExcelForP5 {
             }
 
             //遍历完所有列，开始比对 正确答案和 用户所选答案
-            if (!indexOfZqdaSrting.equals(userChoose.toString())){
+            String userChooseString = userChoose.toString();
+            if (!indexOfZqdaSrting.trim().equals(userChooseString.trim())){
                 errorCount++;
-                System.out.println(String.format("出现错题，正确答案:%s 题干:%s 选项A:%s 选项B:%s 选项C:%s 选项D:%s 选项E:%s 选项F:%s ",
-                        indexOfZqdaSrting, indexOfTgSrting, indexOfXxaSrting, indexOfXxbSrting, indexOfXxcSrting, indexOfXxdSrting, indexOfXxeSrting, indexOfXxfSrting));
+                System.out.println(String.format("出现错题，正确答案:%s 用户选择：%s 题干:%s 选项A:%s 选项B:%s 选项C:%s 选项D:%s 选项E:%s 选项F:%s ",
+                        indexOfZqdaSrting, userChooseString, indexOfTgSrting,
+                        indexOfXxaSrting, indexOfXxbSrting, indexOfXxcSrting, indexOfXxdSrting, indexOfXxeSrting, indexOfXxfSrting));
             }
 
 //            if (i > 10){
