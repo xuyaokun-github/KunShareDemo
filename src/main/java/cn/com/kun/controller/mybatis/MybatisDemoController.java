@@ -15,10 +15,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,7 +44,7 @@ public class MybatisDemoController {
     @Autowired
     private MybatisCursorDemoService mybatisCursorDemoService;
 
-    @RequestMapping("/test")
+    @GetMapping("/test")
     public String test(){
 
         String sql = "select * from tbl_user limit 1";
@@ -64,7 +61,7 @@ public class MybatisDemoController {
         return "kunghsu cn.com.kun.controller.mybatis.MybatisDemoController.test";
     }
 
-    @RequestMapping("/test2")
+    @GetMapping("/test2")
     public String test2(){
 
         List<User> userList = userMapper.query(null);
@@ -75,7 +72,7 @@ public class MybatisDemoController {
      * 测试分页查询
      * @return
      */
-    @RequestMapping("/testPage")
+    @GetMapping("/testPage")
     public String testPage(){
 
         int pageNum = 0;
@@ -87,20 +84,20 @@ public class MybatisDemoController {
         return JacksonUtils.toJSONString(userList);
     }
 
-    @RequestMapping("/testQuery")
+    @GetMapping("/testQuery")
     public String testQuery(@RequestBody UserQueryParam userQueryParam){
         logger.info("参数参数：{}", JacksonUtils.toJSONString(userQueryParam));
         List<User> userList = userMapper.list(userQueryParam);
         return JacksonUtils.toJSONString(userList);
     }
 
-    @RequestMapping("/testCursor")
+    @GetMapping("/testCursor")
     public ResultVo testCursor(){
         return mybatisCursorDemoService.test1();
     }
 
 
-    @RequestMapping("/testConn")
+    @GetMapping("/testConn")
     public ResultVo testConn(){
 
         List<Connection> connectionList = new ArrayList<>();
@@ -114,7 +111,7 @@ public class MybatisDemoController {
         return ResultVo.valueOfSuccess();
     }
 
-    @RequestMapping("/testUpdate")
+    @GetMapping("/testUpdate")
     public ResultVo testUpdate(){
 
         //正确的
@@ -157,7 +154,7 @@ public class MybatisDemoController {
     }
 
 
-    @RequestMapping("/testMoreSqlsession")
+    @GetMapping("/testMoreSqlsession")
     public ResultVo testMoreSqlsession(){
 
         Student student = new Student();
@@ -182,7 +179,7 @@ public class MybatisDemoController {
      * 验证 时间戳精确到什么级别？
      * @return
      */
-    @RequestMapping("/testTime")
+    @GetMapping("/testTime")
     public String testTime(@RequestParam String firstname){
         User userList = userMapper.getUserByFirstname(firstname);
         String str = DateUtils.toStr(userList.getCreateTime(), PATTERN_yyyy_MM_dd_HH_mm_ss_SSS);
