@@ -24,7 +24,7 @@ public class RedissonDemoService {
     private RLock rLock;
 
     @RedissonAutowired
-    private RBucket<String> bucket;
+    private RBucket<String> kunghsuKey;
 
     public void testLock(int count){
         for (int i = 0; i < count; i++) {
@@ -97,9 +97,24 @@ public class RedissonDemoService {
     }
 
 
+    /**
+     * 过期时间调研
+     */
     public void testString(){
-        bucket.set("testString-kunghsu");
-        LOGGER.info(bucket.get());
+
+        RedissonUtil.delete("kunghsuKey");
+        //1.设置一个字符串
+        String first = DateUtils.now();
+        LOGGER.info("===========初次设置：{}", first);
+        kunghsuKey.set(first);
+
+        //2.设置第二次
+        String second = DateUtils.now() + "-second";
+        kunghsuKey.set(second);
+
+        //3.
+        LOGGER.info("===========查询：{}", kunghsuKey.get());
+
     }
 
 }

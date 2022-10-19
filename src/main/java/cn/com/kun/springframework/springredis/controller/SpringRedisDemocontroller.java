@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -204,6 +206,43 @@ public class SpringRedisDemocontroller {
         redisTemplateHelper.set("noticeMsg", "kunghsu");
         String res = (String) redisTemplateHelper.get("noticeMsg");
         LOGGER.info("===========res：{}", res);
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 过期时间调研
+     * 如果用DEL, SET, GETSET会将key对应存储的值替换成新的，命令也会清除掉超时时间
+     *
+     * @return
+     */
+    @RequestMapping(value = "/testString3", method = RequestMethod.GET)
+    public ResultVo testString3(){
+
+        String key = "kunghsu_key";
+        //每次实验前，先删key
+        redisTemplate.delete(key);
+
+        //1.设置一个字符串
+        String first = DateUtils.now();
+        LOGGER.info("===========初次设置：{}", first);
+        redisTemplate.opsForValue().set(key, first, 600, TimeUnit.SECONDS);
+
+        //2.设置第二次
+        String second = DateUtils.now() + "-second";
+//        redisTemplate.opsForValue().set(key, second);//(这个操作相当于设置一个无限制的时间)
+
+        redisTemplate.delete(key);
+        //用lua脚本实现(只更新值，不重置过期时间，继续保留原key的过期时间。假如已过期，则不做任何处理)
+        String script = "local expiretime = redis.call('TTL', KEYS[1]); " +
+                " if expiretime > 0 then redis.call('set', KEYS[1], ARGV[1]);redis.call('EXPIRE', KEYS[1], tonumber(expiretime)) else return 0 end"
+                ;
+        DefaultRedisScript<Object> defaultRedisScript = new DefaultRedisScript<>(script, Object.class);
+        List<String> keys = Arrays.asList(key);
+        Object execute = redisTemplate.execute(defaultRedisScript, keys, second);
+
+        //3.
+        LOGGER.info("===========查询：{}", redisTemplate.opsForValue().get(key));
+
         return ResultVo.valueOfSuccess();
     }
 
