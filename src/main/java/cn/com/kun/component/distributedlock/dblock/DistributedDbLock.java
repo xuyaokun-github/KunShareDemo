@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,8 @@ public class DistributedDbLock implements DistributedLock {
 //    @Autowired
 //    private DbLockMapper dbLockMapper;
 
+    //优先使用JPA的实现
+    @Qualifier("jpaDbLockDaoDelagate")
     @Autowired
     private DbLockDaoDelagate dbLockMapper;
 
