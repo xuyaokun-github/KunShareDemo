@@ -23,7 +23,7 @@ public class SpringTransactionDemoController {
      * @return
      */
     @GetMapping("/test")
-    public ResultVo test(){
+    public ResultVo test() throws Exception {
 
         springTransactionDemoService.method1();
 //        springTransactionDemoService.method2();

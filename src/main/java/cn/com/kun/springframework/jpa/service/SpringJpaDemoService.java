@@ -6,13 +6,13 @@ import cn.com.kun.springframework.jpa.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import javax.annotation.PostConstruct;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -22,6 +22,24 @@ public class SpringJpaDemoService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ApplicationContext context;
+
+    @PostConstruct
+    public void init(){
+
+        /*
+
+         */
+        Map<String, PlatformTransactionManager> beanMap = context.getBeansOfType(PlatformTransactionManager.class);
+        if (beanMap != null){
+            LOGGER.info("容器里PlatformTransactionManager的bean个数：" + beanMap.size());
+            beanMap.forEach((k,v)->{
+                LOGGER.info("===============PlatformTransactionManager beanMap:" + k);
+            });
+        }
+    }
 
     public ResultVo testSave(String s) {
 

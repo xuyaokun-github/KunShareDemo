@@ -7,15 +7,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.sql.SQLException;
+
 @Service
 public class SpringTransactionDemoService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SpringTransactionDemoService.class);
 
-    @Transactional
-    public void method1(){
+    @Transactional(transactionManager = "dataSourceTransactionManager")
+    public void method1() throws Exception {
 
         check();
+        if (true){
+            throw new SQLException();
+        }
     }
 
     public void method2(){

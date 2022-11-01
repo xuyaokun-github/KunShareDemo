@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -17,6 +19,7 @@ public class JedisConfiguration {
 
     @Bean
     public JedisPool jedisPoolConfig() {
+
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(redisConfig.getMaxTotal());
         jedisPoolConfig.setMaxIdle(redisConfig.getMaxIdle());
@@ -36,5 +39,11 @@ public class JedisConfiguration {
         return pool;
     }
 
+    //集群模式 TODO
+    public JedisCluster jedisCluster() {
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
+
+        return null;
+    }
 
 }
