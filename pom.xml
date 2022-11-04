@@ -626,6 +626,13 @@
             <version>1.12</version>
         </dependency>
 
+        <!-- skywalking -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-trace</artifactId>
+            <!-- 和sw的版本一致即可 -->
+            <version>8.8.0</version>
+        </dependency>
 
     </dependencies>
 

@@ -1,0 +1,8 @@
+放到vm options:
+-javaagent:D:\skywalking\apache-skywalking-java-agent-8.8.0\apache-skywalking-java-agent-8.8.0\skywalking-agent\skywalking-agent.jar
+-DSW_AGENT_NAME=kunsharedemo
+-DWS_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
+
+-javaagent:D:\skywalking\apache-skywalking-java-agent-8.8.0\apache-skywalking-java-agent-8.8.0\skywalking-agent\skywalking-agent.jar
+-DSW_AGENT_NAME=kunsharedemo
+-DWS_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
