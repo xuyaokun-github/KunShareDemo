@@ -23,7 +23,8 @@ public class CommonNoTxJdbcStore {
     /**
      * 传入的SQL是已经拼接好的SQL(这样会有SQL注入的风险)
      *
-     * @param sql
+     * @param sql (注意SQL的value部分，特殊字符可能会在保存时被MySQL自动去掉，慎用。
+     *            假如有特殊字符，建议用我写的PreparedStatementParamProvider)
      * @param tClass
      * @param <T>
      * @return
@@ -102,6 +103,8 @@ public class CommonNoTxJdbcStore {
 
     /**
      * 插入、更新、删除（都是执行同一个方法）
+     * @param updateSql (注意SQL的value部分，特殊字符可能会在保存时被MySQL自动去掉，慎用。
+     *      假如有特殊字符，建议用我写的PreparedStatementParamProvider)
      */
     public int update(String updateSql){
 
