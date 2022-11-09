@@ -1,5 +1,7 @@
-package cn.com.kun.component.monitor.demo;
+package cn.com.kun.controller.monitor;
 
+import cn.com.kun.service.monitor.MonitorDaoMockServcie;
+import cn.com.kun.service.monitor.MonitorDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

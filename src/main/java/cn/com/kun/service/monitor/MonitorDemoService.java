@@ -1,16 +1,13 @@
-package cn.com.kun.component.monitor.demo;
+package cn.com.kun.service.monitor;
 
 import cn.com.kun.component.monitor.MonitorManager;
-import cn.com.kun.component.monitor.MonitorTask;
-import cn.com.kun.component.monitor.MonitorWorker;
+import cn.com.kun.component.monitor.worker.MonitorWorker;
 import cn.com.kun.component.monitor.WatchDog;
+import cn.com.kun.component.monitor.model.MonitorTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.concurrent.Executors;
 
 @Service
 public class MonitorDemoService {
@@ -22,13 +19,8 @@ public class MonitorDemoService {
     @Autowired
     private MonitorDaoMockServcie monitorDaoMockServcie;
 
-    @PostConstruct
-    public void init(){
-
-        MonitorManager.init();
-        //默认使用的队列是java.util.concurrent.LinkedBlockingQueue
-        MonitorManager.setExecutor(Executors.newFixedThreadPool(5));
-    }
+    @Autowired
+    MonitorManager monitorManager;
 
     public void doService(String jobId){
 
@@ -76,7 +68,7 @@ public class MonitorDemoService {
 
         });
 
-        MonitorManager.addMonitorTask(monitorTask);
+        monitorManager.addMonitorTask(monitorTask);
     }
 
 }

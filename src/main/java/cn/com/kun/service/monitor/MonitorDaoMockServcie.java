@@ -1,4 +1,4 @@
-package cn.com.kun.component.monitor.demo;
+package cn.com.kun.service.monitor;
 
 import org.springframework.stereotype.Service;
 
