@@ -2,7 +2,7 @@ package cn.com.kun.service.monitor;
 
 import cn.com.kun.component.monitor.MonitorManager;
 import cn.com.kun.component.monitor.worker.MonitorWorker;
-import cn.com.kun.component.monitor.WatchDog;
+import cn.com.kun.component.monitor.tools.WatchDog;
 import cn.com.kun.component.monitor.model.MonitorTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

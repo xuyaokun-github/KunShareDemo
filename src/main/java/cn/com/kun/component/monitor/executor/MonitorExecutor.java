@@ -29,6 +29,9 @@ public class MonitorExecutor {
 
     private static ExecutorService executor = null;
 
+    /**
+     * 监控任务队列
+     */
     private static ConcurrentLinkedQueue taskQueue = new ConcurrentLinkedQueue();
 
     /**
