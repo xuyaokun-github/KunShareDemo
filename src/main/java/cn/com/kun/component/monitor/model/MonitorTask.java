@@ -10,7 +10,9 @@ import java.util.concurrent.TimeUnit;
  * author:xuyaokun_kzx
  * date:2022/11/4
  * desc:
- * 监控任务应该给一个执行频率（方便判断是否应开始执行监控逻辑，这个逻辑不需要很精准）
+ * 1.监控任务应该给一个执行频率（方便判断是否应开始执行监控逻辑，这个逻辑不需要很精准）已完成
+ * 2.有一类监控任务，只能在某天的某个时间段运行的（这种其实就是cron表达式）后面可继续扩展 TODO
+ *
 */
 public class MonitorTask {
 

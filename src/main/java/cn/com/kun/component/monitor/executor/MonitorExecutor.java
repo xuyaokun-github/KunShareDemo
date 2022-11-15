@@ -11,10 +11,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 监控组件执行器
@@ -44,7 +42,31 @@ public class MonitorExecutor {
      */
     private static Map<String, MonitorWorker> monitorWorkerMap = new ConcurrentHashMap<>();
 
+    static class MonitorThreadFactory implements ThreadFactory {
+
+        private final String namePrefix = "MonitorExecutor-Thread";//线程名前缀
+        private final AtomicInteger threadNumber = new AtomicInteger(0);
+        private ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = defaultFactory.newThread(r);
+            t.setName(namePrefix + "-" + threadNumber.incrementAndGet());
+            return t;
+        }
+    }
+
     public static void startExecutor() {
+
+        if (executor == null){
+            //默认使用的队列是java.util.concurrent.LinkedBlockingQueue
+            executor = Executors.newFixedThreadPool(5,
+                    //com.google.common.util.concurrent.ThreadFactoryBuilder (这个实现要额外引入包，不推荐)
+//                    new ThreadFactoryBuilder().setDaemon(true).setNameFormat("MonitorExecutor-Thread-" + "%d").build())
+                    //自定义ThreadFactory
+                    new MonitorThreadFactory()
+            );
+        }
 
         //1.启动一个线程，负责扫描队列
         new Thread(()->{

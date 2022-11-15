@@ -4,7 +4,6 @@ import cn.com.kun.component.monitor.annotation.MonitorClass;
 import cn.com.kun.component.monitor.executor.MonitorExecutor;
 import cn.com.kun.component.monitor.model.MonitorTask;
 import cn.com.kun.component.monitor.worker.MonitorWorker;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-import java.util.concurrent.Executors;
 
 /**
  * 监控（定时检测）组件
@@ -43,9 +41,6 @@ public class MonitorManager implements ApplicationContextAware, InitializingBean
 
         if (enabled){
             this.initMonitorWorkerRepository(applicationContext);
-            //默认使用的队列是java.util.concurrent.LinkedBlockingQueue
-            MonitorExecutor.setExecutor(Executors.newFixedThreadPool(5,
-                    new ThreadFactoryBuilder().setDaemon(true).setNameFormat("MonitorExecutor-Thread-" + "%d").build()));
             MonitorExecutor.startExecutor();
         }
 
