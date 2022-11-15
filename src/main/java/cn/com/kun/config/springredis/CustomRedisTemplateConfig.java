@@ -16,7 +16,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class CustomRedisTemplateConfig {
 
-
 //    @Bean
     public RedisSerializer<String> redisKeySerializer() {
         return new StringRedisSerializer();

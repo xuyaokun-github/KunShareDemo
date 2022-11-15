@@ -47,7 +47,7 @@ public class DateCountStatisticsHelper {
     }
 
     /**
-     * 支持模糊删除
+     * 支持模糊删除（不支持集群模式，TODO 需要优化）
      * 当某个业务停止时，可以主动调这个方法清理内存
      *
      * 实验：优化前，150万个key,耗时39291ms 24893ms(删除过程占了9335ms)

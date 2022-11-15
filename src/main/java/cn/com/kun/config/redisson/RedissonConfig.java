@@ -61,6 +61,7 @@ public class RedissonConfig {
      * @return
      * @throws IOException
      */
+    @ConditionalOnProperty(prefix = "kunsharedemo.redisson.cluster", value = {"enabled"}, havingValue = "false", matchIfMissing = true)
     @Bean(name = "redissonClient")
     public RedissonClient redissonClientSingle() throws IOException {
         RedissonClient redisson = null;

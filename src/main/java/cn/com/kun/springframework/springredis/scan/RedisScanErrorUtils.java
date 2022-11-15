@@ -1,5 +1,7 @@
-package cn.com.kun.springframework.springredis;
+package cn.com.kun.springframework.springredis.scan;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisClusterNode;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -8,16 +10,19 @@ import redis.clients.jedis.*;
 import java.util.*;
 
 /**
- * Redis scan操作工具类
+ * Redis scan操作工具类(反例)
  * 支持集群模式
+ *
  * author:xuyaokun_kzx
  * date:2022/5/19
  * desc:
 */
-public class RedisScanUtils {
+public class RedisScanErrorUtils {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(RedisScanErrorUtils.class);
 
     /**
-     * 亲测成功
+     * 亲测成功(需要使用密码)
      * 思路很简单，就是遍历集群中的所有节点，逐个节点处理
      * @param matchKey
      * @param redisTemplate
@@ -53,7 +58,9 @@ public class RedisScanUtils {
     }
 
     /**
+     * 获取所有key
      * 亲测也是奏效的（用这个方法，就不需要传入密码）
+     *
      * @param matchKey
      * @param redisTemplate
      * @return
@@ -89,6 +96,12 @@ public class RedisScanUtils {
         return list;
     }
 
+    /**
+     * 该方法有bug,会陷入死循环（反例）
+     * @param redisService
+     * @param key
+     * @return
+     */
     public static List<String> getScan(Jedis redisService, String key) {
 
         List<String> list = new ArrayList<>();
