@@ -1,4 +1,4 @@
-package cn.com.kun.foo.javacommon.string;
+package cn.com.kun.foo.javacommon.string.pattern;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
