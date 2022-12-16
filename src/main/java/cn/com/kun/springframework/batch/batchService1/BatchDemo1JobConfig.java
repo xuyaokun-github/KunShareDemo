@@ -3,6 +3,7 @@ package cn.com.kun.springframework.batch.batchService1;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.springframework.batch.common.BatchRateLimitDynamicCheckScheduler;
 import cn.com.kun.springframework.batch.common.JobRateLimitQueryFunction;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.springframework.batch.core.Job;
@@ -14,6 +15,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -108,6 +110,21 @@ public class BatchDemo1JobConfig {
                 setTargetType(UserFileItem.class);
             }});
         }});
+        //使用自定义的LineMapper
+        reader.setLineMapper(new LineMapper<UserFileItem>() {
+            @Override
+            public UserFileItem mapLine(String line, int lineNumber) throws Exception {
+                if (StringUtils.isNotEmpty(line)){
+                    String[] strArr = line.split("\\|");
+                    UserFileItem item = new UserFileItem();
+                    item.setUid(Long.parseLong(strArr[0]));
+                    item.setTag(strArr[1]);
+                    item.setType(Integer.parseInt(strArr[2]));
+                    return item;
+                }
+                return null;
+            }
+        });
         return reader;
     }
 

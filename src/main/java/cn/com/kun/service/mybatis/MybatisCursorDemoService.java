@@ -19,8 +19,8 @@ public class MybatisCursorDemoService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MybatisCursorDemoService.class);
 
-//    @Autowired
-//    UserMapper userMapper;
+    @Autowired
+    UserMapper userMapper;
 
     @Autowired
     SqlSessionFactory sqlSessionFactory;
@@ -46,5 +46,30 @@ public class MybatisCursorDemoService {
         }
         return ResultVo.valueOfSuccess("SUCCESS");
     }
+
+    /**
+     * 测试流式查询
+     * @return
+     */
+    public ResultVo testCursorWithDelete(){
+        try (
+                // 使用 sqlSession 手动获取 Mapper 对象，否则会出现 "A Cursor is already closed" 异常
+                SqlSession sqlSession = sqlSessionFactory.openSession();
+                Cursor<User> cursor = sqlSession.getMapper(UserMapper.class).findAllStream()
+        ) {
+            cursor.forEach(user -> {
+//                System.out.println(user);
+                LOGGER.info("user info:{}", JacksonUtils.toJSONString(user));
+                //删除操作
+                userMapper.deleteByFirstname(user.getFirstname());
+            });
+            //索引是从0开始！
+            LOGGER.info("流式查询全部结束，处理总数：{}", cursor.getCurrentIndex() + 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResultVo.valueOfSuccess("SUCCESS");
+    }
+
 
 }

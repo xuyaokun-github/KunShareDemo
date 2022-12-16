@@ -83,7 +83,7 @@ public class BatchDemoController {
                 .toJobParameters();
 
         //注册限流器
-        BatchRateLimiterHolder.registerRateLimiter(jobId, 1);
+        BatchRateLimiterHolder.registerRateLimiter(jobId, 100);
 
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
         System.out.println(execution.toString());

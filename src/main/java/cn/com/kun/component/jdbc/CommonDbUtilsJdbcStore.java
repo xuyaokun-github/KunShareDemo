@@ -1,6 +1,5 @@
 package cn.com.kun.component.jdbc;
 
-import org.quartz.JobPersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -11,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 公共JDBC操作
+ * 公共JDBC操作（用db utils作为底层实现）
  * Created by xuyaokun On 2022/9/8 10:24
  *
  * @desc:
  * 参考自org.quartz.impl.jdbcjobstore.StdJDBCDelegate
  */
-public class CommonJdbcStore {
+public class CommonDbUtilsJdbcStore {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CommonJdbcStore.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CommonDbUtilsJdbcStore.class);
 
     /**
      * 传入的SQL是已经拼接好的SQL(这样会有SQL注入的风险)
@@ -62,12 +61,8 @@ public class CommonJdbcStore {
                 res = toJavaObject(rs, tClass);
             }
 
-            //提交连接
-            commitConnection(conn);
-
             return res;
         } catch (Exception e) {
-            rollbackConnection(conn);
             e.printStackTrace();
         } finally {
             closeResultSet(rs);
@@ -94,10 +89,7 @@ public class CommonJdbcStore {
             while (rs.next()) {
                 list.add(toJavaObject(rs, tClass));
             }
-            //提交连接
-            commitConnection(conn);
         } catch (Exception e) {
-            rollbackConnection(conn);
             e.printStackTrace();
         } finally {
             closeResultSet(rs);
@@ -111,33 +103,9 @@ public class CommonJdbcStore {
 
     /**
      * 插入、更新、删除（都是执行同一个方法）
+     * @param updateSql (注意SQL的value部分，特殊字符可能会在保存时被MySQL自动去掉，慎用。
+     *      假如有特殊字符，建议用我写的PreparedStatementParamProvider)
      */
-    public int update(String updateSql, PreparedStatementParamProvider psParamProvider){
-
-        PreparedStatement ps = null;
-        Connection conn = null;
-
-        try {
-            conn = CustomDBConnectionManager.getInstance().getConnection();
-            ps = conn.prepareStatement(updateSql);
-            if (psParamProvider != null){
-                psParamProvider.initPreparedStatementParam(ps);
-            }
-            int res = ps.executeUpdate();
-            //提交连接
-            commitConnection(conn);
-            return res;
-        } catch (Exception e) {
-            rollbackConnection(conn);
-            e.printStackTrace();
-        } finally {
-            closeStatement(ps);
-            cleanupConnection(conn);
-        }
-        return 0;
-    }
-
-
     public int update(String updateSql){
 
         PreparedStatement ps = null;
@@ -145,15 +113,10 @@ public class CommonJdbcStore {
 
         try {
             conn = CustomDBConnectionManager.getInstance().getConnection();
-//            ps = conn.prepareStatement(updateSql);
-//            int res = ps.executeUpdate();
-            Statement statement = conn.createStatement();
-            int res = statement.executeUpdate(updateSql);
-            //提交连接
-            commitConnection(conn);
+            ps = conn.prepareStatement(updateSql);
+            int res = ps.executeUpdate();
             return res;
         } catch (Exception e) {
-            rollbackConnection(conn);
             e.printStackTrace();
         } finally {
             closeStatement(ps);
@@ -161,7 +124,6 @@ public class CommonJdbcStore {
         }
         return 0;
     }
-
 
 
     private <T> T toJavaObject(ResultSet resultSet, Class<T> requiredClass) throws Exception {
@@ -183,8 +145,7 @@ public class CommonJdbcStore {
             if (isExitColumn(resultSet, fieldName)) {
                 //假如结果集中存在该列，则获取具体的值
                 if (fieldclazz.isAssignableFrom(java.util.Date.class)){
-                    //注意 1.1.13的DruidPooledResultSet不支持getObject方法
-                    java.sql.Timestamp timestamp = (java.sql.Timestamp) resultSet.getObject(fieldName, java.sql.Timestamp.class);
+                    Timestamp timestamp = (Timestamp) resultSet.getObject(fieldName, Timestamp.class);
                     if (timestamp != null){
                         object = (A) new java.util.Date(timestamp.getTime());
                     }
@@ -228,34 +189,6 @@ public class CommonJdbcStore {
             try {
                 statement.close();
             } catch (SQLException ignore) {
-            }
-        }
-    }
-
-    protected void commitConnection(Connection conn)
-            throws JobPersistenceException {
-
-        if (conn != null) {
-            try {
-                if (conn.getAutoCommit() != true){
-                    conn.commit();
-                }
-            } catch (SQLException e) {
-                throw new JobPersistenceException(
-                        "Couldn't commit jdbc connection. "+e.getMessage(), e);
-            }
-        }
-    }
-
-    protected void rollbackConnection(Connection conn) {
-        if (conn != null) {
-            try {
-                if (conn.getAutoCommit() != true) {
-                    conn.rollback();
-                }
-            } catch (SQLException e) {
-                LOGGER.error(
-                        "Couldn't rollback jdbc connection. "+e.getMessage(), e);
             }
         }
     }

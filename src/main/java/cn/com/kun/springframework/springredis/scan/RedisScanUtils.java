@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 /**
- * Redis scan操作工具类
+ * Redis scan操作工具类(只支持springboot2.1以上)
  * 同时支持单节点模式&集群模式
  * 与RedisTemplate配合使用
  *
@@ -125,6 +125,7 @@ public class RedisScanUtils {
                     RedisClusterNode next = iterator.next();
                     //只采集master节点
                     if (next.isMaster()){
+                        //这个api,在1.5.X版本不支持，自2.1版本开始引入
                         Cursor<byte[]> scan = redisClusterConnection.scan(next, ScanOptions.scanOptions().match(matchKey).count(1000).build());
                         //这个写法有问题，会一直死循环
 //                while (scan.hasNext()) {
