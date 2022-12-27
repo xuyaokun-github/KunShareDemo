@@ -1,14 +1,11 @@
 package cn.com.kun.component.distributedId.snowflake;
 
-import cn.com.kun.common.utils.DateUtils;
-
-import java.util.Date;
-
 /**
  * 基于雪花算法的分布式ID
  * 已解决解决时钟回拨问题
+ * 已解决workerId生成问题
+ *
  * TODO：
- * workerId生成问题
  *
  * author:xuyaokun_kzx
  * date:2021/7/13
@@ -16,7 +13,7 @@ import java.util.Date;
 */
 public class IdWorker {
 
-    //因为二进制里第一个 bit 为如果是 1，那么都是负数，但是我们生成的 id 都是正数，
+    //因为二进制里第一个 bit位如果是 1，那么都是负数，但是我们生成的 id 都是正数，
     //所以第一个 bit 统一都是 0。
 
     /**
@@ -122,9 +119,10 @@ public class IdWorker {
     /**
      *
      * @param workerId 节点ID
-     * @param datacenterId
+     * @param datacenterId 机房ID
      */
     public IdWorker(long workerId, long datacenterId) {
+
         // 检查机房id和机器id是否超过31 不能小于0
         //这个校验非常重要，假如传了一个超出阈值的机器ID或者机房ID,都会导致最终算法出问题
         if (workerId > maxWorkerId || workerId < 0) {
@@ -267,38 +265,5 @@ public class IdWorker {
     public long timeStamp(long id){
         return (id >> (timestampLeftShift)) + twepoch;
     }
-
-    public static void main(String[] args) {
-
-
-        long sequenceBits = 12L;
-        //-1 左移 12位 是 -4096
-        System.out.println(-1L << sequenceBits);//得到4096
-        System.out.println(-1L ^ -4096L);//得到4095
-
-        //为什么是69年？
-        long a = 1L;
-        System.out.println(a<<41);//2199023255552
-        long b = a<<41;
-        System.out.println(b/1000/60/60/24/365);//69
-
-        long c = a<<42;
-        System.out.println(c/1000/60/60/24/365);//139
-
-        //构造ID生成器
-        IdWorker worker = new IdWorker(1, 1);//
-        for (int i = 0; i < 22; i++) {
-            System.out.println(worker.nextId());
-        }
-
-        System.out.println("----------------------------------");
-        long id = worker.nextId();
-        System.out.println(id);
-        System.out.println(worker.timeStamp(id));
-        Date date2 = new Date(worker.timeStamp(id));
-        System.out.println(DateUtils.toStr(date2, DateUtils.PATTERN_yyyy_MM_dd_HH_mm_ss_SSS));
-
-    }
-
 
 }

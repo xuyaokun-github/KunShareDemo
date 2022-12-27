@@ -2,6 +2,8 @@ package cn.com.kun.framework.log4j2;
 
 import cn.com.kun.common.utils.LogUtils;
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.component.logDesensitization.DesensitizationLogger;
+import cn.com.kun.component.logDesensitization.DesensitizationLoggerFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,6 +26,8 @@ public class Log4j2DemoController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Log4j2DemoController.class);
 
+    private final static DesensitizationLogger DLOGGER = DesensitizationLoggerFactory.decorator(LOGGER);
+
     @Autowired
     private LoggingSystem loggingSystem;
 
@@ -33,6 +37,18 @@ public class Log4j2DemoController {
         LOGGER.debug("我是Log4j2DemoController的debug日志");
         LOGGER.info("我是Log4j2DemoController的info日志");
         LOGGER.error("我是Log4j2DemoController的error日志");
+        return ResultVo.valueOfSuccess();
+    }
+
+    @GetMapping("/desensitization")
+    public ResultVo desensitization(){
+
+        //常规用法
+        DLOGGER.info("kunghsu");
+        DLOGGER.info("kunghsu:{}", System.currentTimeMillis());
+        //脱敏用法
+        DLOGGER.infoDesensitize("kunghsu:{}", System.currentTimeMillis());
+
         return ResultVo.valueOfSuccess();
     }
 
