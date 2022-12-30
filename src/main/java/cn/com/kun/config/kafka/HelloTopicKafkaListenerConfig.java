@@ -1,6 +1,6 @@
 package cn.com.kun.config.kafka;
 
-import cn.com.kun.kafka.consumer.HelloTopicMsgProcessor;
+import cn.com.kun.springframework.springkafka.consumer.HelloTopicMsgProcessor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

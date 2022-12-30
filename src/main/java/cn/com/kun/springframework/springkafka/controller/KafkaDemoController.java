@@ -1,6 +1,6 @@
-package cn.com.kun.kafka.controller;
+package cn.com.kun.springframework.springkafka.controller;
 
-import cn.com.kun.kafka.producer.MyKafkaProducer;
+import cn.com.kun.springframework.springkafka.producer.MyKafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

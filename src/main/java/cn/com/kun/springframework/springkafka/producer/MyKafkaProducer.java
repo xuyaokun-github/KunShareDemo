@@ -1,4 +1,4 @@
-package cn.com.kun.kafka.producer;
+package cn.com.kun.springframework.springkafka.producer;
 
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.kafka.msg.HelloTopicMsg;

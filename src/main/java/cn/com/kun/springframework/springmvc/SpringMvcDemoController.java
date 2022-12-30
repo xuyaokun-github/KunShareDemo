@@ -1,5 +1,6 @@
 package cn.com.kun.springframework.springmvc;
 
+import cn.com.kun.bean.model.FileUploadReqVO;
 import cn.com.kun.common.utils.SpringContextUtil;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.foo.javacommon.io.FileStringUtils;
@@ -28,14 +29,14 @@ public class SpringMvcDemoController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SpringMvcDemoController.class);
 
-
     /**
-     * 文件上传(swagger方式)
-     *
+     * 文件上传
+     * 虽然这里设置了 Accept=application/json 但依然能调通，因为客户端用的content-type是multipart/form-data，所以能调用
+     * 但是注意，不能设置成 content-type=application/json，假如服务端设置成content-type=application/json，客户端用multipart/form-data，会报错
      * @return CommonResult
      */
-    @PostMapping(value = "/upload2", headers="content-type=multipart/form-data")
-    public ResultVo fileUpload(String name, @RequestPart @ApiParam(name = "file",value = "file", required = true)
+    @PostMapping(value = "/upload-by-json", headers="Accept=application/json")
+    public ResultVo uploadByJson(String name, @RequestPart @ApiParam(name = "file",value = "file", required = true)
             MultipartFile file) throws IOException {
 
         // 判断是否为空文件
@@ -43,6 +44,106 @@ public class SpringMvcDemoController {
             LOGGER.info("上传文件不能为空");
             return ResultVo.valueOfError("上传文件不能为空");
         }
+        processMultipartFile(file);
+
+        return ResultVo.valueOfSuccess("上传成功");
+    }
+
+    /**
+     * 文件上传(swagger方式)
+     *
+     * @return CommonResult
+     */
+    @PostMapping(value = "/upload-by-form-data", headers="content-type=multipart/form-data")
+    public ResultVo uploadByFormData(String name, @RequestPart @ApiParam(name = "file",value = "file", required = true)
+            MultipartFile file) throws IOException {
+
+        // 判断是否为空文件
+        if (file.isEmpty()) {
+            LOGGER.info("上传文件不能为空");
+            return ResultVo.valueOfError("上传文件不能为空");
+        }
+        processMultipartFile(file);
+
+        return ResultVo.valueOfSuccess("上传成功");
+    }
+
+    /**
+     * 文件上传(Resttemplate方式)
+     * 正例
+     * @return CommonResult
+     */
+    @PostMapping(value = "/upload-by-entity", headers="Accept=application/json")
+    public ResultVo uploadByEntity(FileUploadReqVO reqVO) throws IOException {
+
+        // 判断是否为空文件
+        if (reqVO.getFile().isEmpty()) {
+            LOGGER.info("上传文件不能为空");
+            return ResultVo.valueOfError("上传文件不能为空");
+        }
+        processMultipartFile(reqVO.getFile());
+
+        return ResultVo.valueOfSuccess("上传成功");
+    }
+
+    /**
+     * 文件上传(Resttemplate方式)
+     * 反例
+     * 得到报错：org.springframework.web.HttpMediaTypeNotSupportedException: Content type 'multipart/form-data;boundary=vEd1JyGTeJx8M3w8AdDuM9n1OneV3aMY;charset=UTF-8' not supported
+     * 	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(AbstractMessageConverterMethodArgumentResolver.java:224) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:157) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:130) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:126) ~[spring-web-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) [spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) [spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) [spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     * 	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) [spring-webmvc-5.1.8.RELEASE.jar:5.1.8.RELEASE]
+     *
+     * @return CommonResult
+     */
+    @PostMapping(value = "/upload-by-entity2", headers="Accept=application/json")
+    public ResultVo uploadByEntity2(@RequestBody FileUploadReqVO reqVO) throws IOException {
+
+        // 判断是否为空文件
+        if (reqVO.getFile().isEmpty()) {
+            LOGGER.info("上传文件不能为空");
+            return ResultVo.valueOfError("上传文件不能为空");
+        }
+        processMultipartFile(reqVO.getFile());
+
+        return ResultVo.valueOfSuccess("上传成功");
+    }
+
+    /**
+     * 供RestTemplate方式调用
+     * 正例
+     *
+     * @param reqVO
+     * @return
+     * @throws IOException
+     */
+    @PostMapping(value = "/upload-by-entity3", headers="content-type=multipart/form-data")
+    public ResultVo uploadByEntity3(FileUploadReqVO reqVO) throws IOException {
+
+        // 判断是否为空文件
+        if (reqVO.getFile().isEmpty()) {
+            LOGGER.info("上传文件不能为空");
+            return ResultVo.valueOfError("上传文件不能为空");
+        }
+        processMultipartFile(reqVO.getFile());
+
+        return ResultVo.valueOfSuccess("上传成功");
+    }
+
+
+    private void processMultipartFile(MultipartFile file) throws IOException {
+
         // 文件类型
         String contentType = file.getContentType();
         // springmvc处理后的文件名
@@ -82,7 +183,6 @@ public class SpringMvcDemoController {
         FileStringUtils.stringToFile(base64String, "d://home/upload/" + "2-" +origFileName);
 
         LOGGER.info(String.format(file.getClass().getName() + "方式文件上传成功！\n文件名:%s,文件类型:%s,文件大小:%s", origFileName, contentType,fileSize));
-        return ResultVo.valueOfSuccess("上传成功");
     }
 
 
