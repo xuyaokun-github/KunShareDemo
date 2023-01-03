@@ -44,6 +44,8 @@ public class JacksonUtils {
 //        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
         //允许字符串中存在回车换行控制符
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+//        mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+
     }
 
     /**
@@ -249,7 +251,12 @@ public class JacksonUtils {
                         if (loopCount-- > 0){
                             continue;
                         }
+                    }else {
+                        //出现无法处理的异常
+                        log.warn("出现无法处理的json解析异常，错误信息：{}", errorMsg);
                     }
+                }else {
+                    log.warn("json反序列化异常", e);
                 }
             }
             break;
@@ -282,6 +289,10 @@ public class JacksonUtils {
                     indexList.remove(0);
                     indexList.remove(indexList.size()-1);
                     extraDoubleQuotesIndexList.addAll(indexList);
+                }else {
+                    //修复bug:遇到} 应该重新计数，有一类报文，可能在value里又是一个独立的json字符串
+                    //例如：{"a1":"v1","a3":"v3kkkk"888888"","a2":"v2","url":"ctrl://ffffffff{\"aaa\":\"dddd\"}"}
+                    indexList = new ArrayList<>();
                 }
             }
 
