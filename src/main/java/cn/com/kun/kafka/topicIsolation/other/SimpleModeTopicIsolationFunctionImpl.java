@@ -1,6 +1,7 @@
-package cn.com.kun.kafka.topicIsolation.isolationImpl;
+package cn.com.kun.kafka.topicIsolation.other;
 
 import cn.com.kun.kafka.topicIsolation.bean.TopicBean;
+import cn.com.kun.kafka.topicIsolation.isolationImpl.TopicIsolationFunction;
 import cn.com.kun.kafka.topicIsolation.properties.KafkaTopicIsolationProperties;
 import org.springframework.stereotype.Component;
 

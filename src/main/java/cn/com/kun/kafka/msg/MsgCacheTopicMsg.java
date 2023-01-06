@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class HelloTopicMsg {
+public class MsgCacheTopicMsg {
 
     private String msgId;
 

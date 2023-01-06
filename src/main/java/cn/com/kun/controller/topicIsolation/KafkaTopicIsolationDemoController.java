@@ -1,6 +1,6 @@
 package cn.com.kun.controller.topicIsolation;
 
-import cn.com.kun.kafka.topicIsolation.ProducerTopicProcessor;
+import cn.com.kun.kafka.topicIsolation.producer.ProducerTopicProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

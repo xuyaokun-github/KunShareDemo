@@ -1,7 +1,7 @@
 package cn.com.kun.springframework.springkafka.producer;
 
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.kafka.msg.HelloTopicMsg;
+import cn.com.kun.kafka.msg.MsgCacheTopicMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +54,11 @@ public class MyKafkaProducer {
     }
 
     private String buildMessage() {
-        HelloTopicMsg helloTopicMsg = new HelloTopicMsg();
-        helloTopicMsg.setStatusCode("" + ThreadLocalRandom.current().nextInt(10));
-        helloTopicMsg.setCreateTIme(new Date());
-        helloTopicMsg.setMsgId("" + System.currentTimeMillis());
-        return JacksonUtils.toJSONString(helloTopicMsg);
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setStatusCode("" + ThreadLocalRandom.current().nextInt(10));
+        msgCacheTopicMsg.setCreateTIme(new Date());
+        msgCacheTopicMsg.setMsgId("" + System.currentTimeMillis());
+        return JacksonUtils.toJSONString(msgCacheTopicMsg);
     }
 
     public void sendBatch() {

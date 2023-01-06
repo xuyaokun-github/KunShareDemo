@@ -4,6 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+/**
+ * 主题定义
+ *
+ * author:xuyaokun_kzx
+ * date:2023/1/6
+ * desc:
+*/
 public class TopicBean {
 
     /**

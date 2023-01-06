@@ -1,7 +1,8 @@
-package cn.com.kun.kafka.topicIsolation.isolationImpl;
+package cn.com.kun.kafka.topicIsolation.other;
 
 import cn.com.kun.kafka.topicIsolation.bean.TopicBean;
 import cn.com.kun.kafka.topicIsolation.enums.TopicPriorityEnum;
+import cn.com.kun.kafka.topicIsolation.isolationImpl.TopicIsolationFunction;
 import cn.com.kun.kafka.topicIsolation.properties.KafkaTopicIsolationProperties;
 import cn.com.kun.kafka.topicIsolation.properties.TopicBizType;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class MoreChannelModeTopicIsolationFunctionImpl implements TopicIsolationFunction{
+public class MoreChannelModeTopicIsolationFunctionImpl implements TopicIsolationFunction {
 
     @Override
     public void initTopic(KafkaTopicIsolationProperties kafkaTopicIsolationProperties, Map<String, Map<String, TopicBean>> topicBeansMap) {
