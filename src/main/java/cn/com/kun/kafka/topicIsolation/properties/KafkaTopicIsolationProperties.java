@@ -20,14 +20,16 @@ public class KafkaTopicIsolationProperties implements Serializable {
 
     private List<TopicBizType> bizTypes;
 
-    private String defaultTopic;
-
     /**
      * 扩展点：主题隔离实现类
      * 可随意更换扩展点
      *
      */
     private String isolationImplBeanName;
+
+    private boolean consumerEnabled;
+
+    private boolean producerEnabled;
 
     public String getTopicPrefix() {
         return topicPrefix;
@@ -46,11 +48,7 @@ public class KafkaTopicIsolationProperties implements Serializable {
     }
 
     public String getDefaultTopic() {
-        return defaultTopic;
-    }
-
-    public void setDefaultTopic(String defaultTopic) {
-        this.defaultTopic = defaultTopic;
+        return topicPrefix + "_DEFAULT";
     }
 
     public String getIsolationImplBeanName() {
@@ -60,4 +58,21 @@ public class KafkaTopicIsolationProperties implements Serializable {
     public void setIsolationImplBeanName(String isolationImplBeanName) {
         this.isolationImplBeanName = isolationImplBeanName;
     }
+
+    public boolean isConsumerEnabled() {
+        return consumerEnabled;
+    }
+
+    public void setConsumerEnabled(boolean consumerEnabled) {
+        this.consumerEnabled = consumerEnabled;
+    }
+
+    public boolean isProducerEnabled() {
+        return producerEnabled;
+    }
+
+    public void setProducerEnabled(boolean producerEnabled) {
+        this.producerEnabled = producerEnabled;
+    }
+
 }

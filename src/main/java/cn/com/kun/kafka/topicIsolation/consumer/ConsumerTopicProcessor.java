@@ -39,6 +39,8 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
 
     private ConsumerRunnableProvider consumerRunnableProvider;
 
+    private KafkaConsumeExecutorProvider kafkaConsumeExecutorProvider;
+
     private KafkaConsumerProvider kafkaConsumerProvider;
 
     private ApplicationContext applicationContext;
@@ -46,16 +48,30 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
     @Override
     public void afterPropertiesSet() throws Exception {
 
+        //假如消费者功能没启用，不初始化实现类
+        if (!kafkaTopicIsolationProperties.isConsumerEnabled()){
+            return;
+        }
+
         //必须提供一个KafkaConsumerProvider实现
         kafkaConsumerProvider = applicationContext.getBean(KafkaConsumerProvider.class);
         Assert.notNull(kafkaConsumerProvider, String.format("KafkaConsumerProvider实现为空,必须实现一个KafkaConsumerProvider Bean"));
 
         //必须提供一个KafkaConsumerProvider实现
+        kafkaConsumeExecutorProvider = applicationContext.getBean(KafkaConsumeExecutorProvider.class);
+        Assert.notNull(kafkaConsumerProvider, String.format("KafkaConsumeExecutorProvider实现为空,必须实现一个KafkaConsumeExecutorProvider Bean"));
+
+        //必须提供一个KafkaConsumerProvider实现
         consumerRunnableProvider = applicationContext.getBean(ConsumerRunnableProvider.class);
-        Assert.notNull(consumerRunnableProvider, String.format("KafkaConsumerProvider实现为空,必须实现一个KafkaConsumerProvider Bean"));
+        Assert.notNull(consumerRunnableProvider, String.format("ConsumerRunnableProvider实现为空,必须实现一个ConsumerRunnableProvider Bean"));
     }
 
     public void start(){
+
+        //假如消费者功能没启用，不启动消费线程
+        if (!kafkaTopicIsolationProperties.isConsumerEnabled()){
+            return;
+        }
 
         Map<String, Map<String, TopicBean>> topicBeansMap = TopicBeanFactory.getTopicBeansMap();
 
@@ -64,10 +80,9 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
                 //遍历所有主题
                 String topic = v1.buildTopicName();
                 //创建消费者、创建线程池
-                //KafkaConsumer和Executor 有必要放入spring容器吗？
+                //KafkaConsumer和Executor 有必要放入spring容器吗？是否有必要，由使用方决定
                 KafkaConsumer consumer = kafkaConsumerProvider.buildKafkaConsumer();
-                Executor myKafkaMsgExecutor = buildKafkaConsumeExecutor(topic);
-
+                Executor myKafkaMsgExecutor = kafkaConsumeExecutorProvider.buildKafkaConsumeExecutor(topic);
                 Runnable runnable = consumerRunnableProvider.getConsumerRunnable(consumer, topic, myKafkaMsgExecutor);
                 //开启消费线程
                 startConsumeThread(runnable, topic.toLowerCase() + "-consumer-thread");
@@ -87,7 +102,7 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
 
     private Executor buildKafkaConsumeExecutor(String topicName) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(8);
         executor.setMaxPoolSize(16);
         executor.setThreadNamePrefix(topicName.toLowerCase() + "-KafkaConsumeExecutor-Thread-");
         executor.setQueueCapacity(200);//默认是LinkedBlockingQueue

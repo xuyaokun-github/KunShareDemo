@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
+ * 主题拆分处理类
  *
  * author:xuyaokun_kzx
  * date:2023/1/6
@@ -37,18 +38,22 @@ public class TopicIsolationProcessor implements ApplicationContextAware, Initial
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        //获取实现（根据配置文件决定采用哪种实现，初步设计）
-        TopicIsolationFunction topicIsolationFunction = null;
-        if (StringUtils.isNotEmpty(kafkaTopicIsolationProperties.getIsolationImplBeanName())){
-            topicIsolationFunction = (TopicIsolationFunction) applicationContext.getBean(kafkaTopicIsolationProperties.getIsolationImplBeanName());
-        }else {
-            //假如配置文件没指定，用组件默认提供的实现
-            topicIsolationFunction = applicationContext.getBean(TopicIsolationFunction.class);
+        //假如生产者和消费者都没打开，说明该功能没有必要启用
+        if (kafkaTopicIsolationProperties.isProducerEnabled() || kafkaTopicIsolationProperties.isConsumerEnabled()){
+            //获取实现（根据配置文件决定采用哪种实现，初步设计）
+            TopicIsolationFunction topicIsolationFunction = null;
+            if (StringUtils.isNotEmpty(kafkaTopicIsolationProperties.getIsolationImplBeanName())){
+                topicIsolationFunction = (TopicIsolationFunction) applicationContext.getBean(kafkaTopicIsolationProperties.getIsolationImplBeanName());
+            }else {
+                //假如配置文件没指定，用组件默认提供的实现
+                topicIsolationFunction = applicationContext.getBean(TopicIsolationFunction.class);
+            }
+            Assert.notNull(topicIsolationFunction, String.format("%s TopicIsolationFunction实现为空", kafkaTopicIsolationProperties.getIsolationImplBeanName()));
+            this.topicIsolationFunction = topicIsolationFunction;
+
+            topicIsolationFunction.initTopic(kafkaTopicIsolationProperties, TopicBeanFactory.getTopicBeansMap());
+            LOGGER.info("Kafka主题拆分：\n{}", TopicBeanFactory.getAllTopic());
         }
-        Assert.notNull(topicIsolationFunction, String.format("%s TopicIsolationFunction实现为空", kafkaTopicIsolationProperties.getIsolationImplBeanName()));
-        this.topicIsolationFunction = topicIsolationFunction;
-        topicIsolationFunction.initTopic(kafkaTopicIsolationProperties, TopicBeanFactory.getTopicBeansMap());
-        LOGGER.info("Kafka主题拆分：\n{}", TopicBeanFactory.getAllTopic());
     }
 
     @Override

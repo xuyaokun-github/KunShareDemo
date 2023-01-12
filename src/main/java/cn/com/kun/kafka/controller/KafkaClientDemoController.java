@@ -28,8 +28,8 @@ public class KafkaClientDemoController {
     @Autowired
     private ProducerTopicProcessor producerTopicProcessor;
 
-    @GetMapping("/test")
-    public ResultVo test(){
+    @GetMapping("/testTopicIsolation")
+    public ResultVo testTopicIsolation(){
 
         //使用 主题拆分组件
         String topicName = producerTopicProcessor.getTopic("SM01", "BATCH", "HIGH");

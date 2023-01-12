@@ -7,11 +7,19 @@ import java.util.Date;
 public class User /*implements Serializable*/ {
 
     private String firstname;
+
     private String lastname;
+
     private String phone;
+
     private String email;
+
     private String username;
+
     private String password;
+
+    private Long age;
+//    private long age;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -71,4 +79,23 @@ public class User /*implements Serializable*/ {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+//    public Long getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(Long age) {
+//        this.age = age;
+//    }
+
+
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
+
+
 }

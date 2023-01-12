@@ -1,4 +1,4 @@
-package cn.com.kun.foo.mdc;
+package cn.com.kun.framework.mdc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

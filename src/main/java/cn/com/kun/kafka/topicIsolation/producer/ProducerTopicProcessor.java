@@ -48,6 +48,10 @@ public class ProducerTopicProcessor implements ApplicationContextAware, Initiali
      */
     public String getTopic(String bizField1, String bizField2, String templatePriority){
 
+        if (!kafkaTopicIsolationProperties.isProducerEnabled()){
+            throw new RuntimeException("Kafka主题拆分组件，生产者未启用");
+        }
+
         String topicName = topicIsolationProcessor.getTopicIsolationFunction().getTopic(bizField1, bizField2, templatePriority, TopicBeanFactory.getTopicBeansMap());
         if (StringUtils.isNotEmpty(topicName)){
             return topicName;
