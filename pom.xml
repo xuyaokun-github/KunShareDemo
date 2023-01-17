@@ -635,6 +635,13 @@
             <version>8.8.0</version>
         </dependency>
 
+        <!-- JDBC工具类 -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.6</version>
+        </dependency>
+
     </dependencies>
 
 <!--    <repositories>

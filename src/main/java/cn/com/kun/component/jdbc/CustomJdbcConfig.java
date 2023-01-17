@@ -36,4 +36,18 @@ public class CustomJdbcConfig {
         CustomDataSourceHolder.setDataSource(dataSource);
         return new CommonNoTxJdbcStore();
     }
+
+
+    /**
+     * 推荐用这个，不要自己实现JDBC，容易出错
+     *
+     * @return
+     */
+    @Bean
+    public CommonDbUtilsJdbcStore commonDbUtilsJdbcStore(){
+
+        CustomDataSourceHolder.setDataSource(dataSource);
+        return new CommonDbUtilsJdbcStore();
+    }
+
 }

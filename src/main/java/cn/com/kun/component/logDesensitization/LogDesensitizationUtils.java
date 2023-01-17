@@ -6,6 +6,11 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * author:xuyaokun_kzx
+ * date:2022/12/16
+ * desc:
+*/
 public class LogDesensitizationUtils {
 
     public static void main(String[] args) throws UnsupportedEncodingException {
@@ -62,6 +67,12 @@ public class LogDesensitizationUtils {
         return Base64.encodeBase64String(source.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * 解密方法
+     *
+     * @param source
+     * @return
+     */
     public static String decrypt(String source){
         return new String(Base64.decodeBase64(source), StandardCharsets.UTF_8);
     }

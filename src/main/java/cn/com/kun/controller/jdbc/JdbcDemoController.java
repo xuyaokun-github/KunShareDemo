@@ -4,7 +4,10 @@ import cn.com.kun.bean.entity.StudentDO;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.utils.ThreadUtils;
+import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.component.distributedlock.dblock.entity.DbLockDO;
+import cn.com.kun.component.jdbc.CommonDbUtilsJdbcStore;
 import cn.com.kun.component.jdbc.CommonJdbcStore;
 import cn.com.kun.component.jdbc.PreparedStatementParamProvider;
 import cn.com.kun.mapper.StudentMapper;
@@ -29,28 +32,66 @@ public class JdbcDemoController {
     private final static Logger LOGGER = LoggerFactory.getLogger(CommonJdbcStore.class);
 
     @Autowired
-    CommonJdbcStore commonJdbcStore;
+    private CommonJdbcStore commonJdbcStore;
+
+    @Autowired
+    private CommonDbUtilsJdbcStore commonDbUtilsJdbcStore;
 
     @Autowired
     private StudentMapper studentMapper;
 
-    @GetMapping("/test1")
-    public String test1(){
+    @GetMapping("/testSelectBean")
+    public String testSelectBean(){
 
         String sql = "select id as id,id_card as idCard,student_name as studentName,address as address,create_time as createTime " +
                 "from tbl_student " +
                 "WHERE id = 8 " +
                 "limit 1";
         StudentDO studentDO = commonJdbcStore.select(sql, StudentDO.class);
-        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
 
+        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
         LOGGER.info("查询得到的jsonString: {}", studentDO.getAddress());
 
 //        Student student2 = studentMapper.getStudentById(8L);
 //        LOGGER.info("查询得到的jsonString(mybatis): {}", student2.getAddress());
 
+
+
         return "kunghsu";
     }
+
+
+    @GetMapping("/testSelectBeanByCommonDbUtilsJdbcStore")
+    public String testSelectBeanByCommonDbUtilsJdbcStore(){
+
+        String sql2 = "select id ,id_card ,student_name ,address ,create_time " +
+                "from tbl_student " +
+                "WHERE id = 8 " +
+                "limit 1";
+        StudentDO studentDO = commonDbUtilsJdbcStore.select(sql2, StudentDO.class);
+
+        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
+        LOGGER.info("查询得到的jsonString: {}", studentDO.getAddress());
+
+        return "kunghsu";
+    }
+
+    @GetMapping("/testSelectBeanByCommonDbUtilsJdbcStoreByAsyncThread")
+    public String testSelectBeanByCommonDbUtilsJdbcStoreByAsyncThread(){
+
+        new Thread(()->{
+            while (true){
+                String sql2 = "select id ,id_card ,student_name ,address ,create_time " +
+                        "from tbl_student " +
+                        "WHERE id = 8 " +
+                        "limit 1";
+                 StudentDO studentDO = commonDbUtilsJdbcStore.select(sql2, StudentDO.class);
+                ThreadUtils.sleep(300);
+            }
+        }).start();
+        return "kunghsu";
+    }
+
 
     @GetMapping("/testUpdateStudent")
     public String testUpdateStudent(){
@@ -69,20 +110,33 @@ public class JdbcDemoController {
         String jsonString = JacksonUtils.toJSONString(param);
         LOGGER.info("写DB的jsonString: {}", jsonString);
         sql = String.format(sql, jsonString);
+        //反例
 //        int res = commonJdbcStore.update(sql);//mysql会自动替换特殊字符（反例）
         //正例
-        int res = commonJdbcStore.update(sql2, new PreparedStatementParamProvider() {
-            @Override
-            public void initPreparedStatementParam(PreparedStatement ps) {
-                try {
-                    ps.setString(1, jsonString);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+//        int res = commonJdbcStore.update(sql2, new PreparedStatementParamProvider() {
+//            @Override
+//            public void initPreparedStatementParam(PreparedStatement ps) {
+//                try {
+//                    ps.setString(1, jsonString);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+        int res = commonDbUtilsJdbcStore.update(sql2, jsonString);
         return "kunghsu";
+    }
+
+    @GetMapping("/testUpdateStudentByCommonDbUtilsJdbcStore")
+    public ResultVo testUpdateStudentByCommonDbUtilsJdbcStore(){
+
+        String sql1 = "update tbl_student set address='" + System.currentTimeMillis() + "'" +
+                "WHERE id = 8";
+        String sql2 = "update tbl_student set address=? " +
+                "WHERE id = 8";
+        int res = commonDbUtilsJdbcStore.update(sql1);
+
+        return ResultVo.valueOfSuccess(res);
     }
 
     @GetMapping("/test2")
@@ -127,6 +181,20 @@ public class JdbcDemoController {
         return "kunghsu";
     }
 
+    @GetMapping("/testSelectPreparedStatementByCommonDbUtilsJdbcStore")
+    public String testSelectPreparedStatementByCommonDbUtilsJdbcStore(){
+
+        String sql = "select id as id,id_card as idCard,student_name as studentName,address as address,create_time as createTime from tbl_student " +
+                "where student_name = ? " +
+                " limit 1";
+
+        StudentDO studentDO = commonDbUtilsJdbcStore.select(sql, StudentDO.class, "string11");
+        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
+        studentDO = commonDbUtilsJdbcStore.select(sql, StudentDO.class, "tmac1");
+        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
+        return "kunghsu";
+    }
+
     /**
      * datetime类型，实体类中用java.util.Date
      * @return
@@ -161,16 +229,30 @@ public class JdbcDemoController {
     }
 
 
-    @GetMapping("/testSelectList")
-    public String testSelectList() throws SQLException {
+    @GetMapping("/testSelectListByCommonDbUtilsJdbcStore")
+    public String testSelectListByCommonDbUtilsJdbcStore() throws SQLException {
 
         String sql = "select id as id,id_card as idCard,student_name as studentName,address as address,create_time as createTime from tbl_student " +
 //                "where student_name='string11' " +
 //                " limit 1";
                   " ";
+        List<StudentDO> studentDO = commonDbUtilsJdbcStore.selectList(sql, StudentDO.class);
+        LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
+        return "kunghsu";
+    }
+
+
+    @GetMapping("/testSelectListBy")
+    public String testSelectList() throws SQLException {
+
+        String sql = "select id as id,id_card as idCard,student_name as studentName,address as address,create_time as createTime from tbl_student " +
+//                "where student_name='string11' " +
+//                " limit 1";
+                " ";
 
         List<StudentDO> studentDO = commonJdbcStore.selectList(sql, StudentDO.class);
         LOGGER.info("{}", JacksonUtils.toJSONString(studentDO));
         return "kunghsu";
     }
+
 }

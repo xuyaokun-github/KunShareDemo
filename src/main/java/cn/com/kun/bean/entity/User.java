@@ -18,8 +18,8 @@ public class User /*implements Serializable*/ {
 
     private String password;
 
-    private Long age;
-//    private long age;
+//    private Long age;
+    private long age;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;

@@ -75,9 +75,11 @@ public class LogMessageParser {
         }
         return builder.toString();
     }
+
     public static String parse0(String text, Object... args) {
         return LogMessageParser.parse("${", "}", text, args);
     }
+
     public static String parse1(String text, Object... args) {
         return LogMessageParser.parse("{", "}", text, args);
     }
