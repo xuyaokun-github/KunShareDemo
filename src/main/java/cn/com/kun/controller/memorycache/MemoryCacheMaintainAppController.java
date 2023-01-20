@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
  * 这个用来触发 远程接口的数据变更
  * 数据变更发生时需要清空缓存
  *
+ * 模拟维护方
+ *
  * author:xuyaokun_kzx
  * date:2021/6/29
  * desc:
 */
 @RequestMapping("/memory-cache-maintain")
 @RestController
-public class MemCacheMaintainAppController {
+public class MemoryCacheMaintainAppController {
 
     /**
      * cglib代理
@@ -51,5 +53,6 @@ public class MemCacheMaintainAppController {
         Integer res = memCacheMaintainAppService.updateStudent(reqVO);
         return ResultVo.valueOfSuccess(res);
     }
+
 
 }

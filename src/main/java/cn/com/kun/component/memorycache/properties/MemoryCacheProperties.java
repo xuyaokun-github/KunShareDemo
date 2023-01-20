@@ -1,21 +1,11 @@
 package cn.com.kun.component.memorycache.properties;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @ConfigurationProperties(prefix = "memorycache")
 public class MemoryCacheProperties {
-
-    private String caffeineCacheManagerName;
-
-    /**
-     * 检测线程睡眠时间
-     */
-    private long detectThreadSleepTime;
 
     /**
      * 全局开关
@@ -24,20 +14,29 @@ public class MemoryCacheProperties {
     private boolean enabled;
 
     /**
-     * 是否存在多套redis
+     * 角色：
+     * 1.All 表示同时作为维护方和应用方
+     * 2.Maintain 表示维护方
+     * 3.Apply 表示应用方
+     *
      */
-    private boolean multiRedis;
+    private String role;
 
     /**
-     * 本应用归属的集群名
+     * 应用方配置
      */
-    private String clusterName;
+    private Apply apply = new Apply();
 
     /**
-     * 集群名列表，以逗号分隔
+     * 维护方配置
      */
-    @Value("#{'${memorycache.clusterList}'.split(',')}")
-    private List<String> clusterList;
+    private Maintain maintain = new Maintain();
+
+    /**
+     * 缓存刷新通知的实现类型：Redis\Eureka\Custom
+     * 默认是Redis
+     */
+    private String noticeImplType = "Redis";
 
     public boolean isEnabled() {
         return enabled;
@@ -47,43 +46,47 @@ public class MemoryCacheProperties {
         this.enabled = enabled;
     }
 
-    public String getCaffeineCacheManagerName() {
-        return caffeineCacheManagerName;
+    public String getNoticeImplType() {
+        return noticeImplType;
     }
 
-    public void setCaffeineCacheManagerName(String caffeineCacheManagerName) {
-        this.caffeineCacheManagerName = caffeineCacheManagerName;
+    public void setNoticeImplType(String noticeImplType) {
+        this.noticeImplType = noticeImplType;
     }
 
-    public long getDetectThreadSleepTime() {
-        return detectThreadSleepTime;
+    public Maintain getMaintain() {
+        return maintain;
     }
 
-    public void setDetectThreadSleepTime(long detectThreadSleepTime) {
-        this.detectThreadSleepTime = detectThreadSleepTime;
+    public void setMaintain(Maintain maintain) {
+        this.maintain = maintain;
     }
 
-    public boolean isMultiRedis() {
-        return multiRedis;
+    public Apply getApply() {
+        return apply;
     }
 
-    public void setMultiRedis(boolean multiRedis) {
-        this.multiRedis = multiRedis;
+    public void setApply(Apply apply) {
+        this.apply = apply;
     }
 
-    public String getClusterName() {
-        return clusterName;
+    public String getRole() {
+        return role;
     }
 
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public List<String> getClusterList() {
-        return clusterList;
+
+    public boolean isMaintainApp() {
+
+        return "All".equals(this.role) || "Maintain".equals(this.role);
     }
 
-    public void setClusterList(List<String> clusterList) {
-        this.clusterList = clusterList;
+
+    public boolean isApplyApp() {
+
+        return "All".equals(this.role) || "Apply".equals(this.role);
     }
 }

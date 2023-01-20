@@ -1,15 +1,12 @@
 package cn.com.kun.component.memorycache.apply;
 
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
-import cn.com.kun.component.redis.RedisTemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.support.SimpleCacheManager;
-import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -31,13 +28,11 @@ public class MemoryCacheRedisDetector {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheRedisDetector.class);
 
-    private CacheManager cacheManager;
-
-    @Autowired
-    private RedisTemplateHelper redisTemplateHelper;
-
-    @Autowired
-    private ApplicationContext applicationContext;
+    /**
+     * 强依赖Redis
+     */
+    @Autowired(required = false)
+    private RedisTemplate redisTemplate;
 
     private long sleepTime = 1000L;
 
@@ -48,24 +43,22 @@ public class MemoryCacheRedisDetector {
     @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
+    @Autowired
+    private MemoryCacheCleaner memoryCacheCleaner;
+
     @PostConstruct
     public void init(){
 
-        //org.springframework.cache.caffeine.CaffeineCacheManager
-        initCacheManager();
-        sleepTime = memoryCacheProperties.getDetectThreadSleepTime();
-        new Thread(()->{
-            doCheck();
-        }, "MemoryCacheRedisDetector-Thread").start();
-    }
-
-    private void initCacheManager() {
-
-        if (StringUtils.isEmpty(memoryCacheProperties.getCaffeineCacheManagerName())){
-            cacheManager = applicationContext.getBean(SimpleCacheManager.class);
-        }else {
-            cacheManager = (CacheManager) applicationContext.getBean(memoryCacheProperties.getCaffeineCacheManagerName());
+        if (memoryCacheProperties.isEnabled() && memoryCacheProperties.isApplyApp()){
+            if (memoryCacheProperties.getApply().getDetectThreadSleepTime() > 0){
+                sleepTime = memoryCacheProperties.getApply().getDetectThreadSleepTime();
+            }
+            new Thread(()->{
+                doCheck();
+            }, "MemoryCacheRedisDetector-Thread").start();
+            Assert.notNull(redisTemplate, "redisTemplate不能为空");
         }
+
     }
 
     private void doCheck() {
@@ -97,7 +90,7 @@ public class MemoryCacheRedisDetector {
         /**
          * 获取整个hash结构
          */
-        Map<Object,Object> redisMap = redisTemplateHelper.hmget(NOTICE_TIMEMILLIS_HASH_KEYNAME);
+        Map<Object,Object> redisMap = redisTemplate.opsForHash().entries(NOTICE_TIMEMILLIS_HASH_KEYNAME);
         Iterator<Map.Entry<Object, Object>> iterator = redisMap.entrySet().iterator();
         while (iterator.hasNext()){
             Map.Entry<Object, Object> entry = iterator.next();
@@ -110,21 +103,16 @@ public class MemoryCacheRedisDetector {
                 if (!oldUpdateTime.equals(lastUpdateTime)){
                     //redis中的时间戳和timeMillisMap中的时间不等，说明发生变更
                     //清缓存
-                    clearCache(configName, lastUpdateTime);
+                    memoryCacheCleaner.clearCache(configName);
+                    updateTimemillis(configName, lastUpdateTime);
+                    LOGGER.info("本次清空缓存管理器{},更新时间戳为：{}", configName, lastUpdateTime);
                 } else {
                     //未发生变更
-//                    LOGGER.debug("缓存管理器{}未发生变更", configName);
+                    if (LOGGER.isDebugEnabled()){
+                        LOGGER.debug("缓存管理器{}未发生变更", configName);
+                    }
                 }
             }
-        }
-    }
-
-    private void clearCache(String configName, String lastUpdateTime) {
-
-        if(cacheManager != null){
-            cacheManager.getCache(configName).clear();
-            updateTimemillis(configName, lastUpdateTime);
-            LOGGER.info("本次清空缓存管理器{},更新时间戳为：{}", configName, lastUpdateTime);
         }
     }
 

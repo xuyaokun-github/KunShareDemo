@@ -2,6 +2,7 @@ package cn.com.kun.common.enums;
 
 
 import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT;
+import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT_2;
 
 /**
  * 各个服务层的内存缓存管理器配置定义在这个类
@@ -16,6 +17,7 @@ public enum MemoryCacheConfigurantionsEnum {
      * 每次新增一个服务层需要用redis缓存，就需要加一项枚举定义
      */
     STUDENT(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT),
+    STUDENT2(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT_2),
     USER(12000, 2000, "memory-cache-user-service");
 
     public long ttl;

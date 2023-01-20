@@ -1,22 +1,24 @@
 package cn.com.kun.component.memorycache.maintain;
 
-import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
-import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
-import cn.com.kun.component.redis.RedisTemplateHelper;
+import cn.com.kun.component.memorycache.entity.MemoryCacheNoticeDO;
+import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
-import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TOPIC;
 
 /**
  * 内存缓存通知处理器
  * (供发通知的服务使用)
+ * 维护方的职责：
+ * 1.修改具体业务值
+ * 2.发出刷新通知
  *
  * author:xuyaokun_kzx
  * date:2021/6/29
@@ -28,62 +30,69 @@ public class MemoryCacheNoticeProcessor {
     private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheNoticeProcessor.class);
 
     @Autowired
-    private RedisTemplateHelper redisTemplateHelper;
-
-    @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
     @Autowired
     private MemoryCacheNoticeMapper memoryCacheNoticeMapper;
 
+    @Autowired(required = false)
+    private RedisTemplate redisTemplate;
+
     /**
      * 发送通知至广播队列
+     *
      * @param configName
      * @param key
      */
     public void notice(String configName, String key){
 
-        String updateTimemillis = String.valueOf(System.currentTimeMillis());
         //封装对象，发送至redis广播
         MemoryCacheNoticeMsg noticeMsg = new MemoryCacheNoticeMsg();
         noticeMsg.setConfigName(configName);
         noticeMsg.setBizKey(key);
-        noticeMsg.setUpdateTimemillis(updateTimemillis);
+        noticeMsg.setUpdateTimemillis(String.valueOf(System.currentTimeMillis()));
 
-        if (memoryCacheProperties.isMultiRedis()){
+        try {
+            if (memoryCacheProperties.getMaintain().isMultiRedis()){
             /*
                 是否存在多套redis
-                假如是无法通过广播通知所有集群，只能把记录先写入到数据库，由集群自行异步获取通知
+                假如是无法通过广播通知所有集群，只能把记录先写入到数据库，由集群自行异步获取通知再本集群广播
              */
-            //获取集群列表（后续可以考虑实现自动发现集群列表）
-            memoryCacheProperties.getClusterList().forEach(clusterName -> {
-                MemoryCacheNoticeDO noticeMsgDO = new MemoryCacheNoticeDO();
-                BeanUtils.copyProperties(noticeMsg, noticeMsgDO);
-                noticeMsgDO.setClusterName(clusterName);
-                //存DB
-                memoryCacheNoticeMapper.save(noticeMsgDO);
-            });
+                //获取集群列表（后续可以考虑实现自动发现集群列表）
+                memoryCacheProperties.getMaintain().getClusterList().forEach(clusterName -> {
+                    MemoryCacheNoticeDO noticeMsgDO = new MemoryCacheNoticeDO();
+                    BeanUtils.copyProperties(noticeMsg, noticeMsgDO);
+                    noticeMsgDO.setClusterName(clusterName);
+                    //存DB
+                    memoryCacheNoticeMapper.save(noticeMsgDO);
+                });
 
-        }else {
-            //假如只有单redis集群，直接发送到redis即可
-            sendNoticeToRedis(noticeMsg);
+            }else {
+                //假如只有单redis集群，直接发送通知即可
+                //通知的实现可以是Redis或者eureka
+                sendNotice(noticeMsg);
+            }
+        }catch (Exception e){
+            //是否抛出异常，由上层继续补偿处理？
+            //吞掉这个异常有风险，我建议是抛出异常，由上层决定是否重试
+            LOGGER.error("内存缓存刷新通知异常", e);
         }
 
     }
 
-    public void sendNoticeToRedis(MemoryCacheNoticeMsg noticeMsg){
-        //这里发送消息，由使用内存缓存的服务负责接收，收到就立刻清缓存
-        String msg = JacksonUtils.toJSONString(noticeMsg);
-        LOGGER.info("内存缓存刷新通知报文：{}", msg);
-        //注意：假如不是用字符串序列化方式的value序列化器，就不要传字符串进去，会拼多两个双引号
-//        redisTemplateHelper.sendChannelTopicMsg(NOTICE_TOPIC, msg);
-        redisTemplateHelper.sendChannelTopicMsg(NOTICE_TOPIC, noticeMsg);
+    public void sendNotice(MemoryCacheNoticeMsg noticeMsg){
+
+        //广播通知
+        MemoryCacheNoticeServiceStrategyFactory.getByNoticeType(memoryCacheProperties.getNoticeImplType())
+                .sendBroadcastNotice(noticeMsg);
+
         /**
          * 假设redis中的时间戳数据丢失了，怎么办？
          * 没关系，只要检测线程判断到值不存在，就会重新放入
          */
         //更新redis中的时间戳
-        redisTemplateHelper.hset(NOTICE_TIMEMILLIS_HASH_KEYNAME, noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
+        redisTemplate.opsForHash().put(NOTICE_TIMEMILLIS_HASH_KEYNAME, noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
+
         /**
          * 假如这里精确到key级别的时间戳，是否合适？
          * 那在使用了内存缓存的服务端就需要针对key级别来判断时间，简单点就是遍历整个map，然后判断哪个时间戳过期了，然后就驱逐这个key

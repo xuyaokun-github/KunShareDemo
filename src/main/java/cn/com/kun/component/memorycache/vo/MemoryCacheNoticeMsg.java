@@ -11,11 +11,23 @@ import java.io.Serializable;
 */
 public class MemoryCacheNoticeMsg implements Serializable {
 
+    /**
+     * 缓存器名称
+     */
     private String configName;
 
+    /**
+     * 业务key
+     */
     private String bizKey;
 
+    /**
+     * 更新时间戳
+     */
     private String updateTimemillis;
+
+    public MemoryCacheNoticeMsg() {
+    }
 
     public String getConfigName() {
         return configName;

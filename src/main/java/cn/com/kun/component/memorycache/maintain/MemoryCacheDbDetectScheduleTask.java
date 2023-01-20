@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
 */
 @EnableScheduling
 @Component
-public class MemoryCacheScheduleTask {
+public class MemoryCacheDbDetectScheduleTask {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheScheduleTask.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MemoryCacheDbDetectScheduleTask.class);
 
     @Autowired
     private MemoryCacheDBDetector memoryCacheDBDetector;
@@ -28,10 +28,15 @@ public class MemoryCacheScheduleTask {
     @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
+    /**
+     * 六十秒检测一次
+     */
     @Scheduled(fixedRate = 60000L)
     public void detect(){
 
-        if (!memoryCacheProperties.isMultiRedis() || StringUtils.isEmpty(memoryCacheProperties.getClusterName())){
+        if (!memoryCacheProperties.isEnabled() || !memoryCacheProperties.isMaintainApp()
+                || !memoryCacheProperties.getMaintain().isMultiRedis()
+                || StringUtils.isEmpty(memoryCacheProperties.getMaintain().getClusterName())){
             return;
         }
         LOGGER.info("MemoryCacheDBDetector running");

@@ -1,5 +1,11 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.component.memorycache.entity;
 
+/**
+ * 内存缓存通知实体类
+ * author:xuyaokun_kzx
+ * date:2023/1/18
+ * desc:
+*/
 public class MemoryCacheNoticeDO {
 
     private Long id;

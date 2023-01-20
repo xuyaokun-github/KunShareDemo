@@ -2,7 +2,7 @@ package cn.com.kun.service.memorycache;
 
 import cn.com.kun.bean.entity.Student;
 import cn.com.kun.bean.model.StudentReqVO;
-import cn.com.kun.component.memorycache.annotation.EvictCacheNotice;
+import cn.com.kun.component.memorycache.maintain.annotation.EvictCacheNotice;
 import cn.com.kun.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,5 +38,6 @@ public class MemCacheMaintainAppService {
         BeanUtils.copyProperties(reqVO, student);
         return studentMapper.update(student);
     }
+
 
 }

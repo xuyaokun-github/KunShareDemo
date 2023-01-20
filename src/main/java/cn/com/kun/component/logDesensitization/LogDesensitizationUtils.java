@@ -29,7 +29,7 @@ public class LogDesensitizationUtils {
     private static BuildMessageFunction buildMessageFunction;
 
     static {
-        if (false){
+        if (existLog4jUtilsPackage()){
             /*
                 org.apache.logging.log4j.message.ParameterizedMessage
                 org.apache.logging.log4j.message.ParameterizedMessage#getFormattedMessage()
@@ -52,6 +52,17 @@ public class LogDesensitizationUtils {
                 }
             };
         }
+    }
+
+    private static boolean existLog4jUtilsPackage() {
+
+        try {
+            Class.forName("org.apache.logging.log4j.message.ParameterizedMessage");
+            return true;
+        } catch (ClassNotFoundException e) {
+            //对类名的判断,异常则说明不存在
+        }
+        return false;
     }
 
     private interface BuildMessageFunction {
