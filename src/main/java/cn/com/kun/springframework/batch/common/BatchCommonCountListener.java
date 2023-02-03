@@ -40,18 +40,26 @@ public class BatchCommonCountListener implements JobExecutionListener {
         //一个job中可能有很多step(通常我们只关注第一个，大多数情况下用一个step就完事了)
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
         int readCount = 0;
+        int writeCount = 0;
+        int commitCount = 0;
+        int skipCount = 0;
+
         for (StepExecution stepExecution : stepExecutions){
             readCount = readCount + stepExecution.getReadCount();
+            writeCount = writeCount + stepExecution.getWriteCount();
+            commitCount = commitCount + stepExecution.getCommitCount();
+            skipCount = skipCount + stepExecution.getSkipCount();
         }
-        logger.info("read的总个数：" + readCount);
+        logger.info("read的总个数：{} writeCount:{} commitCount:{} skipCount:{} ", readCount, writeCount, commitCount, skipCount);
 
         BatchExecCounter.CountData countData = BatchExecCounter.getCountData();
         BatchExecCounter.removeCountId();
         long sucesssNum = countData.getSuccessNum().get();
         long failNum = countData.getFailNum().get();
         //插入数据库（通过数据库保存批处理每个任务的执行成功失败次数）
-        //TODO
-        logger.info(String.format("存库,成功%s条，失败%s条", sucesssNum, failNum));
+        //TODO  这个有点问题
+//        logger.info(String.format("存库,成功%s条，失败%s条", sucesssNum, failNum));
+        logger.info(String.format("执行记录存库,成功%s条", sucesssNum));
 
     }
 }

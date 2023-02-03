@@ -1,10 +1,10 @@
 package cn.com.kun.springframework.batch.batchService4;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.common.exception.MyBatchBussinessException;
+import cn.com.kun.common.exception.SkippableException;
 import cn.com.kun.common.utils.JacksonUtils;
-import cn.com.kun.springframework.batch.common.BatchCommonCountListener;
 import cn.com.kun.springframework.batch.batchService1.UserFileItem;
+import cn.com.kun.springframework.batch.common.BatchCommonCountListener;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;
@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -61,6 +62,10 @@ public class BatchDemo4JobConfig {
     @Qualifier("job4Writer4ForCustom")
     private ItemWriter job4Writer4ForCustom;
 
+    @Value("${kunghsu.batch.skipRatioThreshold:70}")
+    private double skipRatioThreshold;
+
+
     /**
      * 定义一个Job
      * @param listener（这个监听器是一个单例，全局共用的）
@@ -86,12 +91,16 @@ public class BatchDemo4JobConfig {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("myBatchStep4")
-                .<UserFileItem, User>chunk(2)
+                .<UserFileItem, User>chunk(3)
                 //假如出现MyBatchBussinessException超过2次，则job就会终止（前面成功的chunk会被正常提交，不受skip-limit机制影响）
-                .faultTolerant().skip(MyBatchBussinessException.class).skipLimit(2)
+
                 .reader(job4Reader4ForCustom)
-                .processor(myBatchProcessor4())
+                .processor(myBatchProcessor4(null))
                 .writer(job4Writer4ForCustom)
+                .faultTolerant()
+                .skip(SkippableException.class)
+                .skipPolicy(new RatioCheckingSkipPolicy(skipRatioThreshold)) //自定义skip判断策略
+//                .skipLimit(4)
                 //假如异常被自定义异常处理器跳过了，则skip-limit机制就不会再统计到。
 //                .exceptionHandler(new MyBatchExceptionHandler()) //设置异常处理器
 //                .taskExecutor(null) //可以指定多线程执行
@@ -100,8 +109,9 @@ public class BatchDemo4JobConfig {
 
     //定义一个介于读写之间的中间处理操作
     @Bean
-    public MyBatchProcessor4 myBatchProcessor4() {
-        return new MyBatchProcessor4();
+    @StepScope
+    public MyBatchProcessor4 myBatchProcessor4(@Value("#{stepExecution}") StepExecution stepExecution) {
+        return new MyBatchProcessor4(stepExecution);
     }
 
 

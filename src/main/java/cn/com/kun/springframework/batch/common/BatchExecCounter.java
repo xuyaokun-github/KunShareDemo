@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 批处理执行情况统计器
+ * 注意：放在process阶段，好像并不是
  *
  * Created by xuyaokun On 2020/10/20 22:28
  * @desc:
