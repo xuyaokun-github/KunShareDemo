@@ -6,6 +6,8 @@ import java.util.Date;
 
 public class User /*implements Serializable*/ {
 
+    private Long id;
+
     private String firstname;
 
     private String lastname;
@@ -97,5 +99,11 @@ public class User /*implements Serializable*/ {
         this.age = age;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

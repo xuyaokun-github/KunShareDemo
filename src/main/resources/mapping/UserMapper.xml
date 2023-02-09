@@ -27,8 +27,15 @@
     </select>
 
     <insert id="insert" parameterType="User" >
-        INSERT INTO tbl_user(firstname,lastname,phone,email,create_time)
-        VALUES(#{firstname},#{lastname},#{phone},#{email},#{createTime})
+        INSERT INTO tbl_user(id,firstname,lastname,phone,email,create_time)
+        VALUES(#{id},#{firstname},#{lastname},#{phone},#{email},#{createTime})
+    </insert>
+
+    <insert id="insertByBatch" parameterType="java.util.List">
+        INSERT INTO tbl_user(id,firstname,lastname,phone,email,create_time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.firstname},#{item.lastname},#{item.phone},#{item.email},#{item.createTime})
+        </foreach>
     </insert>
 
     <update id="update" parameterType="User">
@@ -109,9 +116,14 @@
     <delete id="deleteByFirstname" parameterType="String">
         DELETE FROM tbl_user WHERE firstname=#{firstname}
     </delete>
-
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM tbl_user WHERE id=#{id}
+    </delete>
     <select id="findAllStream" resultType="User" fetchSize="2">
         select * from tbl_user
     </select>
 
+    <select id="findMaxId" resultType="long">
+        select max(id) from tbl_user
+    </select>
 </mapper>

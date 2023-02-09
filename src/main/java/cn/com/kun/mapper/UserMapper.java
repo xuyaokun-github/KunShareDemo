@@ -14,6 +14,8 @@ public interface UserMapper {
 
     int insert(User user);
 
+    int insertByBatch(List<User> list);
+
     int update(User user);
 
     List<User> query(Map map);
@@ -24,6 +26,7 @@ public interface UserMapper {
 
     int deleteByFirstname(String firstname);
 
+    int deleteById(Long id);
 
     User getUserByFirstname(@Param("firstname") String firstname);
 
@@ -32,4 +35,6 @@ public interface UserMapper {
      * @return
      */
     Cursor<User> findAllStream();
+
+    Long findMaxId();
 }

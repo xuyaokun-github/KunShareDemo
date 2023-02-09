@@ -72,4 +72,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         return mappingJsonpHttpMessageConverter;
     }
 
+    /**
+     * 只有5.3以上版本支持PathPatternParser
+     * @param configurer
+     */
+//    @Override
+//    public void configurePathMatch(PathMatchConfigurer configurer) {
+//        configurer.setPatternParser(new PathPatternParser());
+//    }
 }
