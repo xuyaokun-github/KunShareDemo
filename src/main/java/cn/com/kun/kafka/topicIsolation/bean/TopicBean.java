@@ -31,10 +31,16 @@ public class TopicBean {
      */
     private String priority;
 
+    /**
+     * 主题名
+     */
+    private String topicName;
+
     public TopicBean(String topicPrefix, List<String> bizColumns, String priority) {
         this.topicPrefix = topicPrefix;
         this.bizColumns = bizColumns;
         this.priority = priority;
+        this.topicName = buildTopicName();
     }
 
     public String getTopicPrefix() {
@@ -78,4 +84,12 @@ public class TopicBean {
         return topicPrefix + "_" + StringUtils.join(bizColumns, "_") + "_" + priority;
     }
 
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
 }

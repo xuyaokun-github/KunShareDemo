@@ -59,7 +59,7 @@ public class DefaulteTopicIsolationFunctionImpl implements TopicIsolationFunctio
         if (topicBeanMap != null){
             TopicBean topicBean = topicBeanMap.get(batchFlag + "-" + templatePriority);
             if (topicBean != null){
-                return topicBean.buildTopicName();
+                return topicBean.getTopicName();
             }
         }
         //假如返回空，上层会返回默认主题（配置文件定义的）

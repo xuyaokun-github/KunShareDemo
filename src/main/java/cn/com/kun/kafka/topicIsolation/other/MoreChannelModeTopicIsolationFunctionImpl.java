@@ -66,7 +66,7 @@ public class MoreChannelModeTopicIsolationFunctionImpl implements TopicIsolation
                 topicBean = topicBeanMap.get(templatePriority);
             }
             if (topicBean != null){
-                return topicBean.buildTopicName();
+                return topicBean.getTopicName();
             }
         }
         return null;
