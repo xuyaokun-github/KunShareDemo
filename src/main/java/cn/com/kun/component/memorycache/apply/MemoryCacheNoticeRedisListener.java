@@ -44,7 +44,7 @@ public class MemoryCacheNoticeRedisListener implements MessageListener {
                 //更新时间戳
                 memoryCacheRedisDetector.updateTimemillis(noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOGGER.info("MemoryCacheNoticeRedisListenery异常", e);
             }
         }
     }

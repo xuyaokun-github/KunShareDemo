@@ -32,7 +32,7 @@ public class MemoryCacheCleaner {
     @PostConstruct
     public void init(){
 
-        if (memoryCacheProperties.isEnabled() && memoryCacheProperties.isMaintainApp()){
+        if (memoryCacheProperties.isEnabled() && memoryCacheProperties.isApplyApp()){
             initCacheManager();
         }
     }
