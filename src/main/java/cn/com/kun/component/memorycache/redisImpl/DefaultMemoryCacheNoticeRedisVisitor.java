@@ -22,7 +22,7 @@ public class DefaultMemoryCacheNoticeRedisVisitor implements MemoryCacheNoticeRe
 
     @PostConstruct
     public void init(){
-        Assert.notNull(redisTemplate, "redisTemplate不能为空");
+        Assert.notNull(redisTemplate, "MemoryCache组件DefaultMemoryCacheNoticeRedisVisitor依赖redisTemplate不能为空");
     }
 
     @Override

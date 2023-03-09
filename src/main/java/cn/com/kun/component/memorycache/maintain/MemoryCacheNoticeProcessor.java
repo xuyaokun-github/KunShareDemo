@@ -39,13 +39,6 @@ public class MemoryCacheNoticeProcessor {
     @Autowired
     private MemoryCacheNoticeRedisVisitor memoryCacheNoticeRedisVisitor;
 
-    /**
-     * 由组件使用方提供RedisTemplate实现
-     * 后续可以优化成不强依赖RedisTemplate
-     */
-//    @Autowired(required = false)
-//    private RedisTemplate redisTemplate;
-
     public void notice(String configName) {
         notice(configName, "");
     }

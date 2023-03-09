@@ -4,6 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
+/**
+ * 维护方配置
+ *
+ * author:xuyaokun_kzx
+ * desc:
+*/
 public class Maintain {
 
     /**

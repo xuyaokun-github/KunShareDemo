@@ -1,5 +1,11 @@
 package cn.com.kun.component.memorycache.properties;
 
+/**
+ * 应用方配置
+ *
+ * author:xuyaokun_kzx
+ * desc:
+*/
 public class Apply {
 
 
