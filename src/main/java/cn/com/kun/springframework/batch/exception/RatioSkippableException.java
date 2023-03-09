@@ -1,4 +1,4 @@
-package cn.com.kun.common.exception;
+package cn.com.kun.springframework.batch.exception;
 
 /**
  * 自定义的跳过策略-支持按比例判断

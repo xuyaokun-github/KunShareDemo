@@ -1,4 +1,4 @@
-package cn.com.kun.common.exception;
+package cn.com.kun.springframework.batch.exception;
 
 public class SkippableException extends Exception {
 

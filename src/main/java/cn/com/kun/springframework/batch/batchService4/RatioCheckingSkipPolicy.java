@@ -1,6 +1,6 @@
 package cn.com.kun.springframework.batch.batchService4;
 
-import cn.com.kun.common.exception.RatioSkippableException;
+import cn.com.kun.springframework.batch.exception.RatioSkippableException;
 import org.springframework.batch.core.step.skip.SkipLimitExceededException;
 import org.springframework.batch.core.step.skip.SkipPolicy;
 

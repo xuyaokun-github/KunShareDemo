@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class MemoryCacheProperties {
 
     /**
-     * 全局开关
+     * 全局开关,默认为关闭
      * 设置为false,禁用MemoryCache功能
      */
     private boolean enabled;

@@ -5,10 +5,9 @@ import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.service.memorycache.IMemCacheDemoService;
 import cn.com.kun.service.memorycache.MemCacheMaintainAppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * 这个用来触发 远程接口的数据变更
@@ -51,6 +50,17 @@ public class MemoryCacheMaintainAppController {
     public ResultVo<Integer> update(@RequestBody StudentReqVO reqVO){
 
         Integer res = memCacheMaintainAppService.updateStudent(reqVO);
+        return ResultVo.valueOfSuccess(res);
+    }
+
+    @GetMapping("/update2")
+    public ResultVo<Integer> update2(){
+
+        StudentReqVO reqVO = new StudentReqVO();
+        reqVO.setId(10L);
+        reqVO.setIdCard(System.currentTimeMillis()+"");
+        reqVO.setCreateTime(new Date());
+        Integer res = memCacheMaintainAppService.updateStudent2(reqVO);
         return ResultVo.valueOfSuccess(res);
     }
 

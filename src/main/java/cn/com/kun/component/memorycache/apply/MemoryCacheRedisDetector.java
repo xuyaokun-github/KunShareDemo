@@ -1,12 +1,11 @@
 package cn.com.kun.component.memorycache.apply;
 
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.redisImpl.MemoryCacheNoticeRedisVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -31,20 +30,27 @@ public class MemoryCacheRedisDetector {
     /**
      * 强依赖Redis
      */
-    @Autowired(required = false)
-    private RedisTemplate redisTemplate;
-
-    private long sleepTime = 1000L;
-
-    private int heartBeatCount = 0;
-
-    private Map<String, String> timeMillisMap = new HashMap<>();
+    @Autowired
+    private MemoryCacheNoticeRedisVisitor memoryCacheNoticeRedisVisitor;
 
     @Autowired
     private MemoryCacheProperties memoryCacheProperties;
 
     @Autowired
     private MemoryCacheCleaner memoryCacheCleaner;
+
+    private Map<String, String> timeMillisMap = new HashMap<>();
+
+    /**
+     * 默认的检测间隔睡眠时间，1秒
+     */
+    private long sleepTime = 1000L;
+
+    /**
+     * 记录心跳次数
+     */
+    private int heartBeatCount = 0;
+
 
     @PostConstruct
     public void init(){
@@ -56,7 +62,6 @@ public class MemoryCacheRedisDetector {
             new Thread(()->{
                 doCheck();
             }, "MemoryCacheRedisDetector-Thread").start();
-            Assert.notNull(redisTemplate, "redisTemplate不能为空");
         }
 
     }
@@ -80,7 +85,7 @@ public class MemoryCacheRedisDetector {
      */
     private void logHeartBeat() {
         heartBeatCount++;
-        if (heartBeatCount == 5){
+        if (heartBeatCount == 10){
             LOGGER.info("MemoryCacheRedisDetector working...");
             heartBeatCount = 0;
         }
@@ -90,7 +95,7 @@ public class MemoryCacheRedisDetector {
         /**
          * 获取整个hash结构
          */
-        Map<Object,Object> redisMap = redisTemplate.opsForHash().entries(NOTICE_TIMEMILLIS_HASH_KEYNAME);
+        Map<Object, Object> redisMap = memoryCacheNoticeRedisVisitor.getHash(NOTICE_TIMEMILLIS_HASH_KEYNAME);
         Iterator<Map.Entry<Object, Object>> iterator = redisMap.entrySet().iterator();
         while (iterator.hasNext()){
             Map.Entry<Object, Object> entry = iterator.next();

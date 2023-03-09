@@ -18,6 +18,9 @@ public class TopicBean {
      */
     private String topicPrefix;
 
+    /**
+     * 业务列
+     */
     private List<String> bizColumns;
 
     /**

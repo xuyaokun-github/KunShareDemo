@@ -1,5 +1,6 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.component.memorycache.maintain.schedule;
 
+import cn.com.kun.component.memorycache.maintain.MemoryCacheDBDetector;
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

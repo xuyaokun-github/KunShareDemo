@@ -6,4 +6,8 @@ public interface IMemCacheDemoService {
 
 
     Integer updateStudent(StudentReqVO reqVO);
+
+    Integer updateStudent2(StudentReqVO reqVO);
+
+
 }

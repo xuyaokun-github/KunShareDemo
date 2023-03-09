@@ -1,9 +1,9 @@
 package cn.com.kun.springframework.batch.batchService4;
 
 import cn.com.kun.bean.entity.User;
-import cn.com.kun.common.exception.RatioSkippableException;
 import cn.com.kun.common.utils.DateUtils;
 import cn.com.kun.springframework.batch.common.BatchExecCounter;
+import cn.com.kun.springframework.batch.exception.RatioSkippableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;

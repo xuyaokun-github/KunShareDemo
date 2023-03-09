@@ -1,14 +1,15 @@
 package cn.com.kun.component.memorycache.maintain;
 
-import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeMapper;
+import cn.com.kun.component.memorycache.dao.MemoryCacheNoticeDbVisitor;
 import cn.com.kun.component.memorycache.entity.MemoryCacheNoticeDO;
+import cn.com.kun.component.memorycache.maintain.noticeService.MemoryCacheNoticeServiceStrategyFactory;
 import cn.com.kun.component.memorycache.properties.MemoryCacheProperties;
+import cn.com.kun.component.memorycache.redisImpl.MemoryCacheNoticeRedisVisitor;
 import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import static cn.com.kun.component.memorycache.constants.MemoryCacheConstants.NOTICE_TIMEMILLIS_HASH_KEYNAME;
@@ -33,18 +34,34 @@ public class MemoryCacheNoticeProcessor {
     private MemoryCacheProperties memoryCacheProperties;
 
     @Autowired
-    private MemoryCacheNoticeMapper memoryCacheNoticeMapper;
+    private MemoryCacheNoticeDbVisitor memoryCacheNoticeDbVisitor;
 
-    @Autowired(required = false)
-    private RedisTemplate redisTemplate;
+    @Autowired
+    private MemoryCacheNoticeRedisVisitor memoryCacheNoticeRedisVisitor;
 
     /**
-     * 发送通知至广播队列
-     *
-     * @param configName
-     * @param key
+     * 由组件使用方提供RedisTemplate实现
+     * 后续可以优化成不强依赖RedisTemplate
      */
+//    @Autowired(required = false)
+//    private RedisTemplate redisTemplate;
+
+    public void notice(String configName) {
+        notice(configName, "");
+    }
+
+        /**
+         * 发送通知至广播队列
+         *
+         * @param configName
+         * @param key
+         */
     public void notice(String configName, String key){
+
+        //组件未启用，直接返回 do nothing
+        if (!memoryCacheProperties.isEnabled()){
+            return;
+        }
 
         //封装对象，发送至redis广播
         MemoryCacheNoticeMsg noticeMsg = new MemoryCacheNoticeMsg();
@@ -56,7 +73,7 @@ public class MemoryCacheNoticeProcessor {
             if (memoryCacheProperties.getMaintain().isMultiRedis()){
             /*
                 是否存在多套redis
-                假如是无法通过广播通知所有集群，只能把记录先写入到数据库，由集群自行异步获取通知再本集群广播
+                假如是无法通过广播通知所有集群，先将记录写入到数据库，由集群自行异步获取通知然后在本集群内广播
              */
                 //获取集群列表（后续可以考虑实现自动发现集群列表）
                 memoryCacheProperties.getMaintain().getClusterList().forEach(clusterName -> {
@@ -64,7 +81,7 @@ public class MemoryCacheNoticeProcessor {
                     BeanUtils.copyProperties(noticeMsg, noticeMsgDO);
                     noticeMsgDO.setClusterName(clusterName);
                     //存DB
-                    memoryCacheNoticeMapper.save(noticeMsgDO);
+                    memoryCacheNoticeDbVisitor.save(noticeMsgDO);
                 });
 
             }else {
@@ -72,6 +89,7 @@ public class MemoryCacheNoticeProcessor {
                 //通知的实现可以是Redis或者eureka
                 sendNotice(noticeMsg);
             }
+
         }catch (Exception e){
             //是否抛出异常，由上层继续补偿处理？
             //吞掉这个异常有风险，我建议是抛出异常，由上层决定是否重试
@@ -80,9 +98,9 @@ public class MemoryCacheNoticeProcessor {
 
     }
 
-    public void sendNotice(MemoryCacheNoticeMsg noticeMsg){
+    protected void sendNotice(MemoryCacheNoticeMsg noticeMsg){
 
-        //广播通知
+        //发送广播通知
         MemoryCacheNoticeServiceStrategyFactory.getByNoticeType(memoryCacheProperties.getNoticeImplType())
                 .sendBroadcastNotice(noticeMsg);
 
@@ -91,7 +109,7 @@ public class MemoryCacheNoticeProcessor {
          * 没关系，只要检测线程判断到值不存在，就会重新放入
          */
         //更新redis中的时间戳
-        redisTemplate.opsForHash().put(NOTICE_TIMEMILLIS_HASH_KEYNAME, noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
+        memoryCacheNoticeRedisVisitor.put(NOTICE_TIMEMILLIS_HASH_KEYNAME, noticeMsg.getConfigName(), noticeMsg.getUpdateTimemillis());
 
         /**
          * 假如这里精确到key级别的时间戳，是否合适？

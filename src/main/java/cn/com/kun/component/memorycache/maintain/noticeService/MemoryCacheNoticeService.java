@@ -1,4 +1,4 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.component.memorycache.maintain.noticeService;
 
 import cn.com.kun.component.memorycache.vo.MemoryCacheNoticeMsg;
 

@@ -62,6 +62,7 @@ public class MemoryCacheCleaner {
             if (StringUtils.isNotEmpty(bizKey)){
                 cacheManager.getCache(configName).evict(bizKey);
             }else {
+                //假如Key为空，全部清除（针对某些场景，可能缓存key拼接了其他业务字段，不推荐这么用）
                 cacheManager.getCache(configName).clear();
             }
         }

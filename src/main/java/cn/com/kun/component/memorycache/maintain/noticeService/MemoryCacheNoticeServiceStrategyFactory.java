@@ -1,4 +1,4 @@
-package cn.com.kun.component.memorycache.maintain;
+package cn.com.kun.component.memorycache.maintain.noticeService;
 
 import org.springframework.util.Assert;
 

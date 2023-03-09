@@ -59,7 +59,7 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
 
         //必须提供一个KafkaConsumerProvider实现
         kafkaConsumeExecutorProvider = applicationContext.getBean(KafkaConsumeExecutorProvider.class);
-        Assert.notNull(kafkaConsumerProvider, String.format("KafkaConsumeExecutorProvider实现为空,必须实现一个KafkaConsumeExecutorProvider Bean"));
+        Assert.notNull(kafkaConsumeExecutorProvider, String.format("KafkaConsumeExecutorProvider实现为空,必须实现一个KafkaConsumeExecutorProvider Bean"));
 
         //必须提供一个KafkaConsumerProvider实现
         consumerRunnableProvider = applicationContext.getBean(ConsumerRunnableProvider.class);
@@ -92,9 +92,9 @@ public class ConsumerTopicProcessor implements ApplicationContextAware, Initiali
         //默认主题，也需要分配一个消费线程
         String topic = kafkaTopicIsolationProperties.getDefaultTopic();
         KafkaConsumer consumer = kafkaConsumerProvider.buildKafkaConsumer();
-        Executor myKafkaMsgExecutor = buildKafkaConsumeExecutor(topic);
+        Executor defaultKafkaMsgExecutor = buildKafkaConsumeExecutor(topic);
 
-        Runnable runnable = consumerRunnableProvider.getConsumerRunnable(consumer, topic, myKafkaMsgExecutor);
+        Runnable runnable = consumerRunnableProvider.getConsumerRunnable(consumer, topic, defaultKafkaMsgExecutor);
         //开启消费线程
         startConsumeThread(runnable, topic.toLowerCase() + "-consumer-thread");
 
