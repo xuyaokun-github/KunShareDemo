@@ -22,26 +22,30 @@ public class DefaultMemoryCacheNoticeRedisVisitor implements MemoryCacheNoticeRe
 
     @PostConstruct
     public void init(){
-        Assert.notNull(redisTemplate, "MemoryCache组件DefaultMemoryCacheNoticeRedisVisitor依赖redisTemplate不能为空");
     }
 
     @Override
     public Map<Object, Object> getHash(String keyName) {
-
+        checkRedisTemplate();
         Map<Object,Object> redisMap = redisTemplate.opsForHash().entries(keyName);
         return redisMap;
+    }
+
+    private void checkRedisTemplate() {
+        Assert.notNull(redisTemplate, "MemoryCache组件DefaultMemoryCacheNoticeRedisVisitor依赖redisTemplate不能为空");
     }
 
 
     @Override
     public void put(String keyName, String hashKeyName, String value) {
+        checkRedisTemplate();
         redisTemplate.opsForHash().put(keyName, hashKeyName, value);
     }
 
 
     @Override
     public void convertAndSend(String noticeTopic, MemoryCacheNoticeMsg noticeMsg) {
-
+        checkRedisTemplate();
         redisTemplate.convertAndSend(noticeTopic, noticeMsg);
     }
 
