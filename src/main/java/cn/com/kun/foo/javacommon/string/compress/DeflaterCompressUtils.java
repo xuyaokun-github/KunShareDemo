@@ -58,6 +58,9 @@ public class DeflaterCompressUtils {
     }
 
     private static String convertToBase64(byte[] byteArray) {
+        //建议不要用sun的Base64包
         return new sun.misc.BASE64Encoder().encode(byteArray);
     }
+
+
 }
