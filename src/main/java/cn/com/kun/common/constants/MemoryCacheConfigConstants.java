@@ -13,4 +13,7 @@ public class MemoryCacheConfigConstants {
      */
     public static final String MEMORY_CACHE_CONFIG_NAME_STUDENT_2 = "memorycache-student-service-2";
 
+    public static final String MEMORY_CACHE_CONFIG_NAME_STUDENT_3 = "memorycache-student-service-3";
+
+
 }

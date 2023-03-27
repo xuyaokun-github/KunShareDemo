@@ -1,6 +1,8 @@
 package cn.com.kun.springframework.batch.batchService4;
 
 import cn.com.kun.springframework.batch.exception.RatioSkippableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.step.skip.SkipLimitExceededException;
 import org.springframework.batch.core.step.skip.SkipPolicy;
 
@@ -13,6 +15,8 @@ import org.springframework.batch.core.step.skip.SkipPolicy;
  * desc:
 */
 public class RatioCheckingSkipPolicy implements SkipPolicy {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RatioCheckingSkipPolicy.class);
 
     private double skipRatioThreshold;
 
@@ -41,12 +45,24 @@ public class RatioCheckingSkipPolicy implements SkipPolicy {
 
     private boolean canSkip(int skipCount, int readTotalCount) {
 
-        if (readTotalCount > 0){
-            //跳过的累计数除以已读取数，得到一个比例，小于 配置文件中定义的比例，则允许跳过
-            return RatioFormatUtil.getRatioForInt(skipCount, readTotalCount) < skipRatioThreshold;
+        boolean canSkip = true;
+        try {
+            if (readTotalCount > 0){
+                Double ratio = RatioFormatUtil.getRatioForInt(skipCount, readTotalCount);
+                //跳过的累计数除以已读取数，得到一个比例，小于等于 配置文件中定义的比例，则允许跳过
+                //假如配置为100，表示允许跳过所有异常数据
+                canSkip = ratio <= skipRatioThreshold;
+                if (!canSkip){
+                    LOGGER.info("异常比例跳过机制计算比例[{}/{}={}]超出阈值[{}]，无需继续跳过，即将终止任务 ", skipCount, readTotalCount, ratio, skipRatioThreshold);
+                }else {
+                    LOGGER.info("异常比例跳过机制允许跳过，计算比例[{}/{}={}]未超出阈值[{}]，任务继续执行", skipCount, readTotalCount, ratio, skipRatioThreshold);
+                }
+            }
+        }catch (Exception e){
+            LOGGER.error("RatioCheckingSkipPolicy异常", e);
         }
+        return canSkip;
 
-        return true;
     }
 
 

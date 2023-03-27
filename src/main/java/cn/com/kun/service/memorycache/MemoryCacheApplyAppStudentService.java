@@ -14,8 +14,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT;
-import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT_2;
+import static cn.com.kun.common.constants.MemoryCacheConfigConstants.*;
 
 
 @Service
@@ -56,6 +55,18 @@ public class MemoryCacheApplyAppStudentService {
         StudentResVO studentResVO = new StudentResVO();
         BeanUtils.copyProperties(student, studentResVO);
         return studentResVO;
+    }
+
+    /**
+     * 样例方法：返回空，框架会作何处理？
+     * @param reqVO
+     * @return
+     */
+    @Cacheable(value = MEMORY_CACHE_CONFIG_NAME_STUDENT_3, key = "#reqVO.id.toString()", cacheManager = "caffeineCacheManager")
+    public StudentResVO queryStudentRtnNull(StudentReqVO reqVO) {
+
+        LOGGER.info("开始调接口获取Student信息");
+        return null;
     }
 
 

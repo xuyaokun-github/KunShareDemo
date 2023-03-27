@@ -67,6 +67,8 @@ public class MemoryCacheApplyAppController {
         StudentResVO studentResVO2 = memoryCacheDemoStudentService.queryStudent(reqVO);
         StudentResVO studentResVO22 = memoryCacheDemoStudentService.queryStudent2(reqVO);
 
+        StudentResVO studentRtnNull = memoryCacheDemoStudentService.queryStudentRtnNull(reqVO);
+
         return ResultVo.valueOfSuccess(studentResVO);
     }
 
@@ -83,6 +85,14 @@ public class MemoryCacheApplyAppController {
         return ResultVo.valueOfSuccess(res);
     }
 
+    @GetMapping("/clearAll")
+    public ResultVo clearAll(){
+
+        cacheManager.getCacheNames().forEach(cacheName->{
+            cacheManager.getCache(cacheName).clear();
+        });
+        return null;
+    }
 
     @GetMapping("/cacheManager")
     public ResultVo<Integer> cacheManager(){

@@ -1,8 +1,7 @@
 package cn.com.kun.common.enums;
 
 
-import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT;
-import static cn.com.kun.common.constants.MemoryCacheConfigConstants.MEMORY_CACHE_CONFIG_NAME_STUDENT_2;
+import static cn.com.kun.common.constants.MemoryCacheConfigConstants.*;
 
 /**
  * 各个服务层的内存缓存管理器配置定义在这个类
@@ -18,6 +17,7 @@ public enum MemoryCacheConfigurantionsEnum {
      */
     STUDENT(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT),
     STUDENT2(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT_2),
+    STUDENT3(30*60, 1000, MEMORY_CACHE_CONFIG_NAME_STUDENT_3),
     USER(12000, 2000, "memory-cache-user-service");
 
     public long ttl;
