@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -402,5 +400,85 @@ public class SpringRedisDemocontroller {
         return ResultVo.valueOfSuccess(res2);
     }
 
+    /**
+     * 验证 batchGet操作和 普通Get操作的 性能差异
+     * 单线程做实验
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/testBatchGet")
+    public ResultVo testBatchGet(HttpServletRequest request){
 
+        List<String> keyList = Arrays.asList("aaa", "bbb", "ccc");
+
+        List<String> stringList = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            stringList.add(UUID.randomUUID().toString());
+        }
+
+        long startTime = System.currentTimeMillis();
+        stringList.forEach(str->{
+            for (String key : keyList){
+                redisTemplate.opsForValue().get(key);
+            }
+        });
+
+        long endTime = System.currentTimeMillis();
+        LOGGER.info("普通get操作耗时：{}ms", endTime - startTime);
+
+        stringList.forEach(str->{
+            redisTemplate.opsForValue().multiGet(keyList);
+        });
+        LOGGER.info("multiGet操作耗时：{}ms", System.currentTimeMillis() - endTime);
+
+        return ResultVo.valueOfSuccess();
+    }
+
+
+
+    @GetMapping(value = "/testBatchGetMultiThread")
+    public ResultVo testBatchGetMultiThread(HttpServletRequest request) throws InterruptedException {
+
+        List<String> keyList = Arrays.asList("aaa", "bbb", "ccc");
+
+        List<String> stringList = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            stringList.add(UUID.randomUUID().toString());
+        }
+
+        long startTime = System.currentTimeMillis();
+
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            CountDownLatch finalCountDownLatch1 = countDownLatch;
+            new Thread(()->{
+                stringList.forEach(str->{
+                    for (String key : keyList){
+                        redisTemplate.opsForValue().get(key);
+                    }
+                });
+                finalCountDownLatch1.countDown();
+            }).start();
+        }
+
+        countDownLatch.await();
+        long endTime = System.currentTimeMillis();
+        LOGGER.info("普通get操作耗时：{}ms", endTime - startTime);
+
+        countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            CountDownLatch finalCountDownLatch = countDownLatch;
+            new Thread(()->{
+                stringList.forEach(str->{
+                    redisTemplate.opsForValue().multiGet(keyList);
+                });
+                finalCountDownLatch.countDown();
+            }).start();
+        }
+        countDownLatch.await();
+        LOGGER.info("multiGet操作耗时：{}ms", System.currentTimeMillis() - endTime);
+
+        return ResultVo.valueOfSuccess();
+    }
 }
