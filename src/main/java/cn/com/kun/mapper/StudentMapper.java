@@ -31,6 +31,11 @@ public interface StudentMapper {
      */
     int delete(@Param("id") Long id);
 
+    /**
+     * 在where子句应用if判断
+     * @return
+     */
+    int updateByCondition(@Param("id") Long id, @Param("idCard") String idCard);
 
     /**
      * 流式查询--含条件

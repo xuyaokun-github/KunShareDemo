@@ -11,13 +11,18 @@ import cn.com.kun.component.jdbc.CommonDbUtilsJdbcStore;
 import cn.com.kun.component.jdbc.CommonJdbcStore;
 import cn.com.kun.component.jdbc.PreparedStatementParamProvider;
 import cn.com.kun.mapper.StudentMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
@@ -39,6 +44,12 @@ public class JdbcDemoController {
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
+
+    @Autowired(required = false)
+    private DataSource dataSource;
 
     @GetMapping("/testSelectBean")
     public String testSelectBean(){
@@ -255,4 +266,43 @@ public class JdbcDemoController {
         return "kunghsu";
     }
 
+
+    @GetMapping("/testSelectListBy")
+    public String JDBCSaveBatch() throws SQLException {
+
+
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        Connection connection = sqlSession.getConnection();
+        connection.setAutoCommit(false);
+        String sql = "insert into open_test(a,b,c,d,e,f,g,h,i,j,k) values(?,?,?,?,?,?,?,?,?,?,?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        try {
+            for (int i = 0; i < 1000; i++) {
+                statement.setString(1,"a" + i);
+                statement.setString(2,"b" + i);
+                statement.setString(3, "c" + i);
+                statement.setString(4,"d" + i);
+                statement.setString(5,"e" + i);
+                statement.setString(6,"f" + i);
+                statement.setString(7,"g" + i);
+                statement.setString(8,"h" + i);
+                statement.setString(9,"i" + i);
+                statement.setString(10,"j" + i);
+                statement.setString(11,"k" + i);
+                statement.addBatch();
+            }
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start("JDBC save batch");
+            statement.executeBatch();
+            connection.commit();
+            stopWatch.stop();
+            LOGGER.info("JDBC save batch：" + stopWatch.getTotalTimeMillis());
+        } finally {
+            statement.close();
+            sqlSession.close();
+        }
+
+        return "kunghsu";
+    }
 }
+

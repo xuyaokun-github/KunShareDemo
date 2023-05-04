@@ -13,6 +13,15 @@
         WHERE id=#{id}
     </update>
 
+    <update id="updateByCondition" >
+        UPDATE tbl_student
+        SET id_card=#{idCard}
+        WHERE id=#{id}
+        <if test="idCard!=null and idCard!=''">
+        AND a.id_card = #{idCard}
+    </if>
+    </update>
+
     <select id="query" parameterType="java.util.Map" resultType="Student">
         SELECT
         a.id id,

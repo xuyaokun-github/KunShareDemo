@@ -1,6 +1,8 @@
 package cn.com.kun.common.utils;
 
+import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -231,7 +233,7 @@ public class JacksonUtils {
 
         Map<String, Object> res = null;
         String source = value;
-        int loopCount = 100;//非法字符出现的次数，默认支持最多100次，超过100次不做处理
+        int loopCount = 1;//非法字符出现的次数，默认支持最多100次，超过100次不做处理
         while (true){
             try {
                 //字符串转为Java对象
@@ -242,12 +244,20 @@ public class JacksonUtils {
                     //有些时候，堆栈不一定含有关键字code 34
 //                    boolean isDoubleQuotesParseException = errorMsg.contains("(code 34)): was expecting comma to separate Object entries");
                     boolean isDoubleQuotesParseException = errorMsg.contains("was expecting comma to separate Object entries");
-                    if (isDoubleQuotesParseException && errorMsg.contains("line: 1")){
+                    if (isDoubleQuotesParseException){
                         //假如是出现在第一行，才做处理，有时候双引号可能会出现在第二行，这样的处理就会比较复杂，先不考虑这种情况
                         log.warn("出现双引号解析异常，进行替换处理,源串：{}", value);
                         //替换有问题的双引号（多余的双引号，改成单引号）
                         source = replaceForDoubleQuotes(source);
                         //这里有可能陷入死循环，设置一个固定的循环次数，到次数不再continue
+                        if (loopCount-- > 0){
+                            continue;
+                        }
+                    } if (isBackslashParseException(e)) {
+//                        e.printStackTrace();//调试时用
+                        log.warn("出现反斜杠解析异常，进行替换处理,源串：{}", value);
+                        //反斜杠替换处理
+                        source = replaceForBackslash(e, source);
                         if (loopCount-- > 0){
                             continue;
                         }
@@ -264,6 +274,73 @@ public class JacksonUtils {
 
         return res;
     }
+
+    /**
+     * 反斜杆处理
+     * 目的是支持反斜杠（将一个反斜杠替换成两个反斜杠，反序列化后即可保留该反斜杠）
+     *
+     * @param e
+     * @param source
+     * @return
+     */
+    private static String replaceForBackslash(Throwable e, String source) {
+
+        String newSource = source;
+        try {
+            JsonProcessingException jsonProcessingException = (JsonProcessingException)e;
+            JsonLocation jsonlocation = jsonProcessingException.getLocation();
+            String sourceRef = (String) jsonlocation.getSourceRef();
+            if (StringUtils.isNotEmpty(sourceRef)){
+                String[] strings = sourceRef.split("\n");
+                //问题行
+                String targetLine = strings[jsonlocation.getLineNr() - 1];
+                //补多一个\到问题行
+                String newTargetLine = targetLine.replace("\\", "\\\\");
+                strings[jsonlocation.getLineNr() - 1] = newTargetLine;
+                newSource = source.replace(targetLine, newTargetLine);
+            }
+        }catch (Exception exception){
+            log.warn("replaceForBackslash函数异常", exception);
+        }
+        return newSource;
+    }
+
+    /**
+     * 处理多余反斜杠导致的异常
+     *
+     * @param throwable
+     * @return
+     */
+    private static boolean isBackslashParseException(Throwable throwable) {
+
+        if (!(throwable instanceof JsonProcessingException)){
+            return false;
+        }
+        try {
+            //无法识别的字符转义
+            boolean isParseException = throwable.getMessage().contains("Unrecognized character escape");
+
+            boolean isExistBackslash = false;
+            JsonProcessingException jsonProcessingException = (JsonProcessingException)throwable;
+            JsonLocation jsonlocation = jsonProcessingException.getLocation();
+            String sourceRef = (String) jsonlocation.getSourceRef();
+            if (StringUtils.isNotEmpty(sourceRef)){
+                String[] strings = sourceRef.split("\n");
+                String targetLine = strings[jsonlocation.getLineNr() - 1];
+                int backslashIndex = targetLine.indexOf('\\');
+                if (backslashIndex > 0){
+                    //存在反斜杠
+                    isExistBackslash = true;
+                }
+            }
+
+            return isParseException && isExistBackslash;
+        }catch (Exception e){
+            log.warn("isBackslashParseException函数异常", e);
+        }
+        return false;
+    }
+
 
     private static String replaceForDoubleQuotes(String source) {
 
