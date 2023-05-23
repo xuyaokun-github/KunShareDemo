@@ -2,11 +2,13 @@ package cn.com.kun.springframework.batch.batchService1;
 
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.utils.TraceIDUtils;
 import cn.com.kun.springframework.batch.common.BatchProgressRateCounter;
 import cn.com.kun.springframework.batch.common.BatchRateLimiterHolder;
 import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemWriter;
 
@@ -34,6 +36,14 @@ public class CustomSendItemWriter implements ItemWriter<User> {
 
             //处理的时候，先判断是否限速
             rateLimit(jobId);
+
+            if (MDC.get(TraceIDUtils.LOG_TRACE_ID) == null) {
+                LOGGER.info("不存在traceId");
+//                MDC.put(TraceIDUtils.LOG_TRACE_ID, TraceIDUtils.getTraceId());
+            }else {
+                //
+                LOGGER.info("已存在traceId：{}", MDC.get(TraceIDUtils.LOG_TRACE_ID));
+            }
 
             LOGGER.info("写操作阶段处理：{}", JacksonUtils.toJSONString(user));
             //模拟一个耗时，验证 续跑场景

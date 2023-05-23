@@ -65,7 +65,8 @@ bin/kafka-consumer-groups.sh --new-consumer --bootstrap-server localhost:9092 --
 
 查看所有消费者组
 ./kafka-consumer-groups.bat --bootstrap-server localhost:9092 --list
-
+查看所有主题
+ .\kafka-topics.bat --bootstrap-server localhost:9092 --list
 查看某个消费者组的消费情况
 ./kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group kunsharedemo
 ./kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group kunwebdemo

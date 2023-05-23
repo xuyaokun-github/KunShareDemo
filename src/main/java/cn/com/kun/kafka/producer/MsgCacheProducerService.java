@@ -46,4 +46,8 @@ public class MsgCacheProducerService {
 //        kafkaProducer.close();
     }
 
+    public void produceForAutoSwitch(MsgCacheTopicMsg msgCacheTopicMsg, String topicName) {
+
+
+    }
 }

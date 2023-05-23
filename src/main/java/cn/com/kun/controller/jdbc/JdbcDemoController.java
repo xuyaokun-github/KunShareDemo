@@ -267,8 +267,8 @@ public class JdbcDemoController {
     }
 
 
-    @GetMapping("/testSelectListBy")
-    public String JDBCSaveBatch() throws SQLException {
+    @GetMapping("/testJDBCSaveBatch")
+    public String testJDBCSaveBatch() throws SQLException {
 
 
         SqlSession sqlSession = sqlSessionFactory.openSession();

@@ -1,5 +1,8 @@
-package cn.com.kun.kafka.config;
+package cn.com.kun.kafka.autoSwitch.other;
 
+import cn.com.kun.kafka.autoSwitch.decorator.KafkaConsumerDecorator;
+import cn.com.kun.kafka.config.KafkaConsumerProperties;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,35 +14,30 @@ import java.util.Properties;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Configuration
-public class KafkaConsumerConfg {
+public class KafkaAutoSwitchConsumerDemoConfg {
 
     @Autowired
     KafkaConsumerProperties kafkaConsumerProperties;
 
     @Bean
-    public KafkaConsumer<String, String> helloTopicKafkaConsumer(){
+    public Consumer<String, String> autoswitchTopicKafkaConsumer(){
         Properties props = buildConsumerProperties();
 //        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
         //KafkaConsumer类不是线程安全的
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("hello-topic"));
-        return consumer;
+        consumer.subscribe(Arrays.asList("autoswitch-topic"));
+
+        KafkaConsumerDecorator consumerDecorator = new KafkaConsumerDecorator(consumer);
+        return consumerDecorator;
     }
 
-    /**
-     * 同时订阅多个topic
-     * @return
-     */
     @Bean
-    public KafkaConsumer<String, String> helloTopicKafkaConsumerMore(){
+    public Consumer<String, String> autoswitchTopicKafkaConsumer2(){
         Properties props = buildConsumerProperties();
 //        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
         //KafkaConsumer类不是线程安全的
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        //在定义的时候，可以不用订阅主题
-        consumer.subscribe(Arrays.asList("hello-topic"));
-//        consumer.subscribe(Arrays.asList("hello-topic", "hello-topic2"));
-//        consumer.subscribe(Arrays.asList("hello-topic", "hello-topic2", "hello-topic3"));
+        consumer.subscribe(Arrays.asList("autoswitch-topic2"));
         return consumer;
     }
 

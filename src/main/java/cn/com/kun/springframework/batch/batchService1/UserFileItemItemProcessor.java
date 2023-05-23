@@ -63,7 +63,7 @@ public class UserFileItemItemProcessor implements ItemProcessor<UserFileItem, Us
 //            throw new RuntimeException("任务主动停止");
 //        }
 
-
+        LOGGER.info("中间操作");
         return user;
     }
 

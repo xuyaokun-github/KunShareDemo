@@ -1,9 +1,8 @@
-package cn.com.kun.kafka.controller;
+package cn.com.kun.kafka.autoSwitch.other;
 
 import cn.com.kun.common.vo.ResultVo;
+import cn.com.kun.kafka.controller.KafkaClientDemoController;
 import cn.com.kun.kafka.msg.MsgCacheTopicMsg;
-import cn.com.kun.kafka.producer.MsgCacheProducerService;
-import cn.com.kun.kafka.topicIsolation.producer.ProducerTopicProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,43 +15,36 @@ import java.util.Date;
 import java.util.UUID;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
-@RequestMapping("/kafkaClient")
+@RequestMapping("/kafka-auto-switch")
 @RestController
-public class KafkaClientDemoController {
+public class KafkaAutoSwitchDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(KafkaClientDemoController.class);
-
-    @Autowired
-    private MsgCacheProducerService msgCacheProducerService;
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaClientDemoController.class);
 
     @Autowired
-    private ProducerTopicProcessor producerTopicProcessor;
-
-    @GetMapping("/testTopicIsolation")
-    public ResultVo testTopicIsolation(){
-
-        //使用 主题拆分组件
-        String topicName = producerTopicProcessor.getTopic("SM01", "BATCH", "HIGH");
-        String topicName2 = producerTopicProcessor.getTopic("PM01", "BATCH", "HIGH");
-        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
-        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
-        msgCacheTopicMsg.setCreateTIme(new Date());
-        msgCacheProducerService.produce(msgCacheTopicMsg, topicName);
-        msgCacheProducerService.produce(msgCacheTopicMsg, topicName2);
-        return ResultVo.valueOfSuccess();
-    }
-
+    private KafkaAutoSwitchProducerDemoService kafkaAutoSwitchProducerService;
 
     @GetMapping("/testAutoSwitch")
     public ResultVo testAutoSwitch(){
 
         //使用 主题拆分组件
-        String topicName = "hello-topic";
+        String topicName = "autoswitch-topic";
         MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
         msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
         msgCacheTopicMsg.setCreateTIme(new Date());
-        msgCacheProducerService.produceForAutoSwitch(msgCacheTopicMsg, topicName);
+        kafkaAutoSwitchProducerService.produceForAutoSwitch(msgCacheTopicMsg, topicName);
         return ResultVo.valueOfSuccess();
     }
 
+    @GetMapping("/testAutoSwitch2")
+    public ResultVo testAutoSwitch2(){
+
+        //使用 主题拆分组件
+        String topicName = "autoswitch-topic2";
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
+        msgCacheTopicMsg.setCreateTIme(new Date());
+        kafkaAutoSwitchProducerService.produceForAutoSwitchForTopic2(msgCacheTopicMsg, topicName);
+        return ResultVo.valueOfSuccess();
+    }
 }

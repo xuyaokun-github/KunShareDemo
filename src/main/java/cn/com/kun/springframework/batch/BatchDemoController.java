@@ -1,6 +1,7 @@
 package cn.com.kun.springframework.batch;
 
 import cn.com.kun.common.utils.SpringContextUtil;
+import cn.com.kun.common.utils.ThreadUtils;
 import cn.com.kun.springframework.batch.common.BatchJobOperator;
 import cn.com.kun.springframework.batch.common.BatchRateLimitDynamicCheckScheduler;
 import cn.com.kun.springframework.batch.common.BatchRateLimiterHolder;
@@ -85,8 +86,33 @@ public class BatchDemoController {
         //注册限流器
         BatchRateLimiterHolder.registerRateLimiter(jobId, 100);
 
+        LOGGER.info("启动myFirstJob");
         JobExecution execution = jobLauncher.run(myFirstJob, jobParameters);
         System.out.println(execution.toString());
+
+        return "success";
+    }
+
+    /**
+     * 测试job1
+     * @return
+     */
+    @GetMapping("/testBatchJob1ByAsync")
+    public String testBatchJob1ByAsync() throws Exception {
+
+        new Thread(()->{
+
+            while (true){
+                ThreadUtils.sleep(15*1000);
+                try {
+                    testBatchJob1();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+
         return "success";
     }
 

@@ -1,8 +1,9 @@
-package cn.com.kun.kafka.consumer;
+package cn.com.kun.kafka.autoSwitch.other;
 
 import cn.com.kun.kafka.config.KafkaConsumerProperties;
+import cn.com.kun.kafka.consumer.RecordWrapper;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Component
-public class HelloTopicConsumerService2 {
+public class KafkaAutoSwitchConsumerDemoService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(HelloTopicConsumerService2.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaAutoSwitchConsumerDemoService.class);
 
     @Autowired
-    @Qualifier("helloTopicKafkaConsumer")
-    private KafkaConsumer consumer;
+    @Qualifier("autoswitchTopicKafkaConsumer")
+    private Consumer consumer;
 
     private long maxWaitTime;
 
@@ -38,7 +39,7 @@ public class HelloTopicConsumerService2 {
     Executor myKafkaMsgExecutor;
 
     @Autowired
-    MsgCacheMsgProcessor msgCacheMsgProcessor;
+    AutoSwitchMsgProcessor msgCacheMsgProcessor;
 
     @Autowired
     KafkaConsumerProperties kafkaConsumerProperties;
@@ -73,7 +74,7 @@ public class HelloTopicConsumerService2 {
                             });
                             for (RecordWrapper recordWrapper : recordWrapperList) {
                                 //提交任务到线程池
-                                myKafkaMsgExecutor.execute(new HelloTopicMsgRunnable(msgCacheMsgProcessor, recordWrapper));
+                                myKafkaMsgExecutor.execute(new AutoSwitchTopicMsgRunnable(msgCacheMsgProcessor, recordWrapper));
                             }
                             //唤醒(假如超过5分钟，还没执行完，必须要重新poll，不然会触发重平衡！)
                             boolean isSuccessProcess = true;
@@ -112,7 +113,7 @@ public class HelloTopicConsumerService2 {
                     LOGGER.error("消费异常", e);
                 }
             }
-        }, "HelloTopic-KafkaConsumer-Thread").start();
+        }, "AutoSwitchTopic-KafkaConsumer-Thread").start();
     }
 
     /**

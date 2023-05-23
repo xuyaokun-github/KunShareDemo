@@ -1,5 +1,9 @@
-package cn.com.kun.kafka.config;
+package cn.com.kun.kafka.autoSwitch.other;
 
+import cn.com.kun.kafka.autoSwitch.decorator.KafkaProducerDecorator;
+import cn.com.kun.kafka.autoSwitch.factory.KafkaProducerFactory;
+import cn.com.kun.kafka.config.KafkaProducerProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -14,16 +18,63 @@ import java.util.Properties;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Configuration
-public class KafkaProducerConfig {
+public class KafkaAutoSwitchProducerDemoConfig {
 
     @Autowired
-    KafkaProducerProperties kafkaProducerProperties;
+    private KafkaProducerProperties kafkaProducerProperties;
+
+    /**
+     *
+     * @return
+     */
+    @Bean
+    public Producer<String, String> autoSwitchKafkaProducer(){
+
+//        KafkaProducerDecorator decorator = new KafkaProducerDecorator(buildProducerImpl("hello-topic"));
+        //懒加载
+        KafkaProducerDecorator decorator = new KafkaProducerDecorator(null, "autoswitch-topic");
+        decorator.setKafkaProducerFactory(new KafkaProducerFactory() {
+            @Override
+            public Producer buildProducer(String topic, String address) {
+
+                return buildProducerImpl(topic, address);
+            }
+        });
+        return decorator;
+    }
+
 
     @Bean
-    public Producer<String, String> msgCacheTopicKafkaProducer(){
+    public Producer<String, String> autoSwitchKafkaProducer2(){
+
+//        KafkaProducerDecorator decorator = new KafkaProducerDecorator(buildProducerImpl("hello-topic"));
+        //懒加载
+        KafkaProducerDecorator decorator = new KafkaProducerDecorator(null, "autoswitch-topic2");
+        decorator.setKafkaProducerFactory(new KafkaProducerFactory() {
+            @Override
+            public Producer buildProducer(String topic, String address) {
+
+                return buildProducerImpl(topic, address);
+            }
+        });
+        return decorator;
+    }
+
+    /**
+     * 自定义实现
+     * @param topic
+     * @param address
+     * @return
+     */
+    private Producer buildProducerImpl(String topic, String address) {
 
         Properties props = buildProducerProperties();
-        // 2. 构建拦截链
+
+        if (StringUtils.isNotEmpty(address)){
+            props.put("bootstrap.servers", address);
+        }
+
+        //构建拦截链
         List<String> interceptors = new ArrayList<>();
         interceptors.add("cn.com.kun.kafka.interceptor.CounterInterceptor");
         props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
@@ -31,6 +82,7 @@ public class KafkaProducerConfig {
         Producer<String, String> producer = new KafkaProducer<>(props);
         return producer;
     }
+
 
     private Properties buildProducerProperties() {
 
