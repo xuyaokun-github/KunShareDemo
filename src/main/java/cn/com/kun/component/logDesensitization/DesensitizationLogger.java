@@ -24,11 +24,47 @@ public class DesensitizationLogger {
     }
 
     /**
+     * format保留原文，只有参数部分转为密文
+     *
+     * @param format
+     * @param arguments
+     */
+    public void infoByDst(String format, Object... arguments){
+        if (!LogDesensitizationUtils.isEnabled()){
+            this.logger.info(format, arguments);
+            return;
+        }
+
+        try {
+            //将参数转为密文，然后打印
+            Object[] newArguments = null;
+            if (arguments.length > 0){
+                newArguments = new Object[arguments.length];
+                for (int i = 0; i < arguments.length; i++) {
+                    newArguments[i] = arguments[i] instanceof String ?
+                            LogDesensitizationUtils.encrypt(String.valueOf(arguments[i])) : LogDesensitizationUtils.encrypt(arguments[i].toString()) ;
+                }
+            }else {
+                newArguments = arguments;
+            }
+            this.logger.info(format, newArguments);
+        }catch (Exception e){
+            this.logger.error("脱敏日志打印异常", e);
+            this.logger.info(format, arguments);
+        }
+    }
+
+    /**
      *
      * @param format
      * @param arguments
      */
     public void infoDesensitize(String format, Object... arguments){
+
+        if (!LogDesensitizationUtils.isEnabled()){
+            this.logger.info(format, arguments);
+            return;
+        }
 
         //将原文转为密文，然后打印
         try {
@@ -41,10 +77,19 @@ public class DesensitizationLogger {
         }
     }
 
+    public void infoByDst(String message){
+        infoDesensitize(message);
+    }
+
     /**
      *
      */
     public void infoDesensitize(String message){
+
+        if (!LogDesensitizationUtils.isEnabled()){
+            this.logger.info(message);
+            return;
+        }
 
         //将原文转为密文，然后打印
         try {

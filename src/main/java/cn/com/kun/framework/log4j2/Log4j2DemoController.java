@@ -48,10 +48,22 @@ public class Log4j2DemoController {
         DLOGGER.info("kunghsu:{}", System.currentTimeMillis());
         //脱敏用法
         DLOGGER.infoDesensitize("kunghsu:{}", System.currentTimeMillis());
+        DLOGGER.infoDesensitize("kunghsu");
 
         return ResultVo.valueOfSuccess();
     }
 
+    @GetMapping("/desensitization2")
+    public ResultVo desensitization2(){
+
+        ResultVo resultVo = ResultVo.valueOfSuccess(System.currentTimeMillis());
+        //常规用法
+        DLOGGER.info("kunghsu:{}", resultVo);
+        //脱敏用法
+        DLOGGER.infoByDst("kunghsu:{}", resultVo);
+
+        return ResultVo.valueOfSuccess();
+    }
     /**
      * 动态修改日志级别
      * 在springboot中可以使用这个方法，使用的是springboot提供的类

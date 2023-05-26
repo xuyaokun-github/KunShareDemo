@@ -117,6 +117,15 @@ public class ResultVo<T> implements Serializable {
         return rb;
     }
 
-
+    @Override
+    public String toString() {
+        return "ResultVo{" +
+                "message='" + message + '\'' +
+                ", value=" + value +
+                ", success=" + success +
+                ", msgCode='" + msgCode + '\'' +
+                ", resultMap=" + resultMap +
+                '}';
+    }
 }
 

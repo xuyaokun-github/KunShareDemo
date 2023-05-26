@@ -3,7 +3,6 @@ package cn.com.kun.component.logDesensitization;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -13,18 +12,11 @@ import java.nio.charset.StandardCharsets;
 */
 public class LogDesensitizationUtils {
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-
-        new ParameterizedMessage("message:{}", "params");
-        String str = "";
-        for (int i = 0; i < 1000; i++) {
-            str += (i + "");
-        }
-        System.out.println(buildMessage("kunghsu:{}", System.currentTimeMillis()));
-
-        System.out.println("-------------------");
-        System.out.println(new String(Base64.decodeBase64("a3VuZ2hzdToxNjcxMjAyMDI0NDkx"), "UTF-8"));
-    }
+    /**
+     * 假如要做动态设置开关，要将所有DesensitizationLogger缓存起来，然后针对单个DesensitizationLogger修改开关
+     *
+     */
+    private static boolean desensitizationEnable = true;
 
     private static BuildMessageFunction buildMessageFunction;
 
@@ -65,6 +57,15 @@ public class LogDesensitizationUtils {
         return false;
     }
 
+    public static void close() {
+        desensitizationEnable = false;
+    }
+
+    public static boolean isEnabled() {
+        return desensitizationEnable;
+    }
+
+
     private interface BuildMessageFunction {
         String buildMessage(String format, Object... arguments);
     }
@@ -87,4 +88,7 @@ public class LogDesensitizationUtils {
     public static String decrypt(String source){
         return new String(Base64.decodeBase64(source), StandardCharsets.UTF_8);
     }
+
+
+
 }
