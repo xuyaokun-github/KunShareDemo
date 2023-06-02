@@ -91,25 +91,6 @@ public class MybatisDemoController {
         return JacksonUtils.toJSONString(userList);
     }
 
-    /**
-     * 游标查询
-     * @return
-     */
-    @GetMapping("/testCursor")
-    public ResultVo testCursor(){
-        return mybatisCursorDemoService.test1();
-    }
-
-    /**
-     * 游标查询
-     * @return
-     */
-    @GetMapping("/testCursorWithDelete")
-    public ResultVo testCursorWithDelete(){
-        return mybatisCursorDemoService.testCursorWithDelete();
-    }
-
-
     @GetMapping("/testConn")
     public ResultVo testConn(){
 

@@ -36,5 +36,7 @@ public interface UserMapper {
      */
     Cursor<User> findAllStream();
 
+    Cursor<User> findAllStream2();
+
     Long findMaxId();
 }

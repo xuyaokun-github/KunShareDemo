@@ -119,11 +119,22 @@
     <delete id="deleteById" parameterType="Long">
         DELETE FROM tbl_user WHERE id=#{id}
     </delete>
-    <select id="findAllStream" resultType="User" fetchSize="2">
-        select * from tbl_user
-    </select>
+
 
     <select id="findMaxId" resultType="long">
         select max(id) from tbl_user
     </select>
+
+
+    <!-- 假流式查询（反例教材） -->
+    <select id="findAllStream" resultType="User" fetchSize="2">
+        select * from tbl_user
+    </select>
+
+    <!-- 真流式查询 -->
+    <select id="findAllStream2" resultType="User"  fetchSize="-2147483648">
+        select * from tbl_user
+    </select>
+
+
 </mapper>
