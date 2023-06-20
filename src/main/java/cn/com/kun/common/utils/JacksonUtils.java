@@ -1,5 +1,6 @@
 package cn.com.kun.common.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,6 +48,9 @@ public class JacksonUtils {
         //允许字符串中存在回车换行控制符
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 //        mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+
+        //全局设置：属性为NULL 不序列化
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     }
 

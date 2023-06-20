@@ -37,6 +37,11 @@ public class Log4j2DemoController {
         LOGGER.debug("我是Log4j2DemoController的debug日志");
         LOGGER.info("我是Log4j2DemoController的info日志");
         LOGGER.error("我是Log4j2DemoController的error日志");
+
+        int source = 0;
+        String target = "xyk" + (char)(source) + "kunghsu";
+        LOGGER.error("target:{}", target);
+
         return ResultVo.valueOfSuccess();
     }
 

@@ -208,6 +208,27 @@ public class SpringRedisDemocontroller {
     }
 
     /**
+     * 验证Redis故障场景
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/testBreakdown", method = RequestMethod.GET)
+    public ResultVo testBreakdown(HttpServletRequest request){
+
+        try {
+            redisTemplateHelper.set("noticeMsg", "kunghsu");
+            String res = (String) redisTemplateHelper.get("noticeMsg");
+            LOGGER.info("===========res：{}", res);
+        }catch (Exception e){
+            LOGGER.error("访问redis出现异常", e);
+
+        }
+
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
      * 过期时间调研
      * 如果用DEL, SET, GETSET会将key对应存储的值替换成新的，命令也会清除掉超时时间
      *
