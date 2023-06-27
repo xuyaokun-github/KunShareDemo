@@ -1,4 +1,4 @@
-package cn.com.kun.foo.javacommon.io;
+package cn.com.kun.foo.javacommon.io.copyFile;
 
 import org.apache.commons.io.FileUtils;
 
@@ -14,7 +14,10 @@ public class CopyFileTestDemo {
      */
     public static void main(String[] args) throws IOException {
 
-        main1();
+//        main1();
+
+        CopyFileUtil.copy("D:\\home\\readFile\\ReadFileExample.txt", 10);
+
     }
 
     private static void main1() throws IOException {

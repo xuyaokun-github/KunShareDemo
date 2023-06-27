@@ -1,4 +1,4 @@
-package cn.com.kun.foo.javacommon.longdemo;
+package cn.com.kun.foo.javacommon.string.md5.longdemo;
 
 
 import java.security.MessageDigest;
