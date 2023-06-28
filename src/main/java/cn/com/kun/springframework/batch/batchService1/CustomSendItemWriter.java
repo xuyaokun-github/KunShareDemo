@@ -3,6 +3,7 @@ package cn.com.kun.springframework.batch.batchService1;
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.utils.TraceIDUtils;
+import cn.com.kun.service.mybatis.UserService;
 import cn.com.kun.springframework.batch.common.BatchProgressRateCounter;
 import cn.com.kun.springframework.batch.common.BatchRateLimiterHolder;
 import com.google.common.util.concurrent.RateLimiter;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class CustomSendItemWriter implements ItemWriter<User> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserFileItemItemProcessor.class);
 
     private StepExecution stepExecution;
+
+    @Autowired
+    private UserService userService;
 
     public CustomSendItemWriter(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
@@ -50,6 +55,11 @@ public class CustomSendItemWriter implements ItemWriter<User> {
             //验证限速时，临时关闭
 //            ThreadUtils.sleep(3000);
 
+            //业务操作（验证一个经典的死循环问题）
+            //下面两种更新方式，都能保证数据最终一致，但第一种方法使用版本号思想，没意义，多此一举
+            userService.updateOrderCount(888L, 1);
+//            userService.updateOrderCount2(888L, 1);
+
         }
 
         //并行流
@@ -71,6 +81,7 @@ public class CustomSendItemWriter implements ItemWriter<User> {
 //                stepExecution.getReadCount(),
 //                stepExecution.getWriteCount(),
 //                stepExecution.getSkipCount());
+
 
     }
 

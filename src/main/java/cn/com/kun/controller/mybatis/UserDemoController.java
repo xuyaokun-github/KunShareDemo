@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RequestMapping("/user-demo")
@@ -121,6 +122,44 @@ public class UserDemoController {
                 }
             }).start();
         });
+
+        return "OK";
+    }
+
+    /**
+     * 单线程复现不出问题
+     *
+     * @return
+     */
+    @GetMapping("/testEndlessLoopProblem")
+    public String testEndlessLoopProblem(){
+
+        userService.updateOrderCount(888L, 1);
+        return "OK";
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/testEndlessLoopProblemByMoreThread")
+    public String testEndlessLoopProblemByMoreThread(){
+
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+
+            new Thread(()->{
+
+                try {
+                    countDownLatch.countDown();
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                userService.updateOrderCount(888L, 1);
+            }).start();
+        }
 
         return "OK";
     }

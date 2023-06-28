@@ -11,14 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 
 @Service
 public class UserServiceServiceImpl implements UserService {
 
-    private final static Logger logger = LoggerFactory.getLogger(UserServiceServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceServiceImpl.class);
 
     @Autowired
     private UserMapper userMapper;
@@ -107,4 +110,71 @@ public class UserServiceServiceImpl implements UserService {
         session.clearCache();
         return false;
     }
+
+    //配合batch做验证
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED) //能解决死循环问题
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED) //能解决死循环问题
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ) //存在死循环
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE) //会引发死锁问题，因为多个线程会同时执行该方法，会造成锁互相等待
+
+//    @Transactional(isolation = Isolation.READ_COMMITTED) //存在死循环（说明事务仍是spring-batch开启的，隔离级别在注解中定义了，但没生效）
+//    @Transactional(isolation = Isolation.READ_UNCOMMITTED) //存在死循环（说明事务仍是spring-batch开启的，隔离级别在注解中定义了，但没生效）
+//    @Transactional(isolation = Isolation.REPEATABLE_READ) //存在死循环（说明事务仍是spring-batch开启的，隔离级别在注解中定义了，但没生效）
+
+    //不用spring-batch测试，单独验证
+//    @Transactional //开启了事务，用默认的隔离级别（可重复读），单线程情况下不存在问题，并发情况下存在死循环
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ) //单线程情况下不存在问题，并发情况下存在死循环
+//    @Transactional(isolation = Isolation.REPEATABLE_READ) //可重复读，单线程情况下不存在问题，并发情况下存在死循环
+//    @Transactional(isolation = Isolation.READ_COMMITTED) //读已提交，不存在死循环问题
+//    @Transactional(isolation = Isolation.READ_UNCOMMITTED) //读未提交，不存在死循环问题
+    @Transactional(isolation = Isolation.SERIALIZABLE) //不存在死循环问题，但是有死锁问题（具体原因见我另一篇分析文章）
+    @Override
+    public int updateOrderCount(long id, int times) {
+
+        LOGGER.info("更新用户的下单次数");
+        User user = userMapper.selectByUserIdAndOrderCount(id);
+
+        while (true){
+            Integer newOrderCount = user.getOrderCount() + times;
+            int res = userMapper.updateOrderCount(user.getId(), user.getOrderCount(), newOrderCount);
+            if (res > 0){
+                LOGGER.info("更新成功！");
+                break;
+            }else {
+                LOGGER.info("更新失败，继续循环");
+            }
+            user = userMapper.selectByUserIdAndOrderCount(user.getId());
+        }
+
+        return 0;
+    }
+
+
+    @Override
+    public void updateOrderCount2(long id, int times) {
+
+        userMapper.updateOrderCount2(id, times);
+    }
+
+    /**
+     * 隔离级别 源码分析 TODO
+     *
+     * @param id
+     * @param times
+     */
+    public void updateOrderCount3(long id, int times) {
+
+        LOGGER.info("是否处在事务中：{} 当前隔离级别：{} ", TransactionSynchronizationManager.isSynchronizationActive(),
+                TransactionSynchronizationManager.getCurrentTransactionIsolationLevel());
+
+        try {
+            List<TransactionSynchronization> synchronizations = TransactionSynchronizationManager.getSynchronizations();
+            String currentTransactionName = TransactionSynchronizationManager.getCurrentTransactionName();
+        }catch (Exception e){
+//                e.printStackTrace();
+        }
+
+        userMapper.updateOrderCount2(id, times);
+    }
+
 }

@@ -23,6 +23,11 @@ public class User /*implements Serializable*/ {
 //    private Long age;
     private long age;
 
+    /**
+     * 下单次数
+     */
+    private Integer orderCount;
+
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
@@ -105,5 +110,13 @@ public class User /*implements Serializable*/ {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
     }
 }

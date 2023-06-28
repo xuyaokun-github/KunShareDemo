@@ -13,7 +13,7 @@ public class ReadFileExample {
     public static void main(String[] args) {
 
         //第一种方法
-        runRead(a -> {method1();}, "Scanner");
+//        runRead(a -> {method1();}, "Scanner");
         runRead(a -> {method2();}, "BufferedReader");
 
     }
@@ -34,7 +34,9 @@ public class ReadFileExample {
             String line = "";
             while((line = reader.readLine()) != null){
                 String[] strs = line.split("\\|");
-//                System.out.println(MD5EncryptUtil.md5Encode(strs[0]));
+//                System.out.println("文件行内容：" + MD5EncryptUtil.md5Encode(strs[0]));
+                System.out.println("文件行内容：" + strs[0]);
+
             }
         }catch (FileNotFoundException e) {
             e.printStackTrace();

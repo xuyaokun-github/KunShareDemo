@@ -16,4 +16,7 @@ public interface UserService extends BaseService<UserQueryParam, User> {
 
     boolean saveBatch(List<User> userList);
 
+    int updateOrderCount(long id, int times);
+
+    void updateOrderCount2(long id, int times);
 }

@@ -137,4 +137,28 @@
     </select>
 
 
+    <select id="selectByUserIdAndOrderCount" parameterType="long" resultType="User">
+        SELECT
+        a.id,
+        a.firstname firstname,
+        a.lastname lastname,
+        a.phone phone,
+        a.email email,
+        a.create_time createTime,
+        a.order_count orderCount
+        FROM
+        tbl_user a
+        WHERE a.id=#{id}
+    </select>
+
+    <!-- update类型不需要resultType -->
+    <update id="updateOrderCount" >
+        UPDATE tbl_user SET order_count=#{newOrderCount}
+        WHERE id=#{id} and order_count = #{orderCount}
+    </update>
+
+    <update id="updateOrderCount2" >
+        UPDATE tbl_user SET order_count = order_count + #{times}
+        WHERE id=#{id}
+    </update>
 </mapper>

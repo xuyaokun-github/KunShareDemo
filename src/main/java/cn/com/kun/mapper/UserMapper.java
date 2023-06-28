@@ -39,4 +39,11 @@ public interface UserMapper {
     Cursor<User> findAllStream2();
 
     Long findMaxId();
+
+    User selectByUserIdAndOrderCount(long id);
+
+    int updateOrderCount(Long id, Integer orderCount, Integer newOrderCount);
+
+    int updateOrderCount2(Long id, Integer times);
+
 }

@@ -20,7 +20,7 @@ public class WriteFileExample3 {
         /*
             比较快的生成模拟文件的方法是 先升成一个稍微小的文件，例如100M一个，再复制多份，再将多个文件合并为一个文件。
          */
-        final String filepath6 = "D:/home/ReadFileExample.txt";
+        final String filepath6 = "D:/home/readFile/ReadFileExample.txt";
         File file = new File(filepath6);
         long stime6 = System.currentTimeMillis();
         // 构建写入内容
@@ -28,7 +28,7 @@ public class WriteFileExample3 {
         str = str + "|" + str + "|" + str;
         str = str + "\n";
 
-        for (int i = 0; i < 3000000; i++) {
+        for (int i = 0; i < 10; i++) {
             FileUtils.writeStringToFile(file, str, "UTF-8", true);
         }
 
