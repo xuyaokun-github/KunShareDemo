@@ -2,6 +2,8 @@ package cn.com.kun.service.mybatis.impl;
 
 import cn.com.kun.bean.entity.User;
 import cn.com.kun.bean.model.user.UserQueryParam;
+import cn.com.kun.common.utils.DateUtils;
+import cn.com.kun.common.utils.ThreadUtils;
 import cn.com.kun.mapper.UserMapper;
 import cn.com.kun.service.mybatis.UserService;
 import org.apache.ibatis.session.ExecutorType;
@@ -150,6 +152,7 @@ public class UserServiceServiceImpl implements UserService {
     }
 
 
+
     @Override
     public void updateOrderCount2(long id, int times) {
 
@@ -175,6 +178,49 @@ public class UserServiceServiceImpl implements UserService {
         }
 
         userMapper.updateOrderCount2(id, times);
+    }
+
+    /**
+     * Timeout参数失效案例
+     * 方法不会抛出异常
+     *
+     * @param s
+     * @return
+     */
+    @Transactional(timeout = 10)
+    @Override
+    public User getUserByFirstname(String s) {
+
+        LOGGER.info(DateUtils.now());
+        User user = userMapper.getUserByFirstname("");
+        /*
+            虽然这里有长耗时，也超过了timeout设定的阈值，但是不会抛异常
+            因为后面没有再执行SQL语句了
+         */
+        ThreadUtils.sleep(60000 * 2);
+        LOGGER.info(DateUtils.now());
+        return user;
+    }
+
+    /**
+     * 正例代码
+     * 会抛出 org.springframework.transaction.TransactionTimedOutException 异常
+     *
+     * @param s
+     * @return
+     */
+    @Transactional(timeout = 2)
+    @Override
+    public User getUserByFirstname2(String s) {
+
+        /*
+            socketTimeout设置为40000，事务执行60000 会怎样？
+         */
+        LOGGER.info(DateUtils.now());
+        ThreadUtils.sleep(60 * 1000);
+        User user = userMapper.getUserByFirstname("");
+        LOGGER.info(DateUtils.now());
+        return user;
     }
 
 }

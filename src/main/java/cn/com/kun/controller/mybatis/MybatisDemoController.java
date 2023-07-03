@@ -9,6 +9,7 @@ import cn.com.kun.bean.model.user.UserQueryParam;
 import cn.com.kun.mapper.StudentMapper;
 import cn.com.kun.mapper.UserMapper;
 import cn.com.kun.service.mybatis.MybatisCursorDemoService;
+import cn.com.kun.service.mybatis.UserService;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -39,7 +40,10 @@ public class MybatisDemoController {
     private UserMapper userMapper;
 
     @Autowired
-    StudentMapper studentMapper;
+    private UserService userService;
+
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Autowired
     private MybatisCursorDemoService mybatisCursorDemoService;
@@ -179,4 +183,29 @@ public class MybatisDemoController {
         String str = DateUtils.toStr(userList.getCreateTime(), PATTERN_yyyy_MM_dd_HH_mm_ss_SSS);
         return JacksonUtils.toJSONString(str);
     }
+
+
+    /**
+     * 验证 长事务执行耗时超出 jdbc的超时时间 会怎样？
+     * @return
+     */
+    @GetMapping("/testLongTrxWithJdbcTimeout")
+    public ResultVo testLongTrxWithJdbcTimeout(){
+
+        User user = userService.getUserByFirstname("");
+        return ResultVo.valueOfSuccess();
+    }
+
+    /**
+     * 验证 长事务执行耗时超出 jdbc的超时时间 会怎样？
+     * @return
+     */
+    @GetMapping("/testLongTrxWithJdbcTimeout2")
+    public ResultVo testLongTrxWithJdbcTimeout2(){
+
+        User user = userService.getUserByFirstname2("");
+        return ResultVo.valueOfSuccess();
+    }
+
+
 }

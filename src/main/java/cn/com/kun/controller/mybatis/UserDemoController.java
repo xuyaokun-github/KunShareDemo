@@ -58,6 +58,13 @@ public class UserDemoController {
         return "OK";
     }
 
+    @GetMapping("/testUpdate2")
+    public String testUpdate2(){
+
+        userService.updateOrderCount2(888L, 1);
+        return "OK";
+    }
+
     @GetMapping("/testUpdateMore")
     public String testUpdateMore(){
 
@@ -127,7 +134,7 @@ public class UserDemoController {
     }
 
     /**
-     * 单线程复现不出问题
+     * 单线程复现不出问题(经典的 查询更新查询问题，只有在并发的时候才会出现)
      *
      * @return
      */

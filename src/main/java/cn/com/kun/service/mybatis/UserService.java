@@ -19,4 +19,9 @@ public interface UserService extends BaseService<UserQueryParam, User> {
     int updateOrderCount(long id, int times);
 
     void updateOrderCount2(long id, int times);
+
+    User getUserByFirstname(String s);
+
+    User getUserByFirstname2(String s);
+
 }
