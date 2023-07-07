@@ -3,13 +3,22 @@ package cn.com.kun.service.impl;
 import cn.com.kun.bean.entity.Student;
 import cn.com.kun.bean.model.StudentReqVO;
 import cn.com.kun.bean.model.StudentResVO;
+import cn.com.kun.common.utils.JacksonUtils;
+import cn.com.kun.common.utils.ThreadUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.mapper.StudentMapper;
 import cn.com.kun.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 import static cn.com.kun.common.constants.RedisCacheConstants.CACHE_CONFIGURATIONS_NAME_STUDENT;
 
@@ -23,8 +32,13 @@ import static cn.com.kun.common.constants.RedisCacheConstants.CACHE_CONFIGURATIO
 @Service
 public class StudentServiceImpl implements StudentService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
+
     @Autowired
     private StudentMapper studentMapper;
+
+    @Autowired
+    private StudentService studentService;
 
     @Override
     public ResultVo<Integer> add(StudentReqVO reqVO) {
@@ -88,4 +102,139 @@ public class StudentServiceImpl implements StudentService {
         int res = studentMapper.delete(id);
         return ResultVo.valueOfSuccess(res);
     }
+
+    /**
+     * 验证一个经典的事务可见问题
+     * 唯一索引插入提示重复后，立刻做一次查询，是否能立刻查到新数据？
+     * 默认情况下是不能。
+     *
+     * @return
+     */
+    @Transactional
+    @Override
+    public Student saveIfNotExist() {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("idCard", "10086");
+        //基于普通唯一索引进行查询 idCard列建了普通唯一索引
+        List<Student> studentList = studentMapper.query(map);
+
+        Student student = null;
+        if (studentList.size() > 0){
+            LOGGER.info("student已存在，不作插入");
+        }else {
+            student = new Student();
+            student.setIdCard("10086");
+            student.setAddress(UUID.randomUUID().toString());
+            student.setStudentName("kunghsu");
+            student.setCreateTime(new Date());
+            try {
+                studentMapper.insert(student);
+                LOGGER.info("保存student成功");
+            }catch (Exception e){
+                if (e instanceof DuplicateKeyException){
+                    LOGGER.info("保存student重复");
+                    //反例代码（）
+                    while (true){
+                        //再次基于相同的条件做查询（快照读）
+                        studentList = studentMapper.query(map);
+                        if (studentList.size() > 0){
+                            student = studentList.get(0);
+                            LOGGER.info("再次查询得到student：{}", JacksonUtils.toJSONString(student));
+                            break;
+                        }else {
+                            //前后两次查询是一致的，没有读取到最新的数据（不存在幻读问题）
+                            LOGGER.info("再次查询student，数据不存在");
+                            ThreadUtils.sleep(1000);
+                        }
+                    }
+
+                    //正例代码(重新起一个事务，就能解决幻读问题)
+//                    while (true){
+//                        studentList = studentService.query(map);
+//                        if (studentList.size() > 0){
+//                            student = studentList.get(0);
+//                            LOGGER.info("再次查询得到student：{}", JacksonUtils.toJSONString(student));
+//                            break;
+//                        }else {
+//                            LOGGER.info("再次查询student，数据不存在");
+//                            ThreadUtils.sleep(1000);
+//                        }
+//                    }
+                }else {
+                    LOGGER.error("保存student异常", e);
+                }
+            }
+        }
+
+        return student;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public List<Student> query(Map<String, Object> map) {
+
+        return studentMapper.query(map);
+    }
+
+
+    /**
+     * 验证一个经典的事务可见问题
+     * 唯一索引插入提示重复后，立刻做一次查询，是否能立刻查到新数据？
+     * 默认情况下是不能。
+     *
+     * @return
+     */
+    @Transactional
+    @Override
+    public Student saveIfNotExist2() {
+
+        //找到最大的主键ID
+        long maxId = studentMapper.findMaxId();
+        long newMaxId = maxId + 1;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", newMaxId);
+        //基于主键做查询
+        List<Student> studentList = studentMapper.query(map);
+
+        if(studentList.size() > 0){
+
+        }
+
+        Student student = null;
+        student = new Student();
+        student.setId(newMaxId);
+        student.setIdCard(UUID.randomUUID().toString());
+        student.setAddress(UUID.randomUUID().toString());
+        student.setStudentName("kunghsu");
+        student.setCreateTime(new Date());
+        try {
+            studentMapper.insertWithId(student);
+            LOGGER.info("保存student成功");
+        }catch (Exception e){
+            if (e instanceof DuplicateKeyException){
+                LOGGER.info("保存student重复");
+                //（基于主键也没有拿到最新数据，因为基于主键查询也是快照读，和普通唯一索引是一个道理）
+                while (true){
+                    studentList = studentMapper.query(map);
+                    if (studentList.size() > 0){
+                        //基于主键查询，能查出数据
+                        student = studentList.get(0);
+                        LOGGER.info("再次查询得到student：{}", JacksonUtils.toJSONString(student));
+                        break;
+                    }else {
+                        LOGGER.info("再次查询student，数据不存在");
+                        ThreadUtils.sleep(1000);
+                    }
+                }
+
+            }else {
+                LOGGER.error("保存student异常", e);
+            }
+        }
+
+        return student;
+    }
+
 }

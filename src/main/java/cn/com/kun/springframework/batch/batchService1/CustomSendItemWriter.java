@@ -57,7 +57,7 @@ public class CustomSendItemWriter implements ItemWriter<User> {
 
             //业务操作（验证一个经典的死循环问题）
             //下面两种更新方式，都能保证数据最终一致，但第一种方法使用版本号思想，没意义，多此一举
-            userService.updateOrderCount(888L, 1);
+//            userService.updateOrderCount(888L, 1);
 //            userService.updateOrderCount2(888L, 1);
 
         }

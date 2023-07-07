@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
 public class MyFirstBatchJobListener extends JobExecutionListenerSupport {
@@ -20,6 +21,8 @@ public class MyFirstBatchJobListener extends JobExecutionListenerSupport {
         super.beforeJob(jobExecution);
         //放入一个统一计数器，记录处理的行数
         BatchProgressRateCounter.initCounter(String.valueOf(jobExecution.getJobInstance().getInstanceId()));
+        logger.info("监听器beforeJob方法,是否处在事务中:{}", TransactionSynchronizationManager.isSynchronizationActive());
+
     }
 
 

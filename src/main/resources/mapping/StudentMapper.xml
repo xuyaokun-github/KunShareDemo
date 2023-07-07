@@ -7,6 +7,11 @@
         VALUES(#{idCard},#{studentName},#{address})
     </insert>
 
+    <insert id="insertWithId" parameterType="Student" >
+        INSERT INTO tbl_student(id,id_card,student_name,address)
+        VALUES(#{id},#{idCard},#{studentName},#{address})
+    </insert>
+
     <update id="update" parameterType="Student">
         UPDATE tbl_student
         SET id_card=#{idCard},student_name=#{studentName},address=#{address}
@@ -39,6 +44,9 @@
         </if>
         <if test="address!=null and address!=''">
             AND a.address = #{address}
+        </if>
+        <if test="id!=null">
+            AND a.id = #{id}
         </if>
     </select>
 
@@ -77,6 +85,10 @@
             AND a.id > #{maxId}
         </if>
         order by create_time asc
+    </select>
+
+    <select id="findMaxId" resultType="long">
+        select max(id) from tbl_student
     </select>
 
 </mapper>

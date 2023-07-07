@@ -13,6 +13,8 @@ public interface StudentMapper {
 
     int insert(Student student);
 
+    int insertWithId(Student student);
+
     int update(Student student);
 
     List<Student> query(Map map);
@@ -43,5 +45,7 @@ public interface StudentMapper {
      * @return
      */
     Cursor<Student> findStudentStreamByCondition(Map map);
+
+    Long findMaxId();
 }
 
