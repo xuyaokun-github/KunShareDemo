@@ -1,46 +1,59 @@
-package cn.com.kun.kafka.config;
+package cn.com.kun.kafka.dynamicConsume.other;
 
+import cn.com.kun.kafka.config.KafkaConsumerProperties;
+import cn.com.kun.kafka.dynamicConsume.DynamicKafkaConsumer;
+import cn.com.kun.kafka.dynamicConsume.extend.ConsumeSwitchQuerier;
+import cn.com.kun.kafka.dynamicConsume.extend.KafkaConsumerBuilder;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.Properties;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Configuration
-public class KafkaConsumerConfg {
+public class PauseConsumeKafkaConsumerConfig {
 
     @Autowired
-    KafkaConsumerProperties kafkaConsumerProperties;
+    private KafkaConsumerProperties kafkaConsumerProperties;
 
     @Bean
-    public KafkaConsumer<String, String> helloTopicKafkaConsumer(){
+    public KafkaConsumer<String, String> customTopicOneKafkaConsumer(){
         Properties props = buildConsumerProperties();
 //        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
+
+        props.put("group.id", "pauseConsumeConsumerGroup");
+
         //KafkaConsumer类不是线程安全的
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("hello-topic"));
+        consumer.subscribe(Arrays.asList("custom-topic1"));
         return consumer;
     }
 
-    /**
-     * 同时订阅多个topic
-     * @return
-     */
     @Bean
-    public KafkaConsumer<String, String> helloTopicKafkaConsumerMore(){
-        Properties props = buildConsumerProperties();
-//        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
-        //KafkaConsumer类不是线程安全的
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        //在定义的时候，可以不用订阅主题
-        consumer.subscribe(Arrays.asList("hello-topic"));
-//        consumer.subscribe(Arrays.asList("hello-topic", "hello-topic2"));
-//        consumer.subscribe(Arrays.asList("hello-topic", "hello-topic2", "hello-topic3"));
-        return consumer;
+    public Consumer<String, String> dynamicKafkaConsumer(KafkaConsumerBuilder consumerBuilder, ConsumeSwitchQuerier switchQuerier){
+
+//        Properties props = buildConsumerProperties();
+//        props.put("group.id", "pauseConsumeConsumerGroup");
+//
+//        //KafkaConsumer类不是线程安全的
+//        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+//        consumer.subscribe(Arrays.asList("dynamic-consume-topic1"));
+
+        Assert.notNull(consumerBuilder, "消费者构造器不能为空");
+        Assert.notNull(switchQuerier, "消费开关查询器不能为空");
+
+        //一开始可以设置为null,让它懒加载
+        DynamicKafkaConsumer dynamicKafkaConsumer = new DynamicKafkaConsumer(null, consumerBuilder, switchQuerier);
+        //设置目标订阅主题列表
+        dynamicKafkaConsumer.setSubscribeTopicList(Arrays.asList("dynamic-consume-topic1"));
+
+        return dynamicKafkaConsumer;
     }
 
     private Properties buildConsumerProperties() {

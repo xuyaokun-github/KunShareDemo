@@ -118,7 +118,10 @@ public class KafkaProducerDecorator<K, V> implements Producer<K, V> {
         if (partitionInfoList != null && partitionInfoList.size() > 0){
             StringBuilder builder = new StringBuilder("服务器地址信息（个别地址，非全部）：");
             for (PartitionInfo partitionInfo : partitionInfoList){
-                builder.append("host:" + partitionInfo.leader().host() + "port:" + partitionInfo.leader().port());
+                //partitionInfo.leader()有可能为空，当3个节点宕机了一个节点时，就会出现这种情况，partitionInfo.leader()是null
+                if (partitionInfo.leader() != null){
+                    builder.append("host:" + partitionInfo.leader().host() + "port:" + partitionInfo.leader().port());
+                }
             }
             LOGGER.info(builder.toString());
         }

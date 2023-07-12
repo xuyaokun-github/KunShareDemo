@@ -20,13 +20,25 @@ import java.util.UUID;
 @RestController
 public class KafkaClientDemoController {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(KafkaClientDemoController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaClientDemoController.class);
 
     @Autowired
     private MsgCacheProducerService msgCacheProducerService;
 
     @Autowired
     private ProducerTopicProcessor producerTopicProcessor;
+
+    @GetMapping("/testProduce")
+    public ResultVo testProduce(){
+
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
+        msgCacheTopicMsg.setCreateTIme(new Date());
+//        msgCacheProducerService.produce(msgCacheTopicMsg, "custom-topic1");
+        msgCacheProducerService.produce(msgCacheTopicMsg, "dynamic-consume-topic1");
+
+        return ResultVo.valueOfSuccess();
+    }
 
     @GetMapping("/testTopicIsolation")
     public ResultVo testTopicIsolation(){
