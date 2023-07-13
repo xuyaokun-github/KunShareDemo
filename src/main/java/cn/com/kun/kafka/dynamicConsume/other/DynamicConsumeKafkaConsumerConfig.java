@@ -7,6 +7,7 @@ import cn.com.kun.kafka.dynamicConsume.extend.KafkaConsumerBuilder;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ import java.util.Properties;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Configuration
-public class PauseConsumeKafkaConsumerConfig {
+public class DynamicConsumeKafkaConsumerConfig {
 
     @Autowired
     private KafkaConsumerProperties kafkaConsumerProperties;
@@ -35,8 +36,17 @@ public class PauseConsumeKafkaConsumerConfig {
         return consumer;
     }
 
+    /**
+     * defaultConsumeSwitchQuerierImpl
+     * customConsumeSwitchQuerierImpl
+     *
+     * @param consumerBuilder
+     * @param switchQuerier
+     * @return
+     */
     @Bean
-    public Consumer<String, String> dynamicKafkaConsumer(KafkaConsumerBuilder consumerBuilder, ConsumeSwitchQuerier switchQuerier){
+    public Consumer<String, String> dynamicKafkaConsumer(KafkaConsumerBuilder consumerBuilder,
+                                                         @Qualifier("customConsumeSwitchQuerierImpl") ConsumeSwitchQuerier switchQuerier){
 
 //        Properties props = buildConsumerProperties();
 //        props.put("group.id", "pauseConsumeConsumerGroup");

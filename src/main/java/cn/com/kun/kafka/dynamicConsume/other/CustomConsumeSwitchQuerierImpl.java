@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 自定义的开关查询器
@@ -22,9 +23,12 @@ public class CustomConsumeSwitchQuerierImpl implements ConsumeSwitchQuerier {
 
     private int endTime = 23;
 
+    public void setConsumeSwitch(boolean consumeSwitch) {
+        this.consumeSwitch = consumeSwitch;
+    }
 
     @Override
-    public boolean querySwitch() {
+    public boolean querySwitch(List<String> topicList) {
 
         /**
          * 如何向组件返回 消费开关 这个是业务逻辑部分
@@ -41,11 +45,6 @@ public class CustomConsumeSwitchQuerierImpl implements ConsumeSwitchQuerier {
         }else {
             return false;
         }
-
-//        return consumeSwitch;
     }
 
-    public void setConsumeSwitch(boolean consumeSwitch) {
-        this.consumeSwitch = consumeSwitch;
-    }
 }

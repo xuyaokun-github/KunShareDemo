@@ -124,7 +124,7 @@ public class DynamicKafkaConsumer<K, V> implements Consumer<K, V> {
     @Override
     public ConsumerRecords<K, V> poll(Duration timeout) {
 
-        if(queryConsumeSwitch()){
+        if(queryConsumeSwitch(subscribeTopicList)){
             if (this.consumer == null){
                 //创建消费者
                 this.consumer = buildKafkaConsumer();
@@ -153,9 +153,9 @@ public class DynamicKafkaConsumer<K, V> implements Consumer<K, V> {
         return consumerBuilder.buildKafkaConsumer();
     }
 
-    private boolean queryConsumeSwitch() {
+    private boolean queryConsumeSwitch(List<String> subscribeTopicList) {
 
-        return switchQuerier.querySwitch();
+        return switchQuerier.querySwitch(subscribeTopicList);
     }
 
     @Override

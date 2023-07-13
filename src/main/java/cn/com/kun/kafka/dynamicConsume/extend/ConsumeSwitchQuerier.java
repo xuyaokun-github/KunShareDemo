@@ -1,5 +1,7 @@
 package cn.com.kun.kafka.dynamicConsume.extend;
 
+import java.util.List;
+
 /**
  * 消费开关查询接口
  *
@@ -10,9 +12,11 @@ package cn.com.kun.kafka.dynamicConsume.extend;
 public interface ConsumeSwitchQuerier {
 
     /**
-     * 查询消费开关
+     * 查询消费开关(支持根据主题查询不同的开关)
      *
      * @return
      */
-    boolean querySwitch();
+    boolean querySwitch(List<String> topicList);
+
+
 }
