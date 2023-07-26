@@ -67,4 +67,28 @@ public class KafkaClientDemoController {
         return ResultVo.valueOfSuccess();
     }
 
+    @GetMapping("/testHelloTopic")
+    public ResultVo testHelloTopic(){
+
+        //使用 主题拆分组件
+        String topicName = "hello-topic";
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
+        msgCacheTopicMsg.setCreateTIme(new Date());
+        msgCacheProducerService.produce(msgCacheTopicMsg, topicName);
+        return ResultVo.valueOfSuccess();
+    }
+
+    @GetMapping("/testHelloTopicWithInterrupt")
+    public ResultVo testHelloTopicWithInterrupt(){
+
+        //使用 主题拆分组件
+        String topicName = "hello-topic";
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString() + "interrupt");
+        msgCacheTopicMsg.setCreateTIme(new Date());
+        msgCacheProducerService.produce(msgCacheTopicMsg, topicName);
+        return ResultVo.valueOfSuccess();
+    }
+
 }

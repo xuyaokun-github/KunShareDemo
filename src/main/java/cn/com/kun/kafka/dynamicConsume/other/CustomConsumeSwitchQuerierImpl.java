@@ -39,12 +39,15 @@ public class CustomConsumeSwitchQuerierImpl implements ConsumeSwitchQuerier {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
-        int minute = calendar.get(Calendar.MINUTE);
-        if (minute % 2 == 0){
-            return true;
-        }else {
-            return false;
-        }
+//        int minute = calendar.get(Calendar.MINUTE);
+//        if (minute % 2 == 0){
+//            return true;
+//        }else {
+//            return false;
+//        }
+
+        return true;
+
     }
 
 }

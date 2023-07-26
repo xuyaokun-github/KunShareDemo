@@ -61,6 +61,12 @@ public class HelloTopicConsumerService2 {
                         records.forEach(record ->{
                             RecordWrapper recordWrapper = new RecordWrapper(record);
                             recordWrapperList.add(recordWrapper);
+
+                            if (record.value().contains("interrupt")){
+                                //模拟消费异常，然后打上中断标记，看会发生什么？
+                                throw new RuntimeException();
+                            }
+
                         });
 
                         while(true) {
@@ -110,6 +116,12 @@ public class HelloTopicConsumerService2 {
 
                 } catch (Exception e) {
                     LOGGER.error("消费异常", e);
+                    //打上中断标记（反例代码）
+                    Thread.currentThread().interrupt();
+                    if (Thread.interrupted()){
+                        //清理中断标记
+                        LOGGER.error("出现中断异常", e);
+                    }
                 }
             }
         }, "HelloTopic-KafkaConsumer-Thread").start();
