@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @ApiVersion
 @RequestMapping(value = "/spring-mvc-version-control/{version}/test")
-public class TestController {
+public class SpringMvcVersionControlDemoController {
 
     /**
      * http://localhost:8080/kunsharedemo/spring-mvc-version-control/v1.0/test/one
