@@ -91,4 +91,17 @@
         select max(id) from tbl_student
     </select>
 
+
+    <update id="updateByIdCard" >
+        UPDATE tbl_student a
+        SET address = #{address}
+        WHERE a.id_card = #{idCard}
+    </update>
+
+    <update id="updateByIdCardAndAddress" >
+        UPDATE tbl_student a
+        SET address = #{address}
+        WHERE a.id_card = #{idCard} and a.address = #{address}
+    </update>
+
 </mapper>

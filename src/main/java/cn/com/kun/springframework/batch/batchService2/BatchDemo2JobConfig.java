@@ -60,7 +60,7 @@ public class BatchDemo2JobConfig {
         定义一个Step,step里会指定用到哪些写操作，读操作
          */
         return stepBuilderFactory.get("mySecondStep")
-                .<UserFileItem, User>chunk(2) //定义块长度是2，每到两个元素就开始执行中间操作
+                .<UserFileItem, User>chunk(1000) //定义块长度是2，每到两个元素就开始执行中间操作
                 .reader(myItemReader)
                 .processor(myItemProcessor)
                 .writer(myItemWriter)

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,16 +39,18 @@ public class MyItemReader implements ItemReader<User> {
         User user1 = new User();
         user1.setFirstname("111");
         user1.setLastname("222");
+        user1.setCreateTime(new Date());
         User user2 = new User();
         user2.setFirstname("333");
         user2.setLastname("444");
+        user2.setCreateTime(new Date());
         User user3 = new User();
         user3.setFirstname("555");
         user3.setLastname("666");
+        user3.setCreateTime(new Date());
         userList.add(user1);
         userList.add(user2);
         userList.add(user3);
-
     }
 
     @Override

@@ -45,6 +45,7 @@ public class LockExceptionRetryInterceptor implements Interceptor {
 
     @PostConstruct
     public void init(){
+        //需要拦截的dao层方法
         targetMapperIdSet.add("cn.com.kun.mapper.StudentMapper.insert");
         targetTableNameSet.add("tbl_student");
     }
@@ -56,8 +57,6 @@ public class LockExceptionRetryInterceptor implements Interceptor {
         Object target = invocation.getTarget();
         StatementHandler statementHandler = (StatementHandler) target;
         BoundSql boundSql = statementHandler.getBoundSql();
-        boundSql.toString();
-
         if (isTableNameMatch(boundSql)){
 
             if (target instanceof RoutingStatementHandler){
@@ -90,6 +89,9 @@ public class LockExceptionRetryInterceptor implements Interceptor {
                         if(isCannotAcquireLockException(e)){
                             LOGGER.error("插件捕获“无法获取锁异常”,准备重试");
                             continue;
+                        } if (isDeadLockException(e)){
+                            LOGGER.error("插件捕获“死锁异常”,准备重试");
+                            continue;
                         }else {
                             throw e;
                         }
@@ -104,10 +106,29 @@ public class LockExceptionRetryInterceptor implements Interceptor {
 
     }
 
+    private boolean isDeadLockException(Exception e) {
+
+        if (e instanceof org.springframework.dao.DeadlockLoserDataAccessException){
+            //这个还不一定能捕获到，插件里捕获到的是 java.lang.reflect.InvocationTargetException
+            return true;
+        }
+
+        if (e instanceof java.lang.reflect.InvocationTargetException){
+            InvocationTargetException targetException = (InvocationTargetException) e;
+            Throwable target = targetException.getTargetException();
+            if (target instanceof com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException && target.getMessage() != null &&
+                    target.getMessage().contains("Deadlock found when trying to get lock")){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean isTableNameMatch(BoundSql boundSql) {
 
         for (String tableName : targetTableNameSet){
-            if (boundSql.toString().contains(tableName) || boundSql.toString().contains(tableName.toUpperCase())){
+            if (boundSql.getSql().contains(tableName) || boundSql.getSql().contains(tableName.toUpperCase())){
                 return true;
             }
         }

@@ -150,7 +150,7 @@ public class StudentServiceImpl implements StudentService {
                     }
 
                     //正例代码(重新起一个事务，就能解决幻读问题)
-//                    while (true){
+//                    while (true){/*-
 //                        studentList = studentService.query(map);
 //                        if (studentList.size() > 0){
 //                            student = studentList.get(0);
@@ -237,4 +237,114 @@ public class StudentServiceImpl implements StudentService {
         return student;
     }
 
+//    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
+    @Override
+    public int save(Student student) {
+
+        try {
+            return studentMapper.insert(student);
+        }catch (Exception e){
+            LOGGER.error("save异常", e);
+
+        }
+        return 0;
+    }
+
+//    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
+    @Override
+    public int updateByIdCard(String address, String idCard) {
+
+        try {
+            return studentMapper.updateByIdCard(address, idCard);
+
+        }catch (Exception e){
+            LOGGER.error("updateByIdCard异常", e);
+        }
+        return 0;
+    }
+
+    @Transactional
+    @Override
+    public void updateByIdCard2(String toString, String idCard) {
+
+        try {
+            long start = System.currentTimeMillis();
+            while (true){
+                int res = studentMapper.updateByIdCardAndAddress(UUID.randomUUID().toString(), idCard);
+//                int res = studentMapper.updateByIdCard(UUID.randomUUID().toString(), idCard);
+                if (System.currentTimeMillis() - start > 120 * 1000){
+                    break;
+                }
+            }
+        }catch (Exception e){
+            LOGGER.error("updateByIdCard2异常", e);
+        }
+
+
+    }
+
+    @Transactional
+    @Override
+    public int save2(Student student) {
+
+
+        try {
+            long start = System.currentTimeMillis();
+            int count = 0;
+
+//            while (true){
+//                studentMapper.insert(student);
+//                if (System.currentTimeMillis() - start > 1 * 60 * 1000){
+//                    break;
+//                }
+//                count++;
+//                if (count > 2000){
+//                    break;
+//                }
+//            }
+
+            for (int i = 0; i < 10000; i++) {
+
+                //使用插件做补偿重试
+                studentMapper.insert(student);
+
+                //代码侵入时，假如补偿重试
+//                while (true){
+//                    try {
+//                        studentMapper.insert(student);
+//                        break;
+//                    }catch (Exception e){
+//                        if(e instanceof org.springframework.dao.CannotAcquireLockException){
+//                            LOGGER.error("出现无法获取锁异常,准备重试");
+//                            continue;
+//                        }else {
+//                            throw e;
+//                        }
+//                    }
+//                }
+            }
+            return 1;
+        }catch (Exception e){
+            LOGGER.error("save2异常", e);
+
+        }
+        return 0;
+    }
+
+    @Transactional
+    @Override
+    public void saveBatch(List<Student> studentList) {
+
+        studentList.stream().parallel().forEach(obj -> {
+//            int res = studentService.save(obj);
+            try {
+                int res = studentMapper.insert(obj);
+            }catch (Exception e){
+                LOGGER.error("save异常", e);
+
+            }
+        });
+    }
 }

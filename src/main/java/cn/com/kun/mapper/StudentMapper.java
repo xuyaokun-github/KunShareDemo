@@ -47,5 +47,10 @@ public interface StudentMapper {
     Cursor<Student> findStudentStreamByCondition(Map map);
 
     Long findMaxId();
+
+    int updateByIdCard(@Param("address") String address, @Param("idCard") String idCard);
+
+    int updateByIdCardAndAddress(@Param("address") String address, @Param("idCard") String idCard);
+
 }
 

@@ -96,7 +96,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.47</version>
             <!-- 注释掉runtime，方便看源码时debug -->
-            <scope>runtime</scope>
+<!--            <scope>runtime</scope>-->
         </dependency>
 
         <!-- 分页插件 -->

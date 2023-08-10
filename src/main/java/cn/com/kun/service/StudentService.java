@@ -25,4 +25,14 @@ public interface StudentService {
 
     List<Student> query(Map<String, Object> map);
 
+    int save(Student student);
+
+    int updateByIdCard(String address, String idCard);
+
+    void updateByIdCard2(String toString, String idCard);
+
+    int save2(Student student3);
+
+    void saveBatch(List<Student> studentList);
+
 }
