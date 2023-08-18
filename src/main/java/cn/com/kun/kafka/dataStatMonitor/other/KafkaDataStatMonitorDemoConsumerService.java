@@ -1,9 +1,11 @@
-package cn.com.kun.kafka.autoSwitch.other;
+package cn.com.kun.kafka.dataStatMonitor.other;
 
 import cn.com.kun.kafka.config.KafkaConsumerProperties;
+import cn.com.kun.kafka.consumer.HelloTopicMsgRunnable;
+import cn.com.kun.kafka.consumer.MsgCacheMsgProcessor;
 import cn.com.kun.kafka.consumer.RecordWrapper;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +26,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Component
-public class KafkaAutoSwitchConsumerDemoService {
+public class KafkaDataStatMonitorDemoConsumerService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaAutoSwitchConsumerDemoService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaDataStatMonitorDemoConsumerService.class);
 
-    /**
-     * 支持自动切换的消费者
-     */
     @Autowired
-    @Qualifier("autoswitchTopicKafkaConsumer")
-    private Consumer consumer;
+    @Qualifier("dataStatMonitorKafkaConsumer")
+    private KafkaConsumer consumer;
 
     private long maxWaitTime;
 
@@ -41,12 +41,12 @@ public class KafkaAutoSwitchConsumerDemoService {
     Executor myKafkaMsgExecutor;
 
     @Autowired
-    AutoSwitchMsgProcessor msgCacheMsgProcessor;
+    MsgCacheMsgProcessor msgCacheMsgProcessor;
 
     @Autowired
     KafkaConsumerProperties kafkaConsumerProperties;
 
-//    @PostConstruct
+    @PostConstruct
     public void init() {
 
         maxWaitTime = getMaxWaitTime(kafkaConsumerProperties.getMaxPollIntervalMs());
@@ -76,7 +76,7 @@ public class KafkaAutoSwitchConsumerDemoService {
                             });
                             for (RecordWrapper recordWrapper : recordWrapperList) {
                                 //提交任务到线程池
-                                myKafkaMsgExecutor.execute(new AutoSwitchTopicMsgRunnable(msgCacheMsgProcessor, recordWrapper));
+                                myKafkaMsgExecutor.execute(new HelloTopicMsgRunnable(msgCacheMsgProcessor, recordWrapper));
                             }
                             //唤醒(假如超过5分钟，还没执行完，必须要重新poll，不然会触发重平衡！)
                             boolean isSuccessProcess = true;
@@ -113,9 +113,15 @@ public class KafkaAutoSwitchConsumerDemoService {
 
                 } catch (Exception e) {
                     LOGGER.error("消费异常", e);
+                    //打上中断标记（反例代码）
+                    Thread.currentThread().interrupt();
+                    if (Thread.interrupted()){
+                        //清理中断标记
+                        LOGGER.error("出现中断异常", e);
+                    }
                 }
             }
-        }, "AutoSwitchTopic-KafkaConsumer-Thread").start();
+        }, "HelloTopic-KafkaConsumer-Thread").start();
     }
 
     /**

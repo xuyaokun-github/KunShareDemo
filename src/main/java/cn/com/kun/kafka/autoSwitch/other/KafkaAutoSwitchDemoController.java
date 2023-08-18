@@ -36,6 +36,30 @@ public class KafkaAutoSwitchDemoController {
         return ResultVo.valueOfSuccess();
     }
 
+    @GetMapping("/autoSwitchSendBatch")
+    public ResultVo autoSwitchSendBatch(){
+
+        //使用 主题拆分组件
+        String topicName = "autoswitch-topic";
+        MsgCacheTopicMsg msgCacheTopicMsg = new MsgCacheTopicMsg();
+        msgCacheTopicMsg.setMsgId(UUID.randomUUID().toString());
+        msgCacheTopicMsg.setCreateTIme(new Date());
+
+
+
+        for (int i = 0; i < 10; i++) {
+
+            new Thread(()->{
+                for (int j = 0; j < 100; j++) {
+                    kafkaAutoSwitchProducerService.produceForAutoSwitch(msgCacheTopicMsg, topicName);
+                }
+            }).start();
+
+        }
+
+        return ResultVo.valueOfSuccess();
+    }
+
     @GetMapping("/testAutoSwitch2")
     public ResultVo testAutoSwitch2(){
 

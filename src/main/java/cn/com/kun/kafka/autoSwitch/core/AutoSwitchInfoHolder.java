@@ -1,6 +1,8 @@
 package cn.com.kun.kafka.autoSwitch.core;
 
+import cn.com.kun.kafka.autoSwitch.enums.KafkaClusterStatusEnum;
 import cn.com.kun.kafka.autoSwitch.vo.KafkaCluster;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +37,12 @@ public class AutoSwitchInfoHolder {
     private static Map<String, KafkaCluster> kafkaClusterMap = new ConcurrentHashMap<>();
 
     /**
+     * 获取最佳目标集群
+     *
      * 判断优先级：
      * 目标集群（来自配置文件） > Topic所属集群
-     * 假如目标集群配了，且该集群可用，采用目标集群
+     *
+     * 假如定义了目标集群，且该集群可用，采用目标集群
      * 假如目标集群没配，则以Topic所属集群为准
      *
      * @param topic
@@ -46,16 +51,20 @@ public class AutoSwitchInfoHolder {
     public static KafkaCluster getBestTargetCluster(String topic) {
 
         KafkaCluster kafkaCluster = kafkaClusterMap.get(targetCluster);
-        if (kafkaCluster != null && "1".equals(kafkaCluster.getStatus())){
+        if (kafkaCluster != null && KafkaClusterStatusEnum.ENABLED.equals(kafkaCluster.getStatus())){
+            //目标集群可用，直接返回可用集群
             return kafkaCluster;
         }
 
         //说明目标集群不可用，则以Topic为准找匹配集群
         String kafkaClusterName = topicClusterMap.get(topic);
-        kafkaCluster = kafkaClusterMap.get(kafkaClusterName);
-        if (kafkaCluster != null && "1".equals(kafkaCluster.getStatus())){
-            return kafkaCluster;
+        if (StringUtils.isNotEmpty(kafkaClusterName)){
+            kafkaCluster = kafkaClusterMap.get(kafkaClusterName);
+            if (kafkaCluster != null && KafkaClusterStatusEnum.ENABLED.equals(kafkaCluster.getStatus())){
+                return kafkaCluster;
+            }
         }
+
         //无可用集群
         if (kafkaCluster == null){
             LOGGER.error("无可用Kafka集群");

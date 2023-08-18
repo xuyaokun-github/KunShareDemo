@@ -1,71 +1,38 @@
-package cn.com.kun.kafka.autoSwitch.other;
+package cn.com.kun.kafka.dataStatMonitor.other;
 
-import cn.com.kun.kafka.autoSwitch.decorator.KafkaConsumerDecorator;
-import cn.com.kun.kafka.autoSwitch.factory.KafkaConsumerFactory;
 import cn.com.kun.kafka.config.KafkaConsumerProperties;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 @ConditionalOnProperty(prefix = "kunsharedemo.kafkaclients", value = {"enabled"}, havingValue = "true", matchIfMissing = true)
 @Configuration
-public class KafkaAutoSwitchConsumerDemoConfg {
+public class KafkaDataStatMonitorDemoConsumerConfig {
 
     @Autowired
     KafkaConsumerProperties kafkaConsumerProperties;
 
     @Bean
-    public Consumer<String, String> autoswitchTopicKafkaConsumer(){
+    public KafkaConsumer<String, String> dataStatMonitorKafkaConsumer(){
         Properties props = buildConsumerProperties();
 //        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
         //KafkaConsumer类不是线程安全的
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        //不需要提前订阅，会通过懒加载订阅
-//        consumer.subscribe(Arrays.asList("autoswitch-topic"));
 
-        KafkaConsumerDecorator consumerDecorator = new KafkaConsumerDecorator(consumer, "autoswitch-topic");
-        consumerDecorator.setKafkaConsumerFactory(new KafkaConsumerFactory() {
-            @Override
-            public Consumer buildConsumer(String topic, String address) {
-
-                return buildConsumerImpl(topic, address);
-            }
-        });
-        return consumerDecorator;
-    }
-
-    private Consumer buildConsumerImpl(String topic, String address) {
-
-        Properties props = buildConsumerProperties();
-        if (StringUtils.isNotEmpty(address)){
-            props.put("bootstrap.servers", address);
-        }
+        // 2. 构建拦截链
+        List<String> interceptors = new ArrayList<>();
+        interceptors.add("cn.com.kun.kafka.dataStatMonitor.stat.interceptor.DataStatConsumerInterceptor");
+        props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        return consumer;
-    }
-
-
-
-    /**
-     * 不支持自动切换的消费者
-     *
-     * @return
-     */
-    @Bean
-    public Consumer<String, String> autoswitchTopicKafkaConsumer2(){
-        Properties props = buildConsumerProperties();
-//        props.put("max.poll.interval.ms", kafkaConsumerProperties.getMaxPollIntervalMs());//拉取间隔(千万不要设置太小)
-        //KafkaConsumer类不是线程安全的
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("autoswitch-topic2"));
+        consumer.subscribe(Arrays.asList("dataStatMonitor-topic"));
         return consumer;
     }
 
