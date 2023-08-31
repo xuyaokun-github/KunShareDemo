@@ -1,4 +1,4 @@
-package cn.com.kun.kafka.dataStatMonitor.stat;
+package cn.com.kun.kafka.dataStatMonitor.stat.counter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * desc:
  * 注意一个问题，Pod1 可能没生产，但是可能会消费，所以执行减1时可能遇到负数
 */
-public class TopicDataStatProcessor {
+public class TopicDataStatCounter {
 
     /**
      * 可能会有多个主题

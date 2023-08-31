@@ -1,6 +1,6 @@
 package cn.com.kun.kafka.dataStatMonitor.stat.interceptor;
 
-import cn.com.kun.kafka.dataStatMonitor.stat.TopicDataStatProcessor;
+import cn.com.kun.kafka.dataStatMonitor.stat.counter.TopicDataStatCounter;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -13,6 +13,13 @@ import java.util.Map;
 
 import static cn.com.kun.kafka.dataStatMonitor.constants.DataStatConstant.MSG_TYPE_HEADER_KEY_NAME;
 
+/**
+ * 数据统计-生产者端
+ *
+ * author:xuyaokun_kzx
+ * date:2023/8/21
+ * desc:
+*/
 public class DataStatProducerInterceptor implements ProducerInterceptor<String, String>  {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataStatProducerInterceptor.class);
@@ -30,17 +37,19 @@ public class DataStatProducerInterceptor implements ProducerInterceptor<String, 
     public ProducerRecord<String, String> onSend(ProducerRecord<String, String> record) {
 
         String msgType = null;
-        Header[] headers = record.headers().toArray();
-        for (Header header : headers){
-            if (MSG_TYPE_HEADER_KEY_NAME.equals(header.key())){
-                msgType = new String(header.value(), StandardCharsets.UTF_8);
-                LOGGER.info("解析到消息类型：{}", msgType);
-                break;
+        if (record.headers() != null){
+            Header[] headers = record.headers().toArray();
+            for (Header header : headers){
+                if (MSG_TYPE_HEADER_KEY_NAME.equals(header.key())){
+                    msgType = new String(header.value(), StandardCharsets.UTF_8);
+                    LOGGER.info("解析到消息类型：{}", msgType);
+                    break;
+                }
             }
         }
         if (msgType != null && msgType.length() > 0){
             //进行统计
-            TopicDataStatProcessor.add(record.topic(), msgType);
+            TopicDataStatCounter.add(record.topic(), msgType);
         }
 
         LOGGER.info("调用onSend方法");
