@@ -3,7 +3,7 @@ package cn.com.kun.springframework.springcloud.feign.controller;
 import cn.com.kun.common.utils.JacksonUtils;
 import cn.com.kun.common.vo.ResultVo;
 import cn.com.kun.springframework.springcloud.feign.service.KunShareClientOneFeignService;
-import cn.com.kun.springframework.springcloud.feign.service.KunwebdemoFeignService;
+import cn.com.kun.springframework.springcloud.feign.client.KunwebdemoFeign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class FeignDemoController {
     private KunShareClientOneFeignService kunShareClientOneFeignService;
 
     @Autowired
-    private KunwebdemoFeignService kunwebdemoFeignService;
+    private KunwebdemoFeign kunwebdemoFeign;
 
     @GetMapping("/test1")
     public ResultVo test1(){
@@ -34,7 +34,7 @@ public class FeignDemoController {
     @GetMapping("/test2")
     public ResultVo test2(){
 
-        ResultVo res = kunwebdemoFeignService.result();
+        ResultVo res = kunwebdemoFeign.result();
         logger.info("result:{}", JacksonUtils.toJSONString(res));
 //        People people = new People();
 //        people.setFirstname("tracy");
