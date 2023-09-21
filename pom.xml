@@ -761,15 +761,16 @@
                         <exclude>testData/**</exclude>
                         <exclude>redis/**</exclude>
                     </excludes>
-                    <executions>
-                        <execution>
-                            <id>copy</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>copy-dependencies</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <!-- executions似乎被移除了，会报红  -->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>copy</id>-->
+<!--                            <phase>package</phase>-->
+<!--                            <goals>-->
+<!--                                <goal>copy-dependencies</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
                 </configuration>
             </plugin>
             <plugin>
