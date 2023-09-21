@@ -192,27 +192,41 @@ public class TopicLagMonitor {
         return consumer;
     }
 
-
+    /**
+     * 获取所有主题的Lag值情况
+     *
+     * @return
+     */
     public Map<String, Long> getAllTopicsLagInfo() {
 
         //每次都要创建消费者
+        /*
+            这里有个缺点：假如用同一个消费者，计算多个topic的lag值，会频繁输出Resetting offset for partition XXXX to offset XXXX 之类的日志。
+            但假如频繁创建消费者，也会有很多 org.apache.kafka.common.config.AbstractConfig日志
+         */
         KafkaConsumer<String, String> consumer = buildKafkaConsumer();
         //获取所有主题列表
         Map<String, List<PartitionInfo>> topicMap = consumer.listTopics();
-
+//        //关闭消费者
+//        consumer.close();
         //记录每个主题未消费消息总数 key:主题名 value: Lag值
         Map<String, Long> lagInfoMap = new HashMap<>();
 
         //遍历每个主题,计算其未消费消息数
         for (String topic : topicMap.keySet()) {
-
-            long totalBacklog = countLag(consumer, topic);
-            lagInfoMap.put(topic, totalBacklog);
+//            consumer = buildKafkaConsumer();
+            try {
+                long totalBacklog = countLag(consumer, topic);
+                lagInfoMap.put(topic, totalBacklog);
+            }catch (Exception e){
+                LOGGER.info("kafka数据统计监控器组件计算Lag值异常", e);
+            }finally {
+//                //关闭消费者
+//                consumer.close();
+            }
         }
-
         //关闭消费者
         consumer.close();
-
         //返回每个主题未消费消息总数
         return lagInfoMap;
     }

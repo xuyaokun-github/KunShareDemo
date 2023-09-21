@@ -1,7 +1,6 @@
 package cn.com.kun.kafka.dataStatMonitor.other;
 
 import cn.com.kun.common.vo.ResultVo;
-import cn.com.kun.kafka.controller.KafkaClientDemoController;
 import cn.com.kun.kafka.dataStatMonitor.lag.TopicLagMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,25 @@ public class KafkaDataStatMonitorDemoController {
         LOGGER.info("监控到的堆积量:{}", allTopicsLagInfo);
         return ResultVo.valueOfSuccess(allTopicsLagInfo);
     }
+
+
+    /**
+     * 验证频繁创建kafka消费者是否会有问题
+     *
+     * @return
+     */
+    @GetMapping("/testDataStatMonitorAllMoreFast")
+    public ResultVo testDataStatMonitorAllMoreFast(){
+
+        new Thread(()->{
+            while (true){
+                Map<String, Long> allTopicsLagInfo = topicLagMonitor.getAllTopicsLagInfo();
+            }
+        }).start();
+
+        return ResultVo.valueOfSuccess();
+    }
+
 
     @GetMapping("/testProduce")
     public ResultVo testProduce(){
