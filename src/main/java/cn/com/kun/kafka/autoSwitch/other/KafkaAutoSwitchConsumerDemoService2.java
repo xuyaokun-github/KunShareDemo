@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class KafkaAutoSwitchConsumerDemoService2 {
     @Autowired
     KafkaConsumerProperties kafkaConsumerProperties;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
 
         maxWaitTime = getMaxWaitTime(kafkaConsumerProperties.getMaxPollIntervalMs());

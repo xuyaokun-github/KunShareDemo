@@ -21,9 +21,13 @@ public class KafkaAutoSwitchConsumerRunner implements CommandLineRunner, Applica
     @Autowired
     private KafkaAutoSwitchConsumerDemoService kafkaAutoSwitchConsumerDemoService;
 
+    @Autowired
+    private KafkaAutoSwitchConsumerDemoService2 kafkaAutoSwitchConsumerDemoService2;
 
     public void run(String... args) {
-        kafkaAutoSwitchConsumerDemoService.init();
+
+//        kafkaAutoSwitchConsumerDemoService.init();
+//        kafkaAutoSwitchConsumerDemoService2.init();
     }
 
 

@@ -68,6 +68,11 @@ public class AutoSwitchInfoHolder {
         //无可用集群
         if (kafkaCluster == null){
             LOGGER.error("无可用Kafka集群");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                //
+            }
             throw new RuntimeException("无可用Kafka集群");
         }
         return kafkaCluster;
